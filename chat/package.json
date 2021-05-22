@@ -1,0 +1,24 @@
+{
+  "name": "socket-example",
+  "version": "0.0.1",
+  "description": "ERROR: No README.md file found!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "author": "Michael Heap <m@michaelheap.com>",
+  "dependencies": {
+  	"winston": "^2.3.1",
+    "couchbase": "~2.2.5",
+    "express": "^4.14.0",
+    "socket.io": "^1.7.2",
+    "socket.io-stream": "^0.9.1"
+  },
+  "socket.io": "^2.0.4",
+    "express": "^4.16.2",
+    "couchbase": "^2.4.3",
+    "browserify": "^14.5.0",
+    "cors": "^2.8.4",
+    "delivery": "0.0.6"
+}

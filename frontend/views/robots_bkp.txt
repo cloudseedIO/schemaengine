@@ -1,0 +1,27 @@
+User-Agent: * 
+Allow: /
+Disallow:/siteSpecific*
+Disallow:/s/Users*
+Disallow:/s/Press/Footer*
+Disallow:/d/TermsOfUse*
+Disallow:/d/FooterArticles/PrivacyPolicy*
+Disallow:/d/Manufacturer*
+Disallow:/d/Architects*
+Disallow:/d/ServiceProv*
+Disallow:/d/Supplier*
+Disallow:/d/Project*
+Disallow:/d/Product*
+
+User-Agent: Googlebot
+Allow: /*
+Disallow:/siteSpecific*
+Disallow:/s/Users*
+Disallow:/s/Press/Footer*
+Disallow:/d/TermsOfUse*
+Disallow:/d/FooterArticles/PrivacyPolicy*
+Disallow:/d/Manufacturer*
+Disallow:/d/Architects*
+Disallow:/d/ServiceProv*
+Disallow:/d/Supplier*
+Disallow:/d/Project*
+Disallow:/d/Product*

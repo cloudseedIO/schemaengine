@@ -1,0 +1,37 @@
+{
+  "name": "wishkarma_api",
+  "version": "1.0.0",
+  "description": "Wishkarma.com API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wishkarma"
+  ],
+  "author": "vikram",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.6",
+    "cloudinary": "^1.25.1",
+    "compression": "^1.7.4",
+    "connect-couchbase": "^0.2.10",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "couchbase": "^3.1.2",
+    "elasticsearch": "^16.7.2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "html-pdf": "^3.0.0",
+    "immutable": "^4.0.0-rc.12",
+    "mailgun-js": "^0.22.0",
+    "node-quickbooks": "^2.0.38",
+    "node-rest-client": "^3.1.0",
+    "node-schedule": "^2.0.0",
+    "nodemailer": "^6.6.0",
+    "npm-install-global": "^1.0.0",
+    "socket.io": "^4.1.2",
+    "winston": "^2.4.5",
+    "winston-loggly-bulk": "^2.0.3"
+  }
+}

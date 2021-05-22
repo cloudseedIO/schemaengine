@@ -1,0 +1,40 @@
+@author saikiran.vadlakonda
+@Date:19-12-2015
+
+
+Xero API
+http://developer.xero.com/documentation/api/api-overview/
+
+
+
+Xero npm module
+https://www.npmjs.com/package/xero
+
+Xero developer
+https://developer.xero.com/
+
+Xero Application List
+https://app.xero.com/Application/List
+
+Xero 
+https://go.xero.com/Dashboard/Default.aspx
+
+
+
+Rest API call
+var Xero = require('xero');
+
+
+CONSUMER_KEY 		=> Key of the Application configured in Xero
+CONSUMER_SECRET		=> Secrete key of the Application configured in Xero
+RSA_PRIVATE_KEY		=> Key file of the Certificate uploaded while creating the Application in Xero
+						This should be buffer object pointing to Key_Certificate file
+						
+var xero = new Xero(CONSUMER_KEY, CONSUMER_SECRET, RSA_PRIVATE_KEY);
+
+xero.call('GET', '/Users', null, function(err, json) {
+        if (err) {
+            return res.json(400, {error: 'Unable to contact Xero'});
+        }
+        return res.json(200, json);
+    });

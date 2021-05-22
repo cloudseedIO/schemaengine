@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+    <title>Research Specs </title>
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+    <style>
+        html, body {
+            height: 100vh;
+        }
+
+        mark {
+            background: yellow;
+        }
+
+        .drop:after {
+            content: 'Drop file here';
+            pointer-events: none;
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            background-color: #999;
+            background-image: radial-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,1) 100%);
+            opacity: .5;
+            color: white;
+            line-height: 100vh;
+            text-align: center;
+            font-size: 10vh;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 5px #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="padding: 15px">
+        <form class="row" data-bind="submit: reload">
+            <p class="col-md-10">
+                <input type="search" class="form-control" data-bind="value: q" />
+            </p>
+            <p class="col-md-2">
+                <button class="btn btn-default btn-block" data-bind="click: reload">Filter</button>
+            </p>
+        </form>
+
+        <ul class="list-group" data-bind="foreach: hits">
+            <li class="list-group-item">
+                <div class="media">
+                    <div class="media-body">
+                        <i data-bind="css: icon"></i>
+                        <strong data-bind="text: _source.name" ></strong>
+			<!-- <a class="text-danger" data-bind="click: $root.getDoc">download</a>-->
+			<i data-bind="visible: $root.q() && $root.q().trim().length > 0">
+			<button type="button" class="btn btn-default btn-sm" data-bind="click: $root.getDoc">
+			  <span class="glyphicon glyphicon-download-alt"></span> Download
+			</button>
+			</i>
+                    </div>
+                    <!-- <div class="media-right">
+                        <a class="text-danger" href="#" data-bind="click: $root.delete">delete</a>
+                    </div> -->
+                </div>
+                <div data-bind="if: hasHighlights">
+                    <ol data-bind="foreach: highlight.content">
+                        <li data-bind="html: $data"></li>
+                    </ol>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <script src="bower_components/knockout/dist/knockout.debug.js"></script>
+    <script src="bower_components/elasticsearch/elasticsearch.js"></script>
+    <script src="http://danml.com/js/download.js"></script>
+    <script>
+        function Hit(data) {
+            var self = this;
+            ko.utils.extend(self, data);
+
+            self.hasHighlights = self.highlight && self.highlight.content && self.highlight.content.length > 0;
+
+            if(self._source.type === 'application/msword' || self._source.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                self.icon = 'fa fa-file-word-o';
+            } else {
+                self.icon = 'fa fa-file-text-o';
+            }
+	
+        }
+
+        function Model() {
+            var self = this;
+
+            self.index = 'attachments';
+            self.type = 'document'; // need to be replaced in mapping also
+
+            self.client = new elasticsearch.Client({
+                host: '//ec2-35-154-19-98.ap-south-1.compute.amazonaws.com:80/elasticsearch',//'//localhost:9200',
+                log: 'trace'
+            });
+
+            self.q = ko.observable('');
+            self.hits = ko.observableArray();
+
+            self.reload = function() {
+                var body = {
+                    index: self.index,
+                    type: self.type,
+                    body: {
+                        _source: {
+                            exclude: ['content']
+                        }
+			,"from":0,"size":300
+                    }
+                };
+
+                if(self.q() && self.q().trim().length > 0) {
+                   body.body.query = {
+                            query_string: {
+                                query: self.q()
+                            }
+                    };
+
+                    body.body.highlight = {
+                        pre_tags: ['<mark>'],
+                        post_tags: ['</mark>'],
+                        fields: {
+                            content: {}
+                        }
+                    };
+                }
+
+                self.client.search(body).then(function(body){
+					console.log(body);
+					var data=body.hits.hits;
+					data.sort(function(d1, d2){ return d1._source.name>d2._source.name?1:-1;  });
+			
+                    self.hits(data.map(function(hit){ return new Hit(hit); }));
+			
+                }, alert);
+            };
+
+            self.delete = function(data) {
+                self.client.delete({
+                    index: self.index,
+                    type: self.type,
+                    id: data._id,
+                    ignore: [404]
+                }, function(err, body){
+                    if(body.found) {
+                        self.hits.remove(data);
+                    }
+                });
+            };
+
+	    self.getDoc = function(data){
+		self.client.get({
+                    index: self.index,
+                    type: self.type,
+                    id: data._id,
+                    ignore: [404]
+                }, function(err, body){
+		download("data:"+body._source.type+";base64,"+body._source.content, body._source.name, body._source.type);
+/*                    if(body.found) {
+                        //self.hits.remove(data);
+			//download(data, fileName, MimeType);
+			download(body._source.content, body._source.name, body._source.type);
+			//document.location = 'data:'+body._source.type+';base64,' + body._source.content
+                    }*/
+                });
+	    };
+
+            function nop(event) {
+                event.stopPropagation();
+                event.preventDefault();
+                event.dataTransfer.dropEffect = 'copy';
+                document.body.className = event.type === 'dragleave' ? '' : 'drop';
+            }
+            document.body.addEventListener('dragenter', nop);
+            document.body.addEventListener('dragover', nop, false);
+            document.body.addEventListener('dragleave', nop);
+            document.body.addEventListener('drop', function(event) {
+                event.stopPropagation();
+                event.preventDefault();
+
+                [].forEach.call(event.dataTransfer.files, function(file){
+                    var reader = new FileReader();
+                    reader.addEventListener('load', function(event){
+
+			console.log(event.target.result.substr(event.target.result.indexOf(',') + 1));
+
+                        self.client.create({
+                            index: self.index,
+                            type: self.type,
+                            body: {
+                                name: file.name,
+                                date: (new Date(file.lastModified)).toISOString(),
+                                type: file.type,
+                                content: event.target.result.substr(event.target.result.indexOf(',') + 1)
+                            }
+                        }).then(function(body){
+                            body._source = {
+                                name: file.name,
+                                date: (new Date(file.lastModified)).toISOString(),
+                                type: file.type
+                            };
+                            self.hits.push(new Hit(body));
+                        });
+                    });
+                    reader.readAsDataURL(file);
+                    document.body.className = '';
+                });
+
+            }, false);
+
+
+            self.mappings = {
+		_source:{
+		    date:"string",
+		    name:"string",
+		    type:"string"
+		},
+                index: self.index,
+                body: {
+                    mappings: {}
+                }
+            };
+
+            self.mappings.body.mappings[self.type] = {
+                properties: {
+                    name: {type: 'string'},
+                    date: {type: 'date'},
+                    type: {type: 'string'},
+                    content: {
+                        type: 'attachment',
+                        fields: {
+                            content:       {store: 'yes'},
+                            author:        {store: 'yes'},
+                            title:         {store: 'yes'},
+                            date:          {store: 'yes'},
+                            keywords:      {store: 'yes'},
+                            _name:         {store: 'yes'},
+                            _content_type: {store: 'yes'}
+                        }
+                    }
+                }
+            };
+
+            self.client.indices.exists({index: self.index}, function(body, exists){
+                if(!exists) {
+		console.log(self.mappings);
+                    self.client.indices.create(self.mappings);
+                } else {
+                    self.reload();
+                }
+            });
+        }
+
+        var model = new Model();
+        ko.applyBindings(model);
+    </script>
+</body>
+</html>
+

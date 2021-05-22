@@ -1,0 +1,21 @@
+// Font paths
+// -------------------------
+
+@font-face {
+  font-family: "Wishkarma";
+  src: url("../fonts/Wishkarma.eot");
+  src: url("../fonts/Wishkarma.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/Wishkarma.woff2") format("woff2"),
+       url("../fonts/Wishkarma.woff") format("woff"),
+       url("../fonts/Wishkarma.ttf") format("truetype"),
+       url("../fonts/Wishkarma.svg#Wishkarma") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Wishkarma";
+    src: url("../fonts/Wishkarma.svg#Wishkarma") format("svg");
+  }
+}

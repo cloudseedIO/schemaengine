@@ -1,0 +1,12 @@
+User-Agent: * 
+Allow: /*
+Disallow:/siteSpecific*
+Disallow:/s/*
+Disallow:/d/*
+Disallow:/gv/*
+Disallow:/admin*
+
+User-agent: Twitterbot
+Disallow:
+     
+Sitemap: https://www.wishkarma.com/gv.xml

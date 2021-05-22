@@ -1,0 +1,156 @@
+.collapsing {
+  transition-duration: 0.8s;
+}
+.collapsed .fa-times{
+	transform: rotate(0deg) scale(1);
+	transition-duration: 0.3s;
+}
+ .fa-times{
+	transform: rotate(45deg) scale(1);
+	transition-duration: 0.3s;
+}
+.fa-remove:before, .fa-close:before, .fa-times:before {
+    content: " ";
+    background: url(../images/icons8-plus-math.svg) no-repeat center center;
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+    background-size: 100%;
+}
+.graybackground{
+	background-color:#e9ebeb;
+}
+
+.graybackground2{
+	background-color:#fbfbfb;
+}
+
+.myMessage{
+	background-color:#e3e6ea;
+    border: 1px;
+    border-radius: 15px;
+    padding: 10px;
+    width: 50%;
+    margin: 20px;
+    float:right;
+}
+.othersMessage{
+	background-color:#d0d0d0;
+	border: 1px;
+    border-radius: 15px;
+    padding: 10px;
+    width: 50%;
+    margin: 20px;
+    float:left;
+}
+
+.chatDate {
+    font-size: 10px;
+}
+.topicStatusRow {
+    list-style: none;
+    text-align: center;
+    margin: 10px;
+}
+
+/*hover css*/
+/* Dropdown Button */
+.dropbtn {
+    padding: 10px;
+    font-size: 15px;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    left: -185%;
+}
+
+/* Links inside the dropdown */
+.dropdown-content li {
+    color: black;
+    padding: 4px 10px;
+    list-style:none;
+	text-transform: capitalize;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content li:hover {background-color: #ddd}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+    background-color: #f1f1f1;
+}
+/*end of hover css*/
+
+.border-right{
+	border-right:1px solid #dfdfdf;
+}
+
+.sideNavHeight{
+	height:51vw;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.contentNavHeight{
+	height:45vw;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.chatHeaderHeight{
+	height:6.1vw;
+	font-size: 16px;
+}
+.extra-padding-top-sm{
+	padding-top:10px;
+}
+.extra-padding-bottom-sm{
+	padding-bottom:10px;
+}
+.text-grey{
+	color:rgba(0, 0, 0, 0.4);
+}
+.default-nav-header{
+	font-weight:900;
+}
+.searchPadding{
+	padding:15px;
+}
+.searchPadding .form-control {
+    text-indent: 10%;
+}
+.searchPadding .filterSearch{
+	right:auto;
+	left:3%;
+}
+
+.collapseLayout.icons8-expand-arrow::before,.collapseLayout.icons8-expand-arrow::after {
+  transform: rotate(0deg) scale(1);
+    transition-duration: 0.3s;
+}
+.collapsed .collapseLayout.icons8-expand-arrow::before,.collapsed .collapseLayout.icons8-expand-arrow::after {
+    transform: rotate(270deg) scale(1);
+  transition-duration: 0.3s;
+}
+.itemHover:hover{
+	background-color:#e9ebeb;
+	cursor:pointer;
+}
+.borderSearch{
+	border:1px solid  #DFDFDF!important;
+}
