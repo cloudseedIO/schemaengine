@@ -323,7 +323,7 @@ function service(request, response){
 			var N1qlQuery = couchbase.N1qlQuery;
 			
 			
-			CouchBaseUtil.executeViewInContentBucket(qryString,function(boards){
+			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(boards){
 				
 				CouchBaseUtil.getDocumentsByIdsFromContentBucket(orgs, function(prjctRecs){
 					var revisedBoards=[];
@@ -543,7 +543,7 @@ function service(request, response){
 			var emailId = (request.body.email).toLowerCase();
 			var N1qlQuery = couchbase.N1qlQuery;
 			var qryString = "SELECT * FROM records WHERE `docType` = 'User' AND `email` = '"+emailId+"'"; 
-			CouchBaseUtil.executeViewInContentBucket(qryString,function(result){
+			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
 				if(result.length>0 && result[0].records && Object.keys(result[0].records).length>0){
 					var userDoc=result.length>0?result[0].records:{};
 					if(userDoc.hasOwnProperty("activation") && userDoc.activation){
@@ -948,7 +948,7 @@ function service(request, response){
 					var N1qlQuery = couchbase.N1qlQuery;
 					var qryString = " SELECT `records`  FROM records WHERE `docType`='UserRole' AND `User`='"+(userDoc.recordId)+"'  AND `org`='"+(orgDoc.recordId)+"'";
 							
-						CouchBaseUtil.executeViewInContentBucket(qryString,function(result){
+						CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
 							if(result && result.length==0){
 								console.log("Roles not found, create a role");
 								CouchBaseUtil.getDocumentByIdFromDefinitionBucket("RoleMappings",function(roles){

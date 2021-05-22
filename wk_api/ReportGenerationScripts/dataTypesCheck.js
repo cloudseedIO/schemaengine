@@ -1,19 +1,15 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
-var bucket=cluster.bucket("records");
-var defbucket=cluster.bucket("definitions");
-var defcollection=defbucket.defaultCollection();
+var bucket=cluster.openBucket("records");
+var defbucket=cluster.openBucket("definitions");
 
 //skipping from 80000 to 235082
 function executeView(querystring,params,callback){
 	var query = N1qlQuery.fromString(querystring);
 	query.adhoc = false;
-	cluster.query(query, params,function(err, results) {
+	bucket.query(query, params,function(err, results) {
 		if(err){
 			if(typeof callback=="function")
 				callback({"error":err,"query":query,"params":params});
@@ -34,10 +30,9 @@ function getDataType(value){
 	}
 	return currType;
 }
-async function getRecordId(skip,callback){
-	//var query = ViewQuery.from("UpdationScriptViews", "recordId").skip(skip).limit(1).stale(ViewQuery.Update.BEFORE);
-	var query=await bucket.viewQuery("UpdationScriptViews", "recordId",skip(skip),limit(1));
-	cluster.query(query, function(err, data) {
+function getRecordId(skip,callback){
+	var query = ViewQuery.from("UpdationScriptViews", "recordId").skip(skip).limit(1).stale(ViewQuery.Update.BEFORE);
+	bucket.query(query, function(err, data) {
 		callback(data[0].id);
 	});
 }
@@ -48,11 +43,11 @@ executeView("select * from definitions use keys 'updateMappingsCount'",[],functi
 executeView("select * from definitions use keys 'mappings'",[],function(result){
 	var allMappings=result[0].definitions;
 	function updateResults(skip){
-		defcollection.upsert("mappings",allMappings,function(err, result) {
+		defbucket.upsert("mappings",allMappings,function(err, result) {
 			console.log("Mappings updated");
 			console.log("DONE")
 		});
-		defcollection.upsert("updateMappingsCount",{count:skip},function(err, result) {
+		defbucket.upsert("updateMappingsCount",{count:skip},function(err, result) {
 			console.log("count updated");
 		});
 	}

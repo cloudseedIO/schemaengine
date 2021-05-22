@@ -1,18 +1,14 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
 var records="records";
 var schemas="schemas";
-var cbContentBucket=cluster.bucket(records);
-var cbMasterBucket=cluster.bucket(schemas);
+var cbContentBucket=cluster.openBucket(records);
+var cbMasterBucket=cluster.openBucket(schemas);
 
 
-//var mfrsQuery = ViewQuery.from("Manufacturer", "test").reduce(false).stale(ViewQuery.Update.BEFORE).skip(651);//.limit(1)//.skip(1);
-var mfrsQuery=await cbContentBucket.viewQuery("Manufacturer", "test",reduce(false));
-cluster.query(mfrsQuery, function(mfrerr, mfrdata) {
+var mfrsQuery = ViewQuery.from("Manufacturer", "test").reduce(false).stale(ViewQuery.Update.BEFORE).skip(651);//.limit(1)//.skip(1);
+cbContentBucket.query(mfrsQuery, function(mfrerr, mfrdata) {
 	if(mfrerr){
 		console.log(mfrerr);
 		return;
@@ -23,13 +19,12 @@ cluster.query(mfrsQuery, function(mfrerr, mfrdata) {
 	}
 	updateMfr(0);
 	function updateMfr(index){
-		cbContentCollection.get(mfrdata[index].id,async function(mde, mdd) {
+		cbContentBucket.get(mfrdata[index].id,function(mde, mdd) {
 			if(mde){console.log(mde);return;}
 			var mfrDoc=mdd.value;
 			console.log("Updating ........."+ (index*1+1) +"          "+mfrDoc.recordId+"             ");	
-			//var innerQuery = ViewQuery.from("relation","getRelated").key([mfrDoc.recordId,"manufacturesCategory"]).reduce(false).stale(ViewQuery.Update.BEFORE);
-			var innerQuery=await cbContentBucket.viewQuery("relation","getRelated",{key:[mfrDoc.recordId,"manufacturesCategory"]},reduce(false));
-			cluster.query(innerQuery,function(relerr,relresponse){
+			var innerQuery = ViewQuery.from("relation","getRelated").key([mfrDoc.recordId,"manufacturesCategory"]).reduce(false).stale(ViewQuery.Update.BEFORE);
+			cbContentBucket.query(innerQuery,function(relerr,relresponse){
 				if(relerr){
 					console.log(relerr);
 					return;
@@ -52,7 +47,7 @@ cluster.query(mfrsQuery, function(mfrerr, mfrdata) {
 							  mfrDoc.productTypesBKP=mfrDoc.productTypes;
 							  mfrDoc.productTypes=names;
 							  console.log(names.length);
-							  cbContentCollection.upsert(mfrDoc.recordId,mfrDoc,function(err, result) {
+							  cbContentBucket.upsert(mfrDoc.recordId,mfrDoc,function(err, result) {
 						 			if (err) { console.log(err); }
 						 			if((index+1)<mfrdata.length){
 										updateMfr(index+1);
@@ -69,7 +64,7 @@ cluster.query(mfrsQuery, function(mfrerr, mfrdata) {
 					mfrDoc.productTypesBKP=mfrDoc.productTypes;
 					mfrDoc.productTypes=[];
 					  
-					cbContentCollection.upsert(mfrDoc.recordId,mfrDoc,function(err, result) {
+					cbContentBucket.upsert(mfrDoc.recordId,mfrDoc,function(err, result) {
 				 			if (err) { console.log(err); }
 				 			if((index+1)<mfrdata.length){
 								updateMfr(index+1);

@@ -16,14 +16,6 @@ var Immutable = require('immutable');
 var logger = require('../services/logseed').logseed;
 var logQueries=false;
 
-var reactConfig=require('../../config/ReactConfig');
-var config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-
-var cbContentBucket=cluster.bucket("records");
-var cbMasterBucket=cluster.bucket("schemas");
-var cbDefinitionBucket=cluster.bucket("definitions");
-
 function getNavigationLinks(data,callback){
 	var config=ContentServer.getConfigDetails(data.hostname);
 	var toSesOrgs={};
@@ -34,7 +26,7 @@ function getNavigationLinks(data,callback){
 	var navDocId="CloudseedNavigation";
 	var cloudPointHostId="cloudseed";
 
-	var cloudPointAdminRole="RoleForcloudPointAdmin";
+	var cloudPointAdminRole="Role	ForcloudPointAdmin";
 	var orgOwnerRole="Role2";
 	var publicRole="Role1";
 	var loggedInUserRole="RoleForCommonUser";
@@ -48,13 +40,12 @@ function getNavigationLinks(data,callback){
 		loggedInUserRole=config.loggedInUserRole;
 	}
 	//Get Navigation document
-	console.log("1");
 	CouchBaseUtil.getDocumentByIdFromDefinitionBucket(navDocId,function(navresp){
 		if(typeof navresp.value == "undefined"){
 			logger.error({type:"GS:getNavLinks:getNavDef",error:navresp});
-			callback({"error":"No navigation document found. Please contact administrator"});
-			return;
+			callback({"error":"No navigation document found. Please contact administrator"});return;
 		}
+
 		var RootNavigation=navresp.value;
 		var navLinks=Immutable.List();
 		// Getting the orgs list the user has access to
@@ -75,9 +66,7 @@ function getNavigationLinks(data,callback){
 			// configuring for cloudpoint admin
 			var cloudPointAdmin=false;
 			var cloudPoint="";
-			console.log("cloudPointAdmin",cloudPointAdmin);
 			for(var oc=0;oc<orgs.length;oc++){
-				
 				if(orgs[oc].org=="public"){
 					if(orgs[oc].roles.indexOf(loggedInUserRole)==-1){
 						orgs[oc].roles.push(loggedInUserRole);
@@ -88,7 +77,6 @@ function getNavigationLinks(data,callback){
 					cloudPoint=orgs[oc].org;
 				}
 			}
-			console.log("cloudPointAdmin",cloudPointAdmin);
 			if(cloudPointAdmin){
 				commonRole=cloudPointAdminRole;
 			}
@@ -362,7 +350,7 @@ function getAllOrgs(cloudPointHostId,callback){
 		//callback(allOrgs);
 	//});
 	// select distinct r1.org,r2.name,r2.docType,r2.recordId from records r1 join records r2  on keys r1.org  where r1.docType="UserRole";
-	var query="SELECT DISTINCT org FROM records WHERE docType=$1";
+	var query=N1qlQuery.fromString("SELECT DISTINCT org FROM records WHERE docType=$1");
 	query.adhoc = false;
 	CouchBaseUtil.executeN1QL(query,["UserRole"],function(response){
 		var allOrgs=[];
@@ -410,7 +398,7 @@ function getAllOrgsWithOrgType(request,callback){
 	if(body.skip){
 		query+=(" OFFSET "+(body.skip*1)+" LIMIT "+(body.limit?body.limit:global.limitCount));
 	}
-	var qo=query;
+	var qo=N1qlQuery.fromString(query);
 	query.adhoc = false;
 	CouchBaseUtil.executeN1QL(qo,["UserRole",body.orgType],function(response){
 		callback(response);
@@ -423,7 +411,7 @@ exports.getAllOrgsWithOrgType=getAllOrgsWithOrgType;
 /*
  * Get Orgs of the current user associated with
  */
-async function getUserOrgs(request,callback){
+function getUserOrgs(request,callback){
 	var body=urlParser.getRequestBody(request);
 	var hostname=request.headers.host.split(":")[0];
 	var cloudPointHostId=(ContentServer.getConfigDetails(hostname))?ContentServer.getConfigDetails(hostname).cloudPointHostId:undefined;
@@ -434,10 +422,9 @@ async function getUserOrgs(request,callback){
 	 }else{
 		 callback([]);
 	 }
-	//var query = ViewQuery.from("UserRole", "UserRoles").key([cloudPointHostId,request.session.userData.recordId]);
+	var query = ViewQuery.from("UserRole", "UserRoles").key([cloudPointHostId,request.session.userData.recordId]);
 	//query.stale(ViewQuery.Update.BEFORE);
-	var response=await cbContentBucket.viewQuery("UserRole", "UserRoles",{key:[cloudPointHostId,request.session.userData.recordId]}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(viewResult,function(response){
+	CouchBaseUtil.executeViewInContentBucket(query,function(response){
 		if(Array.isArray(response)){
 			var orgs=[];
 			for(var i=0;i<response.length;i++){
@@ -471,14 +458,14 @@ async function getUserOrgs(request,callback){
 		}else{
 			callback([]);
 		}
-	//});
+	});
 }
 exports.getUserOrgs=getUserOrgs;
 
 /*
  * get Users default role on the current creating org
  */
-async function getUserDefaultRoleForOrg(request,callback){
+function getUserDefaultRoleForOrg(request,callback){
 	var body=urlParser.getRequestBody(request);
 	var hostname=request.headers.host.split(":")[0];
 	var cloudPointHostId=(ContentServer.getConfigDetails(hostname))?ContentServer.getConfigDetails(hostname).cloudPointHostId:undefined;
@@ -489,16 +476,14 @@ async function getUserDefaultRoleForOrg(request,callback){
 	 }else{
 		 callback("RoleForMembersManager");
 	 }
-	//var query = ViewQuery.from("UserRole", "UserRoles").key([cloudPointHostId,request.session.userData.recordId]);
+	var query = ViewQuery.from("UserRole", "UserRoles").key([cloudPointHostId,request.session.userData.recordId]);
 	//query.stale(ViewQuery.Update.BEFORE);
-	var response=await cbDefinitionBucket.viewQuery("UserRole", "UserRoles",{key:[cloudPointHostId,request.session.userData.recordId]}).catch(e=>{console.log(e);});
-	console.log("2");
 	CouchBaseUtil.getDocumentByIdFromDefinitionBucket("RoleMappings",function(result){
 		if(result.error){
 			callback("RoleForMembersManager");
 		}else{
 			var RoleMappings=result.value;
-			//CouchBaseUtil.executeViewInContentBucket(query,function(response){
+			CouchBaseUtil.executeViewInContentBucket(query,function(response){
 				if(Array.isArray(response)){
 					var roles=[];
 					var publicOrgRole="RoleForCommonUser";
@@ -524,7 +509,7 @@ async function getUserDefaultRoleForOrg(request,callback){
 				}else{
 					callback("RoleForMembersManager");
 				}
-			//});
+			});
 		}
 	});
 }
@@ -534,20 +519,18 @@ exports.getUserDefaultRoleForOrg=getUserDefaultRoleForOrg;
 /*
  * get Schemas and methods  for a role
  */
-async function getSchemasAndMethodsByRole(cloudPointHostId,role,callback){
+function getSchemasAndMethodsByRole(cloudPointHostId,role,callback){
 
 	var config=ContentServer.getConfigByHostId(cloudPointHostId);
 	var cloudPointAdminRole=config.cloudPointAdminRole;
 
-	//var query = ViewQuery.from("Role", "RoleDetail").key([cloudPointHostId,role]).stale(ViewQuery.Update.NONE);
-	var response=await cbContentBucket.viewQuery("Role", "RoleDetail",{key:[cloudPointHostId,role]}).catch(e=>{console.log(e);});
+	var query = ViewQuery.from("Role", "RoleDetail").key([cloudPointHostId,role]).stale(ViewQuery.Update.NONE);
 	if(typeof role=="object"){
 		var keys=[];
 		for(var i=0;i<role.length;i++){
 			keys.push([cloudPointHostId,role[i]]);
 		}
-		//query = ViewQuery.from("Role", "RoleDetail").keys(keys).stale(ViewQuery.Update.NONE);
-		response=await cbContentBucket.viewQuery("Role", "RoleDetail",{keys:keys}).catch(e=>{console.log(e);});
+		query = ViewQuery.from("Role", "RoleDetail").keys(keys).stale(ViewQuery.Update.NONE);
 	}
 	if(role==cloudPointAdminRole){
 		utility.getAllSchemaNamesOfHost(cloudPointHostId,function(allschemas){
@@ -566,7 +549,7 @@ async function getSchemasAndMethodsByRole(cloudPointHostId,role,callback){
 			callback(allschemaroles);
 		});
 	}else{
-		//CouchBaseUtil.executeViewInContentBucket(query,function(response){
+		CouchBaseUtil.executeViewInContentBucket(query,function(response){
 			if(response.error){
 				callback(response);
 				return;
@@ -578,7 +561,7 @@ async function getSchemasAndMethodsByRole(cloudPointHostId,role,callback){
 				}
 			}
 			callback(rowData);
-		//});
+		});
 	}
 }
 exports.getSchemasAndMethodsByRole=getSchemasAndMethodsByRole;
@@ -589,14 +572,12 @@ exports.getSchemasAndMethodsByRole=getSchemasAndMethodsByRole;
  * @param userId
  * @param callback
  */
-async function getUserSiblingOrgs(cloudPointHostId,userId,callback){
+function getUserSiblingOrgs(cloudPointHostId,userId,callback){
 	if(!userId){
 		userId="CommonUser";
 	}
-	var response =await cbContentBucket.viewQuery("UserRole", "UserRoles",{keys:[cloudPointHostId,userId]}).catch(e=>{console.log(e);});
 	//query.stale(ViewQuery.Update.BEFORE);
-	// CouchBaseUtil.executeViewInContentBucket(viewResult,function(response){
-		//console.log(",,,,,",response.value);
+	CouchBaseUtil.executeViewInContentBucket("UserRole", "UserRoles",{key:[cloudPointHostId,userId]},function(response){
 		if(response.error){
 			callback(response);
 			return;
@@ -605,11 +586,9 @@ async function getUserSiblingOrgs(cloudPointHostId,userId,callback){
 		for(i in response){
 			rowData.push(response[i].value);
 		}
-		//callback(rowData);
-		callback(response);
-		//return response;
+		callback(rowData);
 
-	//});
+	});
 }
 exports.getUserSiblingOrgs=getUserSiblingOrgs;
 
@@ -823,42 +802,40 @@ exports.getSchemaRoleOnOrg=getSchemaRoleOnOrg;
 /*
  * Check for Slug existance in records bucket
  */
-async function checkForExistance(request,callback){
+function checkForExistance(request,callback){
 	var data=urlParser.getRequestBody(request);
-	// var stale=ViewQuery.Update.BEFORE;
-	// if(data.stale && data.stale=="NONE"){
-	// 	stale=ViewQuery.Update.NONE;
-	// }
-	//var query = ViewQuery.from("User","uniqueUserName").key(data.id.toUpperCase()).stale(stale);
-	var res=await cbContentBucket.viewQuery("User","uniqueUserName",{key:data.id.toUpperCase()}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(query,function(res){
+	var stale=ViewQuery.Update.BEFORE;
+	if(data.stale && data.stale=="NONE"){
+		stale=ViewQuery.Update.NONE;
+	}
+	var query = ViewQuery.from("User","uniqueUserName").key(data.id.toUpperCase()).stale(stale);
+	CouchBaseUtil.executeViewInContentBucket(query,function(res){
 		if(res.length==0){
 			callback({exists:false,result:res});
 		}else{
 			callback({exists:true,result:res});
 		}
-	//});
+	});
 }
 exports.checkForExistance=checkForExistance;
 
 /*
  * Check for slug existance in schemas bucket
  */
-async function checkForExistanceInSchemas(request,callback){
+function checkForExistanceInSchemas(request,callback){
 	var data=urlParser.getRequestBody(request);
-	// var stale=ViewQuery.Update.BEFORE;
-	// if(data.stale && data.stale=="NONE"){
-	// 	stale=ViewQuery.Update.NONE;
-	// }
-	//var query = ViewQuery.from("genericMeta", "uniqueUserNames").key(data.id.toUpperCase()).stale(stale);
-	var res=await cbMasterBucket.viewQuery("genericMeta", "uniqueUserNames",{key:data.id.toUpperCase()}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInMasterBucket(query,function(res){
+	var stale=ViewQuery.Update.BEFORE;
+	if(data.stale && data.stale=="NONE"){
+		stale=ViewQuery.Update.NONE;
+	}
+	var query = ViewQuery.from("genericMeta", "uniqueUserNames").key(data.id.toUpperCase()).stale(stale);
+	CouchBaseUtil.executeViewInMasterBucket(query,function(res){
 		if(res.error || res.length==0){
 			callback({exists:false,result:res});
 		}else{
 			callback({exists:true,result:res});
 		}
-	//});
+	});
 }
 exports.checkForExistanceInSchemas=checkForExistanceInSchemas;
 
@@ -866,21 +843,20 @@ exports.checkForExistanceInSchemas=checkForExistanceInSchemas;
  * Check for existance in definiton bucket
  *
  */
-async function checkForExistanceInLandings(request,callback){
+function checkForExistanceInLandings(request,callback){
 	var data=urlParser.getRequestBody(request);
-	// var stale=ViewQuery.Update.BEFORE;
-	// if(data.stale && data.stale=="NONE"){
-	// 	stale=ViewQuery.Update.NONE;
-	// }
-	//var query = ViewQuery.from("definitions", "uniqueUserNames").key(data.id.toUpperCase()).stale(stale);
-	var res=await cbDefinitionBucket.viewQuery("definitions", "uniqueUserNames",{key:data.id.toUpperCase()}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInDefinitionBucket(query,function(res){
+	var stale=ViewQuery.Update.BEFORE;
+	if(data.stale && data.stale=="NONE"){
+		stale=ViewQuery.Update.NONE;
+	}
+	var query = ViewQuery.from("definitions", "uniqueUserNames").key(data.id.toUpperCase()).stale(stale);
+	CouchBaseUtil.executeViewInDefinitionBucket(query,function(res){
 		if(res.error || res.length==0){
 			callback({exists:false,result:res});
 		}else{
 			callback({exists:true,result:res});
 		}
-	//});
+	});
 }
 exports.checkForExistanceInLandings=checkForExistanceInLandings;
 
@@ -949,24 +925,23 @@ function getGroupData(request,callback){
 			continueToNext();
 		});
 	}
-	async function continueToNext(){
+	function continueToNext(){
 		if(data.esQuery){
 			executeGroupViewESQuery(data,callback);
 		}else if(data.n1ql){
 			executeGroupViewN1ql(data,callback);
 		}else{
-			//var query = ViewQuery.from(data.schema, data.viewName).key(data.key).reduce(true).group(true);
-			var data=await cbContentBucket.viewQuery(data.schema, data.viewName,{key:(data.key)},reduce(true),group(true)).catch(e=>{console.log(e);});
-			//CouchBaseUtil.executeViewInContentBucket(query,function(data){
+			var query = ViewQuery.from(data.schema, data.viewName).key(data.key).reduce(true).group(true);
+			CouchBaseUtil.executeViewInContentBucket(query,function(data){
 				callback(data);
-			//});
+			});
 		}
 	}
 }
 exports.getGroupData=getGroupData;
 
 function executeGroupViewN1ql(data,callback){
-	var qo=data.n1ql;
+	var qo=N1qlQuery.fromString(data.n1ql);
 	qo.adhoc = false;
 	CouchBaseUtil.executeN1QL(qo,data.key,function(results){
 		if(results.error){
@@ -1291,7 +1266,6 @@ function getSlugDetails(data,callback){
 								}
 							});
 						}else{
-							console.log("3");
 							CouchBaseUtil.getDocumentByIdFromDefinitionBucket("slugDefinitionWK",function(slugDefs){
 								if(slugDefs.error){
 									callback({error:"Slug defintions notFound"});
@@ -1319,12 +1293,11 @@ exports.getSlugDetails=getSlugDetails;
 
 
 
-async function getExploreUniqueUserName(request,callback){
+function getExploreUniqueUserName(request,callback){
 	var data=urlParser.getRequestBody(request);
-	//var query = ViewQuery.from("discover", "getUniqueUserName").key(data["@uniqueUserName"]).stale(ViewQuery.Update.NONE);
-	var results=await cbContentBucket.viewQuery("discover", "getUniqueUserName",{key:(data["@uniqueUserName"])}).catch(e=>{console.log(e);});
+	var query = ViewQuery.from("discover", "getUniqueUserName").key(data["@uniqueUserName"]).stale(ViewQuery.Update.NONE);
 
-	//CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
 		if(results.error  ||
 				!Array.isArray(results) ||
 				results.length==0 ||
@@ -1340,15 +1313,14 @@ async function getExploreUniqueUserName(request,callback){
 				}
 			});
 		}
-	//});
+	});
 }
 exports.getExploreUniqueUserName=getExploreUniqueUserName;
 
-async function checkUniqueUserName(request,callback){
+function checkUniqueUserName(request,callback){
 	var data=urlParser.getRequestBody(request);
-	//var query = ViewQuery.from("discover", "checkUniqueUserName").key(data.searchText).stale(ViewQuery.Update.NONE);
-	var results=await cbContentBucket.viewQuery("discover", "checkUniqueUserName",{key:data.searchText}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	var query = ViewQuery.from("discover", "checkUniqueUserName").key(data.searchText).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
 		if(results.error  ||
 				!Array.isArray(results) ||
 				results.length==0 ||
@@ -1365,7 +1337,7 @@ async function checkUniqueUserName(request,callback){
 			});
 		}
 
-	//});
+	});
 }
 exports.checkUniqueUserName=checkUniqueUserName;
 
@@ -1404,7 +1376,6 @@ exports.createOrGetGroupID=createOrGetGroupID;
 
 function setOrgSpecificValue(data,callback){
 	if(data.org && data.key && data.value){
-		console.log("4");
 		CouchBaseUtil.getDocumentByIdFromDefinitionBucket(data.org,function(result){
 			var record={};
 			if(result.value){
@@ -1428,7 +1399,6 @@ exports.setOrgSpecificValue=setOrgSpecificValue;
 
 function getOrgSpecificValue(data,callback){
 	if(data.org && data.key){
-		console.log("5");
 		CouchBaseUtil.getDocumentByIdFromDefinitionBucket(data.org,function(result){
 			if(result.error){
 				callback({error:"Not Found"});
@@ -1459,15 +1429,13 @@ function setOrgSpecificValuesForAllRelatedRecords(data,callback){
 			callback(rootRecResult);
 		}else{
 			var rootRec=rootRecResult.value;
-			console.log("6");
-			CouchBaseUtil.getDocumentByIdFromDefinitionBucket(rootRec.org,async function(orgMappingResult){
+			CouchBaseUtil.getDocumentByIdFromDefinitionBucket(rootRec.org,function(orgMappingResult){
 				if(orgMappingResult.error){
 					callback(orgMappingResult);
 				}else{
 					var orgMappings=orgMappingResult.value;
-					//var relatedRecsQuery = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName]).reduce(false).stale(ViewQuery.Update.BEFORE);
-					var relatedRecordsIdsRes=await cbContentBucket.viewQuery("relation","getRelated",{key:[data.recordId,data.relationName]},reduce(false)).catch(e=>{console.log(e);});
-					//CouchBaseUtil.executeViewInContentBucket(relatedRecsQuery,function(relatedRecordsIdsRes){
+					var relatedRecsQuery = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName]).reduce(false).stale(ViewQuery.Update.BEFORE);
+					CouchBaseUtil.executeViewInContentBucket(relatedRecsQuery,function(relatedRecordsIdsRes){
 						if(relatedRecordsIdsRes.error){
 							callback(relatedRecordsIdsRes);
 						}else{
@@ -1494,7 +1462,7 @@ function setOrgSpecificValuesForAllRelatedRecords(data,callback){
 								}
 							}
 						}
-					//});
+					});
 				}
 			});
 		}
@@ -1564,7 +1532,7 @@ exports.getShortDetails=getShortDetails;
 */
 
 function getSpecList(schema,data,callback){
-	var query="SELECT * from records where docType=$1 AND lower(name)=$2 and org=$3";
+	var query=N1qlQuery.fromString("SELECT * from records where docType=$1 AND lower(name)=$2 and org=$3");
 	CouchBaseUtil.executeN1QL(query,["SpecList",data.SpecList?data.SpecList.trim().toLowerCase():"",data.org],function(specSearchRes){
 	if(specSearchRes.error){callback(specSearchRes);return;}
 	if(specSearchRes.length>0){
@@ -1605,7 +1573,7 @@ function getSpecList(schema,data,callback){
 }
 
 function getSpecListProductCategory(schema,data,callback){
-	var query="SELECT * from records where docType=$1 AND lower(comment)=$2 and org=$3";
+	var query=N1qlQuery.fromString("SELECT * from records where docType=$1 AND lower(comment)=$2 and org=$3");
 	CouchBaseUtil.executeN1QL(query,["SpecListProductCategory",data.comment?data.comment.trim().toLowerCase():"",data.org],function(specSearchRes){
 	if(specSearchRes.error){callback(specSearchRes);return;}
 	if(specSearchRes.length>0){
@@ -1879,7 +1847,7 @@ function getMfrReports(body,callback){
 	}else{
 			query+=(" OFFSET "+(body.skip?body.skip*1:"0")+" LIMIT "+(body.limit?((body.limit*1)+1):"10"));
 	}
-	var query1=query;
+	var query1=N1qlQuery.fromString(query);
 	query1.adhoc = false;
 	CouchBaseUtil.executeN1QL(query1,["SpecListProductCategory",body.filters?body.filters.ProductCategory:[],body.filters?body.filters.org:[]],function(response){
 		var allReports=[];

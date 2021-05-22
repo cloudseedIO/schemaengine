@@ -1,6 +1,6 @@
 var Job = require('./Job').Job;
 var fs = require('fs');
-var RecordDataProcessor = require('./RecordDataProcessor.js');
+//var RecordDataProcessor = require('./RecordDataProcessor.js');
 
 var Scraper = function (options) {
 	console.log('options: '+Object.keys(options));
@@ -237,7 +237,7 @@ Scraper.prototype = {
 					}else if ((records.length==1 || records[0]) && records[0].sourceUrl) {
 						
 						console.log("postprocessing");					
-						RecordDataProcessor.processRecord(self.postProcessorJson, records, function(processedRec, res, reason){
+						/*RecordDataProcessor.processRecord(self.postProcessorJson, records, function(processedRec, res, reason){
 							if(res){
 								console.log("record saved with id: "+(processedRec.recordId));
 								self.queue.currentJob=false;
@@ -259,8 +259,8 @@ Scraper.prototype = {
 								console.log("run not defined");
 								self.executionCallback();
 							}
-						});
-						
+						});*/
+						self.executionCallback();
 						
 					}else{
 						if(self._run){

@@ -5,18 +5,18 @@ var couchbase = require('couchbase');
 var reactConfig=require('../../config/ReactConfig');
 var logger = require('../services/logseed').logseed;
 config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});  //config.cbAddress+":"+config.cbPort
+var cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});  //config.cbAddress+":"+config.cbPort
 //cluster.authenticate(config.cbUsername, config.cbPassword);
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
 
-var cbMasterBucket=cluster.bucket("schemas");
-var cbContentBucket=cluster.bucket("records");
-var cbDefinitionBucket=cluster.bucket("definitions");
-var cbKeywordBucket=cluster.bucket("keywords");
-var cbMessagesBucket=cluster.bucket("messages");
-var cbSitemapsBucket=cluster.bucket("sitemaps");
-var cbAuditBucket=cluster.bucket("audit");
+var cbMasterBucket=cluster.bucket(config.cbMasterBucket);
+var cbContentBucket=cluster.bucket(config.cbContentBucket);
+var cbDefinitionBucket=cluster.bucket(config.cbDefinitionBucket);
+var cbKeywordBucket=cluster.bucket(config.cbKeywordBucket);
+var cbMessagesBucket=cluster.bucket(config.cbMessagesBucket?config.cbMessagesBucket:"messages");
+var cbSitemapsBucket=cluster.bucket(config.cbSitemapsBucket);
+var cbAuditBucket=cluster.bucket(config.cbAuditBucket);
 
 var cbContentCollection=cbContentBucket.defaultCollection();
 var cbMasterCollection=cbMasterBucket.defaultCollection();
@@ -25,84 +25,10 @@ var cbKeywordCollection=cbKeywordBucket.defaultCollection();
 var cbMessageCollection=cbMessagesBucket.defaultCollection();
 var cbSitemapsCollection=cbSitemapsBucket.defaultCollection();
 var cbAuditCollection=cbAuditBucket.defaultCollection();
-//localhost password
-var pass={
-	audit:"e881649fcbae933f8dae41b6fd86e739",
-	definitions:"b0697e1af45877710fad15b03203032b",
-	keywords:"2fd261738a2cc22d3a47ae2deae52fd8",
-	messages:"f68db1c7b58f66f13aa0b10504ec037b",
-	records:"35fe1b5a84cde63991d5fa2e5e394a9f",
-	schemas:"c2642ecf0de4f3add20e74cc7570afea",
-	sessions:"eb586c9c77a615760b135e67c38b0c9c",
-	sitemaps:"1c8d12697ad0da93f28e861824097155",
-	};
-
-	// var pass={
-	// 	audit:"05972f7d6c09428b0468d18b87c8e9b9",
-	// 	definitions:"948c9face62b5960b00e5a222052ad71",
-	// 	keywords:"fd9aa626ecf39e313c7346f96223ca09",
-	// 	messages:"5500e2ce09a82997a016e5a07a7289b2",
-	// 	records:"e2c83a5440bda099f0e17a299670d0b5",
-	// 	schemas:"ad712ccaeb7747c9774bbf983ec03f8b",
-	// 	sessions:"5c16b79518a18e7bf573a9569dbd989d",
-	// 	sitemaps:"2c5bd8b2f7eb3bbf6e67ff90981138c8",
-	// 	};
-
-//setTimeout(function(){
-	cbContentBucket=cluster.bucket(cbContentBucket, function(err) {
-		if (err) {
-			logger.error({"error":"while connecting to bucket "+cbContentBucket});
-		}
-	});
-	cbMasterBucket=cluster.bucket(cbMasterBucket, function(err) {
-		if (err) {
-			logger.error({"error":"while connecting to bucket "+cbMasterBucket});
-		}
-	});
-	cbDefinitionBucket=cluster.bucket(cbDefinitionBucket, function(err) {
-		if (err) {
-			logger.error({"error":"while connecting to bucket "+cbDefinitionBucket});
-		}
-	});
-	cbKeywordBucket=cluster.bucket(cbKeywordBucket, function(err) {
-		if (err) {
-			logger.error({"error":"while connecting to bucket "+cbKeywordBucket});
-		}
-	});
-	cbAuditBucket=cluster.bucket(cbAuditBucket, function(err) {
-		if (err) {
-			logger.error({"error":"while connecting to bucket "+cbAuditBucket});
-		}
-	});
-	cbMessagesBucket=cluster.bucket(cbMessagesBucket?cbMessagesBucket:"messages", function(err) {
-		if (err) {
-			logger.error({"error":"while connecting to bucket "+(cbMessagesBucket?cbMessagesBucket:"messages")});
-		}
-	});
-	// cbKeywordBucket.setTranscoder(function(value) {
-	// 	return {
-	// 		value: new Buffer(JSON.stringify(value), 'utf8'),
-	// 		flags: 0
-	// 	};
-	// }, function(doc) {
-	// 	return JSON.parse(doc.value.toString('utf8'));
-	// });
-	cbSitemapsBucket=cluster.bucket(cbSitemapsBucket, function(err) {
-		if (err) {
-			logger.error({"error":"while connecting to bucket "+cbSitemapsBucket});
-		}
-	});
-
-//},500);
-
 
 
 function shutDown(){
 	console.log("closing couchbase bucket connections");
-	// cbContentBucket.disconnect();
-	// cbMasterBucket.disconnect();
-	// cbDefinitionBucket.disconnect();
-	// cbKeywordBucket.disconnect();
 	cluster.close();
 }
 exports.shutDown=shutDown;
@@ -117,21 +43,20 @@ exports.shutDown=shutDown;
  * 
  * getting the doc Id from the content bucket
  */
-function getDocumentByIdFromContentBucket(docId,callback){
+async function getDocumentByIdFromContentBucket(docId,callback){
 	if(!docId){
 		if(typeof callback=="function")
 			callback({"error":"no Doc Id"});
 		  return;
 	}
-	  cbContentCollection.get(docId,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-			 callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbContentBucket});
-			  return;
-		  }
-		  if(typeof callback=="function")
+	try{
+		const result = await cbContentCollection.get(docId);
+		if(typeof callback=="function")
 		  callback(result);
-	  });
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbContentBucket});
+	}
 }
 exports.getDocumentByIdFromContentBucket=getDocumentByIdFromContentBucket;
 /**
@@ -141,46 +66,42 @@ exports.getDocumentByIdFromContentBucket=getDocumentByIdFromContentBucket;
  * 
  * getting the doc from the master bucket
  */
-function getDocumentByIdFromMasterBucket(docId,callback){
+async function getDocumentByIdFromMasterBucket(docId,callback){
 	if(!docId){
 		if(typeof callback=="function")
 		callback({"error":"no Doc Id"});
 		  return;
 	}
-	cbMasterCollection.get(docId,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-			callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
-			  return;
-		  }
-		  if(typeof callback=="function")
+	try{
+		const result = await cbMasterCollection.get(docId);
+		if(typeof callback=="function")
 		  callback(result);
-	  });
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
+	}
 }
-exports.getDocumentByIdFromMasterBucket=getDocumentByIdFromMasterBucket;
-
-/**
+exports.getDocumentByIdFromMasterBucket=getDocumentByIdFromMasterBucket;/**
  * 
  * @param docId
  * @param callback
  * 
  * getting the doc from the master bucket
  */
-function getDocumentByIdFromMessagesBucket(docId,callback){
+async function getDocumentByIdFromMessagesBucket(docId,callback){
 	if(!docId){
 		if(typeof callback=="function")
 		callback({"error":"no Doc Id"});
 		  return;
 	}
-	cbMessagesCollection.get(docId,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-			callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMessagesBucket});
-			  return;
-		  }
-		  if(typeof callback=="function")
+	try{
+		const result = await cbMessageCollection.get(docId);
+		if(typeof callback=="function")
 		  callback(result);
-	  });
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMessagesBucket});
+	}
 }
 exports.getDocumentByIdFromMessagesBucket=getDocumentByIdFromMessagesBucket;
 
@@ -191,42 +112,40 @@ exports.getDocumentByIdFromMessagesBucket=getDocumentByIdFromMessagesBucket;
  * 
  * getting the doc from the definition bucket
  */
- async function getDocumentByIdFromDefinitionBucket(docId,callback){
+async function getDocumentByIdFromDefinitionBucket(docId,callback){
 	if(!docId){
 		if(typeof callback=="function")
 		callback({"error":"no Doc Id"});
 		  return;
 	}
-	await cbDefinitionCollection.get(docId,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-			callback({"error":"while getting the doc with id "+docId+"  from bucket "+cbDefinitionBucket});
-			  return;
-		  }
-		  if(typeof callback=="function")
+	try{
+		const result = await cbDefinitionCollection.get(docId);
+		if(typeof callback=="function")
 		  callback(result);
-	  }).catch(e=>{console.log("erorrrrr",e);});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
+	}
 }
 exports.getDocumentByIdFromDefinitionBucket=getDocumentByIdFromDefinitionBucket;
 
 
 
-function getDocumentsByIdsFromContentBucket(docIds,callback){
+async function getDocumentsByIdsFromContentBucket(docIds,callback){
 	if(docIds.length==0 || !Array.isArray(docIds)){
 		if(typeof callback=="function")
 		callback({});
 		return;
 	}
 	try{
-	cbContentBucket.getMulti(docIds,function(err, result) {
-		  if (err && err!=1) {
-			  if(typeof callback=="function")
-				callback({"error":"while getting the docs with ids "+docIds+"  from bucket"+config.cbContentBucket});
-				  return;
-			  }
-		  if(typeof callback=="function")
+		try{
+			const result = await cbContentCollection.getMulti(docIds);
+			if(typeof callback=="function")
 			  callback(result);
-		  });
+		}catch(error){
+			if(typeof callback=="function")
+			callback({"error":"while getting the docs with ids "+docIds+"  from bucket"+config.cbContentBucket});
+		}
 	}catch(err){
 		if(typeof callback=="function")
 		callback({});
@@ -237,40 +156,40 @@ exports.getDocumentsByIdsFromContentBucket=getDocumentsByIdsFromContentBucket;
 
 
 
-function getDocumentsByIdsFromMasterBucket(docIds,callback){
+async function getDocumentsByIdsFromMasterBucket(docIds,callback){
 	if(docIds.length==0){
 		if(typeof callback=="function")
 		callback({});
 		return;
 	}
-	cbMasterBucket.getMulti(docIds,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-				callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
-				  return;
-			  }
-		  if(typeof callback=="function")
-			  callback(result);
-		  });
+	
+	try{
+		const result = await cbMasterCollection.getMulti(docIds);
+		if(typeof callback=="function")
+		  callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
+	}
 }
 exports.getDocumentsByIdsFromMasterBucket=getDocumentsByIdsFromMasterBucket;
 
 
-function getDocumentsByIdsFromDefinitionBucket(docIds,callback){
+async function getDocumentsByIdsFromDefinitionBucket(docIds,callback){
 	if(docIds.length==0){
 		if(typeof callback=="function")
 		callback({});
 		return;
 	}
-	cbDefinitionBucket.getMulti(docIds,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-				callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
-				  return;
-			  }
-		  if(typeof callback=="function")
-			  callback(result);
-		  });
+	
+	try{
+		const result = await cbDefinitionCollection.getMulti(docIds);
+		if(typeof callback=="function")
+		  callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
+	}
 }
 exports.getDocumentsByIdsFromDefinitionBucket=getDocumentsByIdsFromDefinitionBucket;
 
@@ -288,16 +207,15 @@ exports.getDocumentsByIdsFromDefinitionBucket=getDocumentsByIdsFromDefinitionBuc
  * 
  * updating the doc using docId
  */
-function replaceDocumentInContentBucket(docId,doc,callback){
-	cbContentCollection.replace(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
-				return;
-			}
-			if(typeof callback=="function")
-			callback(result);
-		});
+async function replaceDocumentInContentBucket(docId,doc,callback){
+	try{
+		const result = await cbContentCollection.replace(docId,doc);
+		if(typeof callback=="function")
+		  callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
+	}
 }
 exports.replaceDocumentInContentBucket=replaceDocumentInContentBucket;
 /**
@@ -308,16 +226,15 @@ exports.replaceDocumentInContentBucket=replaceDocumentInContentBucket;
  * 
  * updating the doc using docId
  */
-function replaceDocumentInMasterBucket(docId,doc,callback){
-	cbMasterCollection.replace(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function replaceDocumentInMasterBucket(docId,doc,callback){
+	try{
+		const result = await cbMasterCollection.replace(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
+	}
 }
 exports.replaceDocumentInMasterBucket=replaceDocumentInMasterBucket;
 
@@ -329,16 +246,16 @@ exports.replaceDocumentInMasterBucket=replaceDocumentInMasterBucket;
  * 
  * updating the doc using docId
  */
-function replaceDocumentInDefinitionBucket(docId,doc,callback){
-	cbDefinitionCollection.replace(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function replaceDocumentInDefinitionBucket(docId,doc,callback){
+	try{
+		const result = await cbDefinitionCollection.replace(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
+	}
+	
 }
 exports.replaceDocumentInDefinitionBucket=replaceDocumentInDefinitionBucket;
 
@@ -366,16 +283,15 @@ exports.replaceDocumentInDefinitionBucket=replaceDocumentInDefinitionBucket;
  * updating the doc using docId
  */
 
-function upsertDocumentInContentBucket(docId,doc,callback){
-	cbContentCollection.upsert(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function upsertDocumentInContentBucket(docId,doc,callback){
+	try{
+		const result = await cbContentCollection.upsert(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
+	}
 }
 exports.upsertDocumentInContentBucket=upsertDocumentInContentBucket;
 /**
@@ -387,18 +303,15 @@ exports.upsertDocumentInContentBucket=upsertDocumentInContentBucket;
  * updating the doc using docId
  */
 
-function upsertDocumentInMasterBucket(docId,doc,callback){
-		cbMasterCollection.upsert(docId,doc,function(err, result) {
-/*function upsertDocumentInMasterBucket(docId,doc,callback,data){
-		cbMasterBucket.upsert(docId,doc,data?data:{},function(err, result) {*/
-			if (err) {
-				if(typeof callback=="function")
-					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function upsertDocumentInMasterBucket(docId,doc,callback){
+	try{
+		const result = await cbMasterCollection.upsert(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
+	}
 }
 exports.upsertDocumentInMasterBucket=upsertDocumentInMasterBucket;
 
@@ -410,16 +323,15 @@ exports.upsertDocumentInMasterBucket=upsertDocumentInMasterBucket;
  * 
  * updating the doc using docId
  */
-function upsertDocumentInDefinitionBucket(docId,doc,callback){
-		cbDefinitionCollection.upsert(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function upsertDocumentInDefinitionBucket(docId,doc,callback){
+	try{
+		const result = await cbDefinitionCollection.upsert(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
+	}
 }
 exports.upsertDocumentInDefinitionBucket=upsertDocumentInDefinitionBucket;
 
@@ -432,30 +344,28 @@ exports.upsertDocumentInDefinitionBucket=upsertDocumentInDefinitionBucket;
  * 
  * updating the doc using docId
  */
-function upsertDocumentInAuditBucket(docId,doc,callback){
-	cbAuditCollection.upsert(docId,doc,function(err, result) {
-		if (err) {
-			if(typeof callback=="function")
-				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbAuditBucket});
-			return;
-		}
+async function upsertDocumentInAuditBucket(docId,doc,callback){
+	try{
+		const result = await cbAuditCollection.upsert(docId,doc);
 		if(typeof callback=="function")
-		callback(result);
-	});
+			callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbAuditBucket});
+	}
 }
 exports.upsertDocumentInAuditBucket=upsertDocumentInAuditBucket;
 
 
-function upsertDocumentInSitemapBucket(docId,doc,callback){
-	cbSitemapsCollection.upsert(docId,doc,function(err, result) {
-		if (err) {
-			if(typeof callback=="function")
-				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbSitemapsBucket});
-			return;
-		}
+async function upsertDocumentInSitemapBucket(docId,doc,callback){
+	try{
+		const result = await cbSitemapsCollection.upsert(docId,doc);
 		if(typeof callback=="function")
-		callback(result);
-	});
+			callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbSitemapsBucket});
+	}
 }
 exports.upsertDocumentInSitemapBucket=upsertDocumentInSitemapBucket;
 
@@ -475,16 +385,15 @@ exports.upsertDocumentInSitemapBucket=upsertDocumentInSitemapBucket;
  * 
  * updating the doc using docId
  */
-function insertDocumentInContentBucket(docId,doc,callback){
-	cbContentCollection.insert(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function insertDocumentInContentBucket(docId,doc,callback){
+	try{
+		const result = await cbContentCollection.upsert(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
+	}
 }
 exports.insertDocumentInContentBucket=insertDocumentInContentBucket;
 /**
@@ -495,16 +404,15 @@ exports.insertDocumentInContentBucket=insertDocumentInContentBucket;
  * 
  * updating the doc using docId
  */
-function insertDocumentInMasterBucket(docId,doc,callback){
-		cbMasterCollection.insert(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function insertDocumentInMasterBucket(docId,doc,callback){
+	try{
+		const result = await cbMasterCollection.upsert(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
+	}
 }
 exports.insertDocumentInMasterBucket=insertDocumentInMasterBucket;
 
@@ -516,16 +424,15 @@ exports.insertDocumentInMasterBucket=insertDocumentInMasterBucket;
  * 
  * Insert the doc using docId
  */
-function insertDocumentInDefinitionBucket(docId,doc,callback){
-		cbDefinitionCollection.insert(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function insertDocumentInDefinitionBucket(docId,doc,callback){
+	try{
+		const result = await cbDefinitionCollection.insert(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
+	}
 }
 exports.insertDocumentInDefinitionBucket=insertDocumentInDefinitionBucket;
 
@@ -538,16 +445,15 @@ exports.insertDocumentInDefinitionBucket=insertDocumentInDefinitionBucket;
  * 
  * Insert the doc using docId
  */
-function insertDocumentInAuditBucket(docId,doc,callback){
-		cbAuditCollection.insert(docId,doc,function(err, result) {
-			if (err) {
-				if(typeof callback=="function")
-					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbAuditBucket});
-				return;
-			}
-			if(typeof callback=="function")
+async function insertDocumentInAuditBucket(docId,doc,callback){
+	try{
+		const result = await cbAuditCollection.insert(docId,doc);
+		if(typeof callback=="function")
 			callback(result);
-		});
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbAuditBucket});
+	}
 }
 exports.insertDocumentInAuditBucket=insertDocumentInAuditBucket;
 
@@ -565,52 +471,52 @@ exports.insertDocumentInAuditBucket=insertDocumentInAuditBucket;
  * view on the doc in ContentBucket
  * 
  */
- async function executeViewInContentBucket(query,callback){
-	// if(query.constructor == ViewQuery){
-	// 	var newKeys=[];
-	// 	var keysRemain=[];
-	// 	try{
-	// 		var keys=JSON.parse(query.options.keys);
-	// 		if(keys.length>800){
-	// 			console.log("all keys length "+keys.length);
-	// 			if(typeof callback=="function")
-	// 			callback({"error":"while executing view in "+config.cbContentBucket,"query":"Exceeded max keys length"});
-	// 			return;
-	// 		}
-	// 		if(keys.length>10){
-	// 			newKeys=keys.splice(0,10);
-	// 			query.options.keys=JSON.stringify(newKeys);
-	// 			keysRemain=keys;
-	// 			delete query.options.limit;
-	// 			delete query.options.skip;
-	// 		}
-	// 	}catch(err){
-	// 	}
-	// 	cbContentBucket.query(query, function(err, results) {
-	// 		if(err){
-	// 			logger.error({type:"ContentBucketViewQueryError",query:query,error:err});
-	// 			if(typeof callback=="function")
-	// 			callback({"error":"while executing view in "+config.cbContentBucket,"query":query});
-	// 			return;
-	// 		}
-	// 		if(keysRemain.length>0){
-	// 			query.options.keys=JSON.stringify(keysRemain);
-	// 			executeViewInContentBucket(query,function(newRes){
-	// 				if(newRes.error){
-	// 					if(typeof callback=="function")
-	// 					callback(results.concat(newRes))
-	// 				}else{
-	// 					if(typeof callback=="function")
-	// 					callback(results.concat(newRes));
-	// 				}
-	// 			})
-	// 		}else{
-	// 			if(typeof callback=="function")
-	// 			callback(results);
-	// 		}
-	// 	});	
-	// }else{
-		await cluster.query(query, function(err, results) {
+/*async function executeViewInContentBucket(query,callback){
+	if(query.constructor == ViewQuery){
+		var newKeys=[];
+		var keysRemain=[];
+		try{
+			var keys=JSON.parse(query.options.keys);
+			if(keys.length>800){
+				console.log("all keys length "+keys.length);
+				if(typeof callback=="function")
+				callback({"error":"while executing view in "+config.cbContentBucket,"query":"Exceeded max keys length"});
+				return;
+			}
+			if(keys.length>10){
+				newKeys=keys.splice(0,10);
+				query.options.keys=JSON.stringify(newKeys);
+				keysRemain=keys;
+				delete query.options.limit;
+				delete query.options.skip;
+			}
+		}catch(err){
+		}
+		cbContentBucket.query(query, function(err, results) {
+			if(err){
+				logger.error({type:"ContentBucketViewQueryError",query:query,error:err});
+				if(typeof callback=="function")
+				callback({"error":"while executing view in "+config.cbContentBucket,"query":query});
+				return;
+			}
+			if(keysRemain.length>0){
+				query.options.keys=JSON.stringify(keysRemain);
+				executeViewInContentBucket(query,function(newRes){
+					if(newRes.error){
+						if(typeof callback=="function")
+						callback(results.concat(newRes))
+					}else{
+						if(typeof callback=="function")
+						callback(results.concat(newRes));
+					}
+				})
+			}else{
+				if(typeof callback=="function")
+				callback(results);
+			}
+		});	
+	}else{
+		cbContentBucket.query(query, function(err, results) {
 			if(err){
 				logger.error({type:"ContentBucketViewQueryError",query:query,error:err});
 				if(typeof callback=="function")
@@ -621,22 +527,35 @@ exports.insertDocumentInAuditBucket=insertDocumentInAuditBucket;
 				callback(results);
 		});
 	}
-//}
-exports.executeViewInContentBucket=executeViewInContentBucket;
+}
+exports.executeViewInContentBucket=executeViewInContentBucket;*/
 
 
-/*
-function executeViewInContentBucket(query,callback){
-	cbContentBucket.query(query, function(err, results) {
-		if(err){
-			callback({"error":"while executing view in "+config.cbContentBucket,"query":query});
-			return;
+
+async function executeViewInContentBucket(dd,vn,options,callback){
+	console.log(dd)
+	console.log(vn)
+	console.log(options)
+	const viewResult = await cbContentBucket.viewQuery(
+		dd,
+		vn,
+		options,
+		function(err, results) {
+			console.log("QUERY CALLBACK")
+			console.log(err)
+			console.log(results)
+			if(err){
+				callback({"error":"while executing view in "+config.cbContentBucket,"query":dd+"->"+vn,"options":options});
+				return;
+			}
+			callback(results);
 		}
-		callback(results);
-	});	
+	  )
+	  console.log("VIEWRESUL")
+	  console.log(viewResult)
 }
 exports.executeViewInContentBucket=executeViewInContentBucket;
-*/
+
 /**
  * 
  * @param query
@@ -644,30 +563,19 @@ exports.executeViewInContentBucket=executeViewInContentBucket;
  * view on the doc in Master Bucket
  * 
  */
-// async function executeViewInMasterBucket(query,callback){
-// 	var result=await cluster.query(query, function(err, results) {
-// 		console.log(err);
-// 		console.log(results);
-// 		if(err){
-// 			if(typeof callback=="function")
-// 			callback({"error":"while executing view in "+config.cbMasterBucket,"query":query});
-// 			return;
-// 		}
-// 		if(typeof callback=="function")
-// 		callback(results);
-// 	});	
-// }
-
-function executeViewInMasterBucket(query,callback){
-	cluster.query(query, function(err, results) {
-		if(err){
-			if(typeof callback=="function")
-			callback({"error":"while executing view in "+config.cbMasterBucket,"query":query});
-			return;
+async function executeViewInMasterBucket(dd,vn,options,callback){
+	const viewResult = await cbMasterBucket.viewQuery(
+		dd,
+		vn,
+		options,
+		function(err, results) {
+			if(err){
+				callback({"error":"while executing view in "+config.cbMasterBucket,"query":dd+"->"+vn,"options":options});
+				return;
+			}
+			callback(results);
 		}
-		if(typeof callback=="function")
-		callback(results);
-	});	
+	  )
 }
 exports.executeViewInMasterBucket=executeViewInMasterBucket;
 
@@ -679,16 +587,19 @@ exports.executeViewInMasterBucket=executeViewInMasterBucket;
  * view on the doc in Definition Bucket
  * 
  */
-function executeViewInDefinitionBucket(query,callback){
-	cluster.query(query, function(err, results) {
-		if(err){
-			if(typeof callback=="function")
-			callback({"error":"while executing view in "+config.cbDefinitionBucket,"query":query});
-			return;
+async function executeViewInDefinitionBucket(dd,vn,options,callback){
+	const viewResult = await cbDefinitionBucket.viewQuery(
+		dd,
+		vn,
+		options,
+		function(err, results) {
+			if(err){
+				callback({"error":"while executing view in "+config.cbDefinitionBucket,"query":dd+"->"+vn,"options":options});
+				return;
+			}
+			callback(results);
 		}
-		if(typeof callback=="function")
-		callback(results);
-	});	
+	  )
 }
 exports.executeViewInDefinitionBucket=executeViewInDefinitionBucket;
 
@@ -706,16 +617,19 @@ exports.executeViewInDefinitionBucket=executeViewInDefinitionBucket;
  * view on the doc in Definition Bucket
  * 
  */
-function executeViewInMessagesBucket(query,callback){
-	cluster.query(query, function(err, results) {
-		if(err){
-			if(typeof callback=="function")
-			callback({"error":"while executing view in "+config.cbMessagesBucket,"query":query});
-			return;
+async function executeViewInMessagesBucket(query,callback){
+	const viewResult = await cbMessagesBucket.viewQuery(
+		dd,
+		vn,
+		options,
+		function(err, results) {
+			if(err){
+				callback({"error":"while executing view in "+config.cbMessagesBucket,"query":dd+"->"+vn,"options":options});
+				return;
+			}
+			callback(results);
 		}
-		if(typeof callback=="function")
-		callback(results);
-	});	
+	  )
 }
 exports.executeViewInMessagesBucket=executeViewInMessagesBucket;
 
@@ -730,16 +644,19 @@ exports.executeViewInMessagesBucket=executeViewInMessagesBucket;
  * view on the doc in Sitemaps Bucket
  * 
  */
-function executeViewInSitemapsBucket(query,callback){
-	cluster.query(query, function(err, results) {
-		if(err){
-			if(typeof callback=="function")
-			callback({"error":"while executing view in "+config.cbSitemapsBucket,"query":query});
-			return;
+async function executeViewInSitemapsBucket(query,callback){
+	const viewResult = await cbSitemapsBucket.viewQuery(
+		dd,
+		vn,
+		options,
+		function(err, results) {
+			if(err){
+				callback({"error":"while executing view in "+config.cbSitemapsBucket,"query":dd+"->"+vn,"options":options});
+				return;
+			}
+			callback(results);
 		}
-		if(typeof callback=="function")
-		callback(results);
-	});	
+	  )
 }
 exports.executeViewInSitemapsBucket=executeViewInSitemapsBucket;
 
@@ -752,44 +669,41 @@ exports.executeViewInSitemapsBucket=executeViewInSitemapsBucket;
 
 
 
-function removeDocumentByIdFromMasterBucket(docId,callback){
-	cbMasterCollection.remove(docId,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-			callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
-			  return;
-		  }
-		  if(typeof callback=="function")
-		  callback(result);
-	  });
+async function removeDocumentByIdFromMasterBucket(docId,callback){
+	try{
+		const result = await cbMasterCollection.remove(docId);
+		if(typeof callback=="function")
+			callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
+	}
 }
 exports.removeDocumentByIdFromMasterBucket=removeDocumentByIdFromMasterBucket;
 
 
-function removeDocumentByIdFromContentBucket(docId,callback){
-	cbContentCollection.remove(docId,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-			callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbContentBucket});
-			  return;
-		  }
-		  if(typeof callback=="function")
-		  callback(result);
-	  });
+async function removeDocumentByIdFromContentBucket(docId,callback){
+	try{
+		const result = await cbContentCollection.remove(docId);
+		if(typeof callback=="function")
+			callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbContentBucket});
+	}
 }
 exports.removeDocumentByIdFromContentBucket=removeDocumentByIdFromContentBucket;
 
 
-function removeDocumentByIdFromDefinitionBucket(docId,callback){
-	cbDefinitionCollection.remove(docId,function(err, result) {
-		  if (err) {
-			  if(typeof callback=="function")
-			callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
-			  return;
-		  }
-		  if(typeof callback=="function")
-		  callback(result);
-	  });
+async function removeDocumentByIdFromDefinitionBucket(docId,callback){
+	try{
+		const result = await cbDefinitionCollection.remove(docId);
+		if(typeof callback=="function")
+			callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
+	}
 }
 exports.removeDocumentByIdFromDefinitionBucket=removeDocumentByIdFromDefinitionBucket;
 
@@ -800,19 +714,15 @@ exports.removeDocumentByIdFromDefinitionBucket=removeDocumentByIdFromDefinitionB
  * 
  */
 
-function createKeyword(keyword,callback){
-	cbKeywordCollection.upsert(keyword, keyword , function(err, res) {
-		if (err) {
-			console.log('operation failed', err);
-			if(typeof callback=="function"){
-				callback({error:"failed to upsert"});
-			}
-			return;
-		}
-		if(typeof callback=="function"){
-			callback({success:keyword});
-		}
-	});
+async function createKeyword(keyword,callback){
+	try{
+		const result = await cbKeywordCollection.upsert(docId);
+		if(typeof callback=="function")
+			callback(result);
+	}catch(error){
+		if(typeof callback=="function")
+		callback({error:"failed to upsert"});
+	}
 }
 exports.createKeyword=createKeyword;
 
@@ -823,31 +733,33 @@ async function getKeywords(srchkey,callback){
 		startKey=srchkey;
 		endKey=srchkey+"z";
 	}
-	var results = await cbKeywordBucket.viewQuery("keywords","getKeywords",{range:[startKey,endKey]},limit(10)).catch(e=>{console.log(e);});
-	// cluster.query(query, function(err, results) {
-		if(result.err){
-			callback({"error":"while executing view in "+config.cbMasterBucket,"query":query});
-			return;
+	const viewResult = await cbSitemapsBucket.viewQuery(
+		"keywords",
+		"getKeywords",
+		{idRange:{start:startKey,end:endKey},limit:10},
+		function(err, results) {
+			if(err){
+				callback({"error":"while executing view in "+config.cbKeywordBucket,"query":dd+"->"+vn,"options":options});
+				return;
+			}
+			callback(results);
 		}
-	// 	if(typeof callback=="function")
-	 	callback(results);
-	// });	
-	//return viewResult;
+	  )
 }
 exports.getKeywords=getKeywords;
 
-function executeN1QLInAuditBucket(query,params,callback){
+async function executeN1QLInAuditBucket(query,params,callback){
 	executeN1QL(query,params,callback);
 }
 exports.executeN1QLInAuditBucket=executeN1QLInAuditBucket;
 
-function executeN1QLInContentBucket(query,params,callback){
+async function executeN1QLInContentBucket(query,params,callback){
 	executeN1QL(query,params,callback);
 }
 exports.executeN1QLInContentBucket=executeN1QLInContentBucket;
 
-function executeN1QL(query,params,callback){
-	cluster.query(query, params,function(err, results) {
+async function executeN1QL(query,params,callback){
+	await cluster.query(query, params,function(err, results) {
 		if(err){
 			logger.error({type:"N1QLQueryError",error:err});
 			if(typeof callback=="function")

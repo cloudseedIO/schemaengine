@@ -21,13 +21,13 @@ function getConfigDetails(hostname){
 exports.getConfigDetails=getConfigDetails;
 //Get Config details by hostid
 function getConfigByHostId(hostId){
-	var config1={};
+	var config={};
 	for(var hostname in configDetails){
 		if(configDetails[hostname].cloudPointHostId==hostId){
-			config1=configDetails[hostname];
+			config=configDetails[hostname];
 		}
 	}
-	return config1;
+	return config;
 }
 exports.getConfigByHostId=getConfigByHostId;
 
@@ -61,7 +61,7 @@ setTimeout(function(){
 				if(index<allHosts.length){
 					iterate(index);
 				}else{
-					console.log("Got All configs");
+					console.log("Got All configs")
 				}
 			});
 		}
@@ -122,7 +122,7 @@ exports.prepareUnloggedUserSessionObject=prepareUnloggedUserSessionObject;
  */
 function getCloudPointConfig(hostname,callback,forceUpdate){
 	if(typeof configDetails[hostname]=="undefined" || typeof forceUpdate=="string"){
-		console.log("Processing "+hostname);
+		console.log("Processing  "+hostname);
 		console.log("getting cloud point config "+hostsAndConfigIds[hostname]);
 		var pr=new Date();
 		 

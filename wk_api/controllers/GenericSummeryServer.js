@@ -187,7 +187,7 @@ function getSchemaRecordsN1ql(data,callback){
 		}
 	}
     
-    var orgSecurity=true;
+    var orgSecurity=true
 	if(schema["@security"]  && schema["@security"]["recordLevel"]){
 		if(schema["@security"]["recordLevel"].view=="all" ||
 				schema["@security"]["recordLevel"].view=="public" ||
@@ -381,7 +381,7 @@ function getSchemaRecordsN1ql(data,callback){
 		console.log(queryString);
 		console.log("==================================");
 	}
-	var query=queryString;
+	var query=N1qlQuery.fromString(queryString)
 	query.adhoc = false;
 	CouchBaseUtil.executeViewInContentBucket(query,function(results){
 		if(results.error){
@@ -548,7 +548,7 @@ function getApplicableFilters(data,callback){
 					console.log(queryString);
 					console.log("=====================================");
 				}
-				var query=queryString;
+				var query=N1qlQuery.fromString(queryString);
 				query.adhoc = false;
 				CouchBaseUtil.executeN1QL(query,[],function(response){
 					var tempRes=[];
@@ -1109,7 +1109,7 @@ function getSchemaRecords(data,callback){
 	if(!data.userId){
 		data.userId="CommonUser";
 	}
-	utility.getMainSchema(data,async function(schema){
+	utility.getMainSchema(data,function(schema){
 		if(schema.error){callback(schema);return;}
 		if(schema.cloudPointHostId==undefined ||
 				data.cloudPointHostId==undefined ||
@@ -1124,6 +1124,9 @@ function getSchemaRecords(data,callback){
 			return;
 		}
 		getSchemaRecordsN1ql(data,callback);return;
+		
+		
+		
 		
 		
 		if(!data.viewName){
@@ -1241,11 +1244,9 @@ function getSchemaRecords(data,callback){
 		}else if(keysLength==2){
 			getSchemaRecordsByOneFilters(data,callback);
 		}else if(keysLength==1){
-			//var query = ViewQuery.from(data.schema, data.viewName).key([data.viewFirstKey]);
-			var query=await cbMasterBucket.viewQuery(data.schema, data.viewName,{key:[data.viewFirstKey]});
+			var query = ViewQuery.from(data.schema, data.viewName).key([data.viewFirstKey]);
 			if(data.searchKey){
-				//query = ViewQuery.from(data.schema,data.viewName).range([data.searchKey],[data.searchEndKey]);
-				query=await cbMasterBucket.viewQuery(data.schema,data.viewName,{range:[data.searchKey,data.searchEndKey]});
+				query = ViewQuery.from(data.schema,data.viewName).range([data.searchKey],[data.searchEndKey]);
 			}
 			readyToSendResults(query,[],data,callback);		
 		}
@@ -1264,17 +1265,15 @@ exports.getSchemaRecords=getSchemaRecords;
  * @param callback
  *            userId org schema(doc) skip filters
  */
-async function getSchemaRecordsBySevenFilters(data,callback) {
+function getSchemaRecordsBySevenFilters(data,callback) {
 	var queries=[];
 	var schema=data.schemaRecord;
 	var designDoc=schema["@id"];
 	var viewName=data.viewName;
 	var allFilters=data.allFilters;
 	
-	// var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
-	// 													 [data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey]);
-	var query=await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
-															 [data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey])});
+	var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
+														 [data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey]);
 	
 	if(data.filters){
 		if(data.filters[allFilters[0]].length==0 && 
@@ -1284,10 +1283,8 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 				data.filters[allFilters[4]].length==0 && 
 				data.filters[allFilters[5]].length==0 && 
 				data.filters[allFilters[6]].length==0 && !data.searchKey){
-			// query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
-			// 												 [data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey]);
-			query=await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
-																 [data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey])});
+			query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
+															 [data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey]);
 			
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
@@ -1298,19 +1295,12 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 				data.filters[allFilters[5]].length==0 && 
 				data.filters[allFilters[6]].length==0 ){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
-				// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-				//                                                        data.filters[allFilters[0]][i],
-				//                                                        null,null,null,null,null,data.searchKey],
-				// 														[data.viewFirstKey,
-				// 														 data.filters[allFilters[0]][i],
-				// 														 "z","z","z","z","z",data.searchEndKey]));
-
-				queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-					data.filters[allFilters[0]][i],
-					null,null,null,null,null,data.searchKey],
-					 [data.viewFirstKey,
-					  data.filters[allFilters[0]][i],
-					  "z","z","z","z","z",data.searchEndKey])}));
+				queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+				                                                       data.filters[allFilters[0]][i],
+				                                                       null,null,null,null,null,data.searchKey],
+																		[data.viewFirstKey,
+																		 data.filters[allFilters[0]][i],
+																		 "z","z","z","z","z",data.searchEndKey]));
 			}	
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
@@ -1323,38 +1313,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
 					
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-					// 	                                                       data.filters[allFilters[0]][i],
-					// 	                                                       data.filters[allFilters[1]][j],
-					// 	                                                       null,
-					// 	                                                       null,
-					// 	                                                       null,
-					// 	                                                       null,
-					// 	                                                       data.searchKey],
-					// 	                                                       [data.viewFirstKey,
-					// 	                                                        data.filters[allFilters[0]][i],
-					// 	                                                        data.filters[allFilters[1]][j],
-					// 	                                                        "z",
-					// 	                                                        "z",
-					// 	                                                        "z",
-					// 	                                                        "z",
-					// 	                                                        data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-						data.filters[allFilters[0]][i],
-						data.filters[allFilters[1]][j],
-						null,
-						null,
-						null,
-						null,
-						data.searchKey],
-						[data.viewFirstKey,
-						 data.filters[allFilters[0]][i],
-						 data.filters[allFilters[1]][j],
-						 "z",
-						 "z",
-						 "z",
-						 "z",
-						 data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+						                                                       data.filters[allFilters[0]][i],
+						                                                       data.filters[allFilters[1]][j],
+						                                                       null,
+						                                                       null,
+						                                                       null,
+						                                                       null,
+						                                                       data.searchKey],
+						                                                       [data.viewFirstKey,
+						                                                        data.filters[allFilters[0]][i],
+						                                                        data.filters[allFilters[1]][j],
+						                                                        "z",
+						                                                        "z",
+						                                                        "z",
+						                                                        "z",
+						                                                        data.searchEndKey]));
 				}
 			}
 			readyToSendResults(query,queries,data,callback)
@@ -1369,39 +1343,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
 					for(var k=0;k<data.filters[allFilters[2]].length;k++){
 						
-							// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-							//                                                        data.filters[allFilters[0]][i],
-							//                                                        data.filters[allFilters[1]][j],
-							//                                                        data.filters[allFilters[2]][k],
-							//                                                        null,
-							//                                                        null,
-							//                                                        null,
-							//                                                        data.searchKey],
-							//                                                        [data.viewFirstKey,
-							//                                                         data.filters[allFilters[0]][i],
-							//                                                         data.filters[allFilters[1]][j],
-							//                                                         data.filters[allFilters[2]][k],
-							//                                                         "z",
-							//                                                         "z",
-							//                                                         "z",
-							//                                                         data.searchEndKey]));
-
-							queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-								data.filters[allFilters[0]][i],
-								data.filters[allFilters[1]][j],
-								data.filters[allFilters[2]][k],
-								null,
-								null,
-								null,
-								data.searchKey],
-								[data.viewFirstKey,
-								 data.filters[allFilters[0]][i],
-								 data.filters[allFilters[1]][j],
-								 data.filters[allFilters[2]][k],
-								 "z",
-								 "z",
-								 "z",
-								 data.searchEndKey])}));
+							queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+							                                                       data.filters[allFilters[0]][i],
+							                                                       data.filters[allFilters[1]][j],
+							                                                       data.filters[allFilters[2]][k],
+							                                                       null,
+							                                                       null,
+							                                                       null,
+							                                                       data.searchKey],
+							                                                       [data.viewFirstKey,
+							                                                        data.filters[allFilters[0]][i],
+							                                                        data.filters[allFilters[1]][j],
+							                                                        data.filters[allFilters[2]][k],
+							                                                        "z",
+							                                                        "z",
+							                                                        "z",
+							                                                        data.searchEndKey]));
 					}
 				}
 			}
@@ -1418,39 +1375,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 					for(var k=0;k<data.filters[allFilters[2]].length;k++){
 						for(var l=0;l<data.filters[allFilters[3]].length;l++){
 							
-								// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-								//                                                        data.filters[allFilters[0]][i],
-								//                                                        data.filters[allFilters[1]][j],
-								//                                                        data.filters[allFilters[2]][k],
-								//                                                        data.filters[allFilters[3]][l],
-								//                                                        null,
-								//                                                        null,
-								//                                                        data.searchKey],
-								//                                                        [data.viewFirstKey,
-								//                                                         data.filters[allFilters[0]][i],
-								//                                                         data.filters[allFilters[1]][j],
-								//                                                         data.filters[allFilters[2]][k],
-								//                                                         data.filters[allFilters[3]][l],
-								//                                                         "z",
-								//                                                         "z",
-								//                                                         data.searchEndKey]));
-
-								queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-									data.filters[allFilters[0]][i],
-									data.filters[allFilters[1]][j],
-									data.filters[allFilters[2]][k],
-									data.filters[allFilters[3]][l],
-									null,
-									null,
-									data.searchKey],
-									[data.viewFirstKey,
-									 data.filters[allFilters[0]][i],
-									 data.filters[allFilters[1]][j],
-									 data.filters[allFilters[2]][k],
-									 data.filters[allFilters[3]][l],
-									 "z",
-									 "z",
-									 data.searchEndKey])}));
+								queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+								                                                       data.filters[allFilters[0]][i],
+								                                                       data.filters[allFilters[1]][j],
+								                                                       data.filters[allFilters[2]][k],
+								                                                       data.filters[allFilters[3]][l],
+								                                                       null,
+								                                                       null,
+								                                                       data.searchKey],
+								                                                       [data.viewFirstKey,
+								                                                        data.filters[allFilters[0]][i],
+								                                                        data.filters[allFilters[1]][j],
+								                                                        data.filters[allFilters[2]][k],
+								                                                        data.filters[allFilters[3]][l],
+								                                                        "z",
+								                                                        "z",
+								                                                        data.searchEndKey]));
 						}
 					}
 				}
@@ -1469,39 +1409,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 						for(var l=0;l<data.filters[allFilters[3]].length;l++){
 							for(var m=0;m<data.filters[allFilters[4]].length;m++){
 							
-								// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-								//                                                        data.filters[allFilters[0]][i],
-								//                                                        data.filters[allFilters[1]][j],
-								//                                                        data.filters[allFilters[2]][k],
-								//                                                        data.filters[allFilters[3]][l],
-								//                                                        data.filters[allFilters[4]][m],
-								//                                                        null,
-								//                                                        data.searchKey],
-								//                                                        [data.viewFirstKey,
-								//                                                         data.filters[allFilters[0]][i],
-								//                                                         data.filters[allFilters[1]][j],
-								//                                                         data.filters[allFilters[2]][k],
-								//                                                         data.filters[allFilters[3]][l],
-								//                                                         data.filters[allFilters[4]][m],
-								//                                                         "z",
-								//                                                         data.searchEndKey]));
-
-								queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-									data.filters[allFilters[0]][i],
-									data.filters[allFilters[1]][j],
-									data.filters[allFilters[2]][k],
-									data.filters[allFilters[3]][l],
-									data.filters[allFilters[4]][m],
-									null,
-									data.searchKey],
-									[data.viewFirstKey,
-									 data.filters[allFilters[0]][i],
-									 data.filters[allFilters[1]][j],
-									 data.filters[allFilters[2]][k],
-									 data.filters[allFilters[3]][l],
-									 data.filters[allFilters[4]][m],
-									 "z",
-									 data.searchEndKey])}));
+								queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+								                                                       data.filters[allFilters[0]][i],
+								                                                       data.filters[allFilters[1]][j],
+								                                                       data.filters[allFilters[2]][k],
+								                                                       data.filters[allFilters[3]][l],
+								                                                       data.filters[allFilters[4]][m],
+								                                                       null,
+								                                                       data.searchKey],
+								                                                       [data.viewFirstKey,
+								                                                        data.filters[allFilters[0]][i],
+								                                                        data.filters[allFilters[1]][j],
+								                                                        data.filters[allFilters[2]][k],
+								                                                        data.filters[allFilters[3]][l],
+								                                                        data.filters[allFilters[4]][m],
+								                                                        "z",
+								                                                        data.searchEndKey]));
 							}
 						}
 					}
@@ -1522,39 +1445,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 							for(var m=0;m<data.filters[allFilters[4]].length;m++){
 								for(var n=0;n<data.filters[allFilters[5]].length;n++){
 									
-										// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-										//                                                        data.filters[allFilters[0]][i],
-										//                                                        data.filters[allFilters[1]][j],
-										//                                                        data.filters[allFilters[2]][k],
-										//                                                        data.filters[allFilters[3]][l],
-										//                                                        data.filters[allFilters[4]][m],
-										//                                                        data.filters[allFilters[5]][n],
-										//                                                        data.searchKey],
-										//                                                        [data.viewFirstKey,
-										//                                                         data.filters[allFilters[0]][i],
-										//                                                         data.filters[allFilters[1]][j],
-										//                                                         data.filters[allFilters[2]][k],
-										//                                                         data.filters[allFilters[3]][l],
-										//                                                         data.filters[allFilters[4]][m],
-										//                                                         data.filters[allFilters[5]][n],
-										//                                                         data.searchEndKey]));
-
-										queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-											data.filters[allFilters[0]][i],
-											data.filters[allFilters[1]][j],
-											data.filters[allFilters[2]][k],
-											data.filters[allFilters[3]][l],
-											data.filters[allFilters[4]][m],
-											data.filters[allFilters[5]][n],
-											data.searchKey],
-											[data.viewFirstKey,
-											 data.filters[allFilters[0]][i],
-											 data.filters[allFilters[1]][j],
-											 data.filters[allFilters[2]][k],
-											 data.filters[allFilters[3]][l],
-											 data.filters[allFilters[4]][m],
-											 data.filters[allFilters[5]][n],
-											 data.searchEndKey])}));
+										queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+										                                                       data.filters[allFilters[0]][i],
+										                                                       data.filters[allFilters[1]][j],
+										                                                       data.filters[allFilters[2]][k],
+										                                                       data.filters[allFilters[3]][l],
+										                                                       data.filters[allFilters[4]][m],
+										                                                       data.filters[allFilters[5]][n],
+										                                                       data.searchKey],
+										                                                       [data.viewFirstKey,
+										                                                        data.filters[allFilters[0]][i],
+										                                                        data.filters[allFilters[1]][j],
+										                                                        data.filters[allFilters[2]][k],
+										                                                        data.filters[allFilters[3]][l],
+										                                                        data.filters[allFilters[4]][m],
+										                                                        data.filters[allFilters[5]][n],
+										                                                        data.searchEndKey]));
 								}
 							}
 						}
@@ -1592,12 +1498,11 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 					}
 				}
 			}
-			//query = ViewQuery.from(designDoc,viewName).keys(keys);
-			query=cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+			query = ViewQuery.from(designDoc,viewName).keys(keys);
 			readyToSendResults(query,queries,data,callback)
 		}else{
 			
-			async function getActualKeys(){
+			function getActualKeys(){
 				var keys=[];
 				for(var i=0;i<data.filters[allFilters[0]].length;i++){
 					for(var j=0;j<data.filters[allFilters[1]].length;j++){
@@ -1625,11 +1530,9 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 					}
 				}
 				if(typeof data.skip!="undefined"){
-					//query = ViewQuery.from(designDoc,viewName).keys(keys).limit(limitCount).skip(data.skip);
-					query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys},{limit:limitCount},{skip:data.skip});
+					query = ViewQuery.from(designDoc,viewName).keys(keys).limit(limitCount).skip(data.skip);
 				}else{
-					//query = ViewQuery.from(designDoc,viewName).keys(keys);
-					query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+					query = ViewQuery.from(designDoc,viewName).keys(keys);
 				}
 				if(data.filters[allFilters[6]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
@@ -1639,43 +1542,24 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 									for(var m=0;m<data.filters[allFilters[4]].length;m++){
 										for(var n=0;n<data.filters[allFilters[5]].length;n++){
 											
-												// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-												//                                                        data.filters[allFilters[0]][i],
-												//                                                        data.filters[allFilters[1]][j],
-												//                                                        data.filters[allFilters[2]][k],
-												//                                                        data.filters[allFilters[3]][l],
-												//                                                        data.filters[allFilters[4]][m],
-												//                                                        data.filters[allFilters[5]][n],
+												queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+												                                                       data.filters[allFilters[0]][i],
+												                                                       data.filters[allFilters[1]][j],
+												                                                       data.filters[allFilters[2]][k],
+												                                                       data.filters[allFilters[3]][l],
+												                                                       data.filters[allFilters[4]][m],
+												                                                       data.filters[allFilters[5]][n],
 												                                                       
-												//                                                        data.searchKey],
-												//                                                        [data.viewFirstKey,
-												//                                                         data.filters[allFilters[0]][i],
-												//                                                         data.filters[allFilters[1]][j],
-												//                                                         data.filters[allFilters[2]][k],
-												//                                                         data.filters[allFilters[3]][l],
-												//                                                         data.filters[allFilters[4]][m],
-												//                                                         data.filters[allFilters[5]][n],
+												                                                       data.searchKey],
+												                                                       [data.viewFirstKey,
+												                                                        data.filters[allFilters[0]][i],
+												                                                        data.filters[allFilters[1]][j],
+												                                                        data.filters[allFilters[2]][k],
+												                                                        data.filters[allFilters[3]][l],
+												                                                        data.filters[allFilters[4]][m],
+												                                                        data.filters[allFilters[5]][n],
 												                                                        
-												//                                                         data.searchEndKey]));
-
-												queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-													data.filters[allFilters[0]][i],
-													data.filters[allFilters[1]][j],
-													data.filters[allFilters[2]][k],
-													data.filters[allFilters[3]][l],
-													data.filters[allFilters[4]][m],
-													data.filters[allFilters[5]][n],
-													
-													data.searchKey],
-													[data.viewFirstKey,
-													 data.filters[allFilters[0]][i],
-													 data.filters[allFilters[1]][j],
-													 data.filters[allFilters[2]][k],
-													 data.filters[allFilters[3]][l],
-													 data.filters[allFilters[4]][m],
-													 data.filters[allFilters[5]][n],
-													 
-													 data.searchEndKey])}));
+												                                                        data.searchEndKey]));
 										}
 									}
 								}
@@ -1690,39 +1574,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 								for(var l=0;l<data.filters[allFilters[3]].length;l++){
 									for(var m=0;m<data.filters[allFilters[4]].length;m++){
 									
-										// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-										//                                                        data.filters[allFilters[0]][i],
-										//                                                        data.filters[allFilters[1]][j],
-										//                                                        data.filters[allFilters[2]][k],
-										//                                                        data.filters[allFilters[3]][l],
-										//                                                        data.filters[allFilters[4]][m],
-										//                                                        null,
-										//                                                        data.searchKey],
-										//                                                        [data.viewFirstKey,
-										//                                                         data.filters[allFilters[0]][i],
-										//                                                         data.filters[allFilters[1]][j],
-										//                                                         data.filters[allFilters[2]][k],
-										//                                                         data.filters[allFilters[3]][l],
-										//                                                         data.filters[allFilters[4]][m],
-										//                                                         "z",
-										//                                                         data.searchEndKey]));
-
-										queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-											data.filters[allFilters[0]][i],
-											data.filters[allFilters[1]][j],
-											data.filters[allFilters[2]][k],
-											data.filters[allFilters[3]][l],
-											data.filters[allFilters[4]][m],
-											null,
-											data.searchKey],
-											[data.viewFirstKey,
-											 data.filters[allFilters[0]][i],
-											 data.filters[allFilters[1]][j],
-											 data.filters[allFilters[2]][k],
-											 data.filters[allFilters[3]][l],
-											 data.filters[allFilters[4]][m],
-											 "z",
-											 data.searchEndKey])}));
+										queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+										                                                       data.filters[allFilters[0]][i],
+										                                                       data.filters[allFilters[1]][j],
+										                                                       data.filters[allFilters[2]][k],
+										                                                       data.filters[allFilters[3]][l],
+										                                                       data.filters[allFilters[4]][m],
+										                                                       null,
+										                                                       data.searchKey],
+										                                                       [data.viewFirstKey,
+										                                                        data.filters[allFilters[0]][i],
+										                                                        data.filters[allFilters[1]][j],
+										                                                        data.filters[allFilters[2]][k],
+										                                                        data.filters[allFilters[3]][l],
+										                                                        data.filters[allFilters[4]][m],
+										                                                        "z",
+										                                                        data.searchEndKey]));
 								}
 								}
 							}
@@ -1735,39 +1602,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 							for(var k=0;k<data.filters[allFilters[2]].length;k++){
 								for(var l=0;l<data.filters[allFilters[3]].length;l++){
 									
-										// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-										//                                                        data.filters[allFilters[0]][i],
-										//                                                        data.filters[allFilters[1]][j],
-										//                                                        data.filters[allFilters[2]][k],
-										//                                                        data.filters[allFilters[3]][l],
-										//                                                        null,
-										//                                                        null,
-										//                                                        data.searchKey],
-										//                                                        [data.viewFirstKey,
-										//                                                         data.filters[allFilters[0]][i],
-										//                                                         data.filters[allFilters[1]][j],
-										//                                                         data.filters[allFilters[2]][k],
-										//                                                         data.filters[allFilters[3]][l],
-										//                                                         "z",
-										//                                                         "z",
-										//                                                         data.searchEndKey]));
-
-										queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-											data.filters[allFilters[0]][i],
-											data.filters[allFilters[1]][j],
-											data.filters[allFilters[2]][k],
-											data.filters[allFilters[3]][l],
-											null,
-											null,
-											data.searchKey],
-											[data.viewFirstKey,
-											 data.filters[allFilters[0]][i],
-											 data.filters[allFilters[1]][j],
-											 data.filters[allFilters[2]][k],
-											 data.filters[allFilters[3]][l],
-											 "z",
-											 "z",
-											 data.searchEndKey])}));
+										queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+										                                                       data.filters[allFilters[0]][i],
+										                                                       data.filters[allFilters[1]][j],
+										                                                       data.filters[allFilters[2]][k],
+										                                                       data.filters[allFilters[3]][l],
+										                                                       null,
+										                                                       null,
+										                                                       data.searchKey],
+										                                                       [data.viewFirstKey,
+										                                                        data.filters[allFilters[0]][i],
+										                                                        data.filters[allFilters[1]][j],
+										                                                        data.filters[allFilters[2]][k],
+										                                                        data.filters[allFilters[3]][l],
+										                                                        "z",
+										                                                        "z",
+										                                                        data.searchEndKey]));
 								}
 							}
 						}
@@ -1778,38 +1628,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
 							for(var k=0;k<data.filters[allFilters[2]].length;k++){
 								
-									// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-									//                                                        data.filters[allFilters[0]][i],
-									//                                                        data.filters[allFilters[1]][j],
-									//                                                        data.filters[allFilters[2]][k],
-									//                                                        null,
-									//                                                        null,
-									//                                                        null,
-									//                                                        data.searchKey],
-									//                                                        [data.viewFirstKey,
-									//                                                         data.filters[allFilters[0]][i],
-									//                                                         data.filters[allFilters[1]][j],
-									//                                                         data.filters[allFilters[2]][k],
-									//                                                         "z",
-									//                                                         "z",
-									//                                                         "z",
-									//                                                         data.searchEndKey]));
-									queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-										data.filters[allFilters[0]][i],
-										data.filters[allFilters[1]][j],
-										data.filters[allFilters[2]][k],
-										null,
-										null,
-										null,
-										data.searchKey],
-										[data.viewFirstKey,
-										 data.filters[allFilters[0]][i],
-										 data.filters[allFilters[1]][j],
-										 data.filters[allFilters[2]][k],
-										 "z",
-										 "z",
-										 "z",
-										 data.searchEndKey])}));
+									queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+									                                                       data.filters[allFilters[0]][i],
+									                                                       data.filters[allFilters[1]][j],
+									                                                       data.filters[allFilters[2]][k],
+									                                                       null,
+									                                                       null,
+									                                                       null,
+									                                                       data.searchKey],
+									                                                       [data.viewFirstKey,
+									                                                        data.filters[allFilters[0]][i],
+									                                                        data.filters[allFilters[1]][j],
+									                                                        data.filters[allFilters[2]][k],
+									                                                        "z",
+									                                                        "z",
+									                                                        "z",
+									                                                        data.searchEndKey]));
 							}
 						}
 					}
@@ -1818,38 +1652,22 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
 							
-								// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-								//                                                        data.filters[allFilters[0]][i],
-								//                                                        data.filters[allFilters[1]][j],
-								//                                                        null,
-								//                                                        null,
-								//                                                        null,
-								//                                                        null,
-								//                                                        data.searchKey],
-								//                                                        [data.viewFirstKey,
-								//                                                         data.filters[allFilters[0]][i],
-								//                                                         data.filters[allFilters[1]][j],
-								//                                                         "z",
-								//                                                         "z",
-								//                                                         "z",
-								//                                                         "z",
-								//                                                         data.searchEndKey]));
-								queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-									data.filters[allFilters[0]][i],
-									data.filters[allFilters[1]][j],
-									null,
-									null,
-									null,
-									null,
-									data.searchKey],
-									[data.viewFirstKey,
-									 data.filters[allFilters[0]][i],
-									 data.filters[allFilters[1]][j],
-									 "z",
-									 "z",
-									 "z",
-									 "z",
-									 data.searchEndKey])}));
+								queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+								                                                       data.filters[allFilters[0]][i],
+								                                                       data.filters[allFilters[1]][j],
+								                                                       null,
+								                                                       null,
+								                                                       null,
+								                                                       null,
+								                                                       data.searchKey],
+								                                                       [data.viewFirstKey,
+								                                                        data.filters[allFilters[0]][i],
+								                                                        data.filters[allFilters[1]][j],
+								                                                        "z",
+								                                                        "z",
+								                                                        "z",
+								                                                        "z",
+								                                                        data.searchEndKey]));
 						}
 					}
 				}
@@ -1857,18 +1675,14 @@ async function getSchemaRecordsBySevenFilters(data,callback) {
 				if(data.filters[allFilters[1]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						
-							// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,data.filters[allFilters[0]][i],null,null,null,null,null,data.searchKey],
-							// 													  [data.viewFirstKey,data.filters[allFilters[0]][i],"z","z","z","z","z",data.searchEndKey]));
-							queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,data.filters[allFilters[0]][i],null,null,null,null,null,data.searchKey],
-								[data.viewFirstKey,data.filters[allFilters[0]][i],"z","z","z","z","z",data.searchEndKey])}));
+							queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,data.filters[allFilters[0]][i],null,null,null,null,null,data.searchKey],
+																				  [data.viewFirstKey,data.filters[allFilters[0]][i],"z","z","z","z","z",data.searchEndKey]));
 					}
 				}
 				if(data.filters[allFilters[0]].length==0){
 					
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
-						// 													  [data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
-							[data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,null,data.searchKey],
+																			  [data.viewFirstKey,"z","z","z","z","z","z",data.searchEndKey]));
 				}
 				readyToSendResults(query,queries,data,callback)
 			}
@@ -1894,7 +1708,7 @@ exports.getSchemaRecordsBySevenFilters=getSchemaRecordsBySevenFilters;
  * @param callback
  *            userId org schema(doc) skip filters
  */
-async function getSchemaRecordsBySixFilters(data,callback) {
+function getSchemaRecordsBySixFilters(data,callback) {
 	var queries=[];
 	var schema=data.schemaRecord;
 	var designDoc=schema["@id"];
@@ -1904,10 +1718,8 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 	
 	
 	
-	// var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,data.searchKey],
-	// 													 [data.viewFirstKey,"z","z","z","z","z",data.searchEndKey]);
-	var query =await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,null,null,null,null,data.searchKey],
-		[data.viewFirstKey,"z","z","z","z","z",data.searchEndKey])});
+	var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,data.searchKey],
+														 [data.viewFirstKey,"z","z","z","z","z",data.searchEndKey]);
 	
 	if(data.filters){
 		if(data.filters[allFilters[0]].length==0 && 
@@ -1916,10 +1728,8 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 				data.filters[allFilters[3]].length==0 && 
 				data.filters[allFilters[4]].length==0 && 
 				data.filters[allFilters[5]].length==0 && !data.searchKey){
-			// query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,data.searchKey],
-			// 												[data.viewFirstKey,"z","z","z","z","z",data.searchEndKey]);
-			query =await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,null,null,null,null,data.searchKey],
-				[data.viewFirstKey,"z","z","z","z","z",data.searchEndKey])});
+			query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,data.searchKey],
+															[data.viewFirstKey,"z","z","z","z","z",data.searchEndKey]);
 			
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
@@ -1929,10 +1739,8 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 					data.filters[allFilters[4]].length==0 && 
 					data.filters[allFilters[5]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,data.filters[allFilters[0]][i],null,null,null,null,data.searchKey],
-					// 													  [data.viewFirstKey,data.filters[allFilters[0]][i],"z","z","z","z",data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,data.filters[allFilters[0]][i],null,null,null,null,data.searchKey],
-						[data.viewFirstKey,data.filters[allFilters[0]][i],"z","z","z","z",data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,data.filters[allFilters[0]][i],null,null,null,null,data.searchKey],
+																		  [data.viewFirstKey,data.filters[allFilters[0]][i],"z","z","z","z",data.searchEndKey]));
 			}	
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
@@ -1943,34 +1751,20 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 					data.filters[allFilters[5]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-						//                                                        data.filters[allFilters[0]][i],
-						//                                                        data.filters[allFilters[1]][j],
-						//                                                        null,
-						//                                                        null,
-						//                                                        null,
-						//                                                        data.searchKey],
-						//                                                        [data.viewFirstKey,
-						//                                                         data.filters[allFilters[0]][i],
-						//                                                         data.filters[allFilters[1]][j],
-						//                                                         "z",
-						//                                                         "z",
-						//                                                         "z",
-						//                                                         data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-							data.filters[allFilters[0]][i],
-							data.filters[allFilters[1]][j],
-							null,
-							null,
-							null,
-							data.searchKey],
-							[data.viewFirstKey,
-							 data.filters[allFilters[0]][i],
-							 data.filters[allFilters[1]][j],
-							 "z",
-							 "z",
-							 "z",
-							 data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+						                                                       data.filters[allFilters[0]][i],
+						                                                       data.filters[allFilters[1]][j],
+						                                                       null,
+						                                                       null,
+						                                                       null,
+						                                                       data.searchKey],
+						                                                       [data.viewFirstKey,
+						                                                        data.filters[allFilters[0]][i],
+						                                                        data.filters[allFilters[1]][j],
+						                                                        "z",
+						                                                        "z",
+						                                                        "z",
+						                                                        data.searchEndKey]));
 					
 				}
 			}
@@ -1985,34 +1779,20 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
 					for(var k=0;k<data.filters[allFilters[2]].length;k++){
 					
-							// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-							//                                                        data.filters[allFilters[0]][i],
-							//                                                        data.filters[allFilters[1]][j],
-							//                                                        data.filters[allFilters[2]][k],
-							//                                                        null,
-							//                                                        null,
-							//                                                        data.searchKey],
-							//                                                        [data.viewFirstKey,
-							//                                                         data.filters[allFilters[0]][i],
-							//                                                         data.filters[allFilters[1]][j],
-							//                                                         data.filters[allFilters[2]][k],
-							//                                                         "z",
-							//                                                         "z",
-							//                                                         data.searchEndKey]));
-							queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-								data.filters[allFilters[0]][i],
-								data.filters[allFilters[1]][j],
-								data.filters[allFilters[2]][k],
-								null,
-								null,
-								data.searchKey],
-								[data.viewFirstKey,
-								 data.filters[allFilters[0]][i],
-								 data.filters[allFilters[1]][j],
-								 data.filters[allFilters[2]][k],
-								 "z",
-								 "z",
-								 data.searchEndKey])}));
+							queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+							                                                       data.filters[allFilters[0]][i],
+							                                                       data.filters[allFilters[1]][j],
+							                                                       data.filters[allFilters[2]][k],
+							                                                       null,
+							                                                       null,
+							                                                       data.searchKey],
+							                                                       [data.viewFirstKey,
+							                                                        data.filters[allFilters[0]][i],
+							                                                        data.filters[allFilters[1]][j],
+							                                                        data.filters[allFilters[2]][k],
+							                                                        "z",
+							                                                        "z",
+							                                                        data.searchEndKey]));
 						
 					}
 				}
@@ -2029,34 +1809,20 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 					for(var k=0;k<data.filters[allFilters[2]].length;k++){
 						for(var l=0;l<data.filters[allFilters[3]].length;l++){
 							
-								// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-								//                                                        data.filters[allFilters[0]][i],
-								//                                                        data.filters[allFilters[1]][j],
-								//                                                        data.filters[allFilters[2]][k],
-								//                                                        data.filters[allFilters[3]][l],
-								//                                                        null,
-								//                                                        data.searchKey],
-								//                                                        [data.viewFirstKey,
-								//                                                         data.filters[allFilters[0]][i],
-								//                                                         data.filters[allFilters[1]][j],
-								//                                                         data.filters[allFilters[2]][k],
-								//                                                         data.filters[allFilters[3]][l],
-								//                                                         "z",
-								//                                                         data.searchEndKey]));
-								queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-									data.filters[allFilters[0]][i],
-									data.filters[allFilters[1]][j],
-									data.filters[allFilters[2]][k],
-									data.filters[allFilters[3]][l],
-									null,
-									data.searchKey],
-									[data.viewFirstKey,
-									 data.filters[allFilters[0]][i],
-									 data.filters[allFilters[1]][j],
-									 data.filters[allFilters[2]][k],
-									 data.filters[allFilters[3]][l],
-									 "z",
-									 data.searchEndKey])}));
+								queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+								                                                       data.filters[allFilters[0]][i],
+								                                                       data.filters[allFilters[1]][j],
+								                                                       data.filters[allFilters[2]][k],
+								                                                       data.filters[allFilters[3]][l],
+								                                                       null,
+								                                                       data.searchKey],
+								                                                       [data.viewFirstKey,
+								                                                        data.filters[allFilters[0]][i],
+								                                                        data.filters[allFilters[1]][j],
+								                                                        data.filters[allFilters[2]][k],
+								                                                        data.filters[allFilters[3]][l],
+								                                                        "z",
+								                                                        data.searchEndKey]));
 							
 						}
 					}
@@ -2075,34 +1841,20 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 						for(var l=0;l<data.filters[allFilters[3]].length;l++){
 							for(var m=0;m<data.filters[allFilters[4]].length;m++){
 							
-								// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-								//                                                        data.filters[allFilters[0]][i],
-								//                                                        data.filters[allFilters[1]][j],
-								//                                                        data.filters[allFilters[2]][k],
-								//                                                        data.filters[allFilters[3]][l],
-								//                                                        data.filters[allFilters[4]][m],
-								//                                                        data.searchKey],
-								//                                                        [data.viewFirstKey,
-								//                                                         data.filters[allFilters[0]][i],
-								//                                                         data.filters[allFilters[1]][j],
-								//                                                         data.filters[allFilters[2]][k],
-								//                                                         data.filters[allFilters[3]][l],
-								//                                                         data.filters[allFilters[4]][m],
-								//                                                         data.searchEndKey]));
-								queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-									data.filters[allFilters[0]][i],
-									data.filters[allFilters[1]][j],
-									data.filters[allFilters[2]][k],
-									data.filters[allFilters[3]][l],
-									data.filters[allFilters[4]][m],
-									data.searchKey],
-									[data.viewFirstKey,
-									 data.filters[allFilters[0]][i],
-									 data.filters[allFilters[1]][j],
-									 data.filters[allFilters[2]][k],
-									 data.filters[allFilters[3]][l],
-									 data.filters[allFilters[4]][m],
-									 data.searchEndKey])}));
+								queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+								                                                       data.filters[allFilters[0]][i],
+								                                                       data.filters[allFilters[1]][j],
+								                                                       data.filters[allFilters[2]][k],
+								                                                       data.filters[allFilters[3]][l],
+								                                                       data.filters[allFilters[4]][m],
+								                                                       data.searchKey],
+								                                                       [data.viewFirstKey,
+								                                                        data.filters[allFilters[0]][i],
+								                                                        data.filters[allFilters[1]][j],
+								                                                        data.filters[allFilters[2]][k],
+								                                                        data.filters[allFilters[3]][l],
+								                                                        data.filters[allFilters[4]][m],
+								                                                        data.searchEndKey]));
 							}
 						}
 					}
@@ -2135,11 +1887,10 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 					}
 				}
 			}
-			//query = ViewQuery.from(designDoc,viewName).keys(keys);
-			query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+			query = ViewQuery.from(designDoc,viewName).keys(keys);
 			readyToSendResults(query,queries,data,callback)
 		}else{
-			async function getActualKeys(){
+			function getActualKeys(){
 				var keys=[];
 				for(var i=0;i<data.filters[allFilters[0]].length;i++){
 					for(var j=0;j<data.filters[allFilters[1]].length;j++){
@@ -2164,11 +1915,9 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 					}
 				}
 				if(typeof data.skip!="undefined"){
-					//query = ViewQuery.from(designDoc,viewName).keys(keys).limit(limitCount).skip(data.skip);
-					query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys},{limit:limitCount},{skip:data.skip});
+					query = ViewQuery.from(designDoc,viewName).keys(keys).limit(limitCount).skip(data.skip);
 				}else{
-					//query = ViewQuery.from(designDoc,viewName).keys(keys);
-					query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+					query = ViewQuery.from(designDoc,viewName).keys(keys);
 				}
 				if(data.filters[allFilters[5]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
@@ -2177,34 +1926,20 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 								for(var l=0;l<data.filters[allFilters[3]].length;l++){
 									for(var m=0;m<data.filters[allFilters[4]].length;m++){
 									
-										// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-										//                                                        data.filters[allFilters[0]][i],
-										//                                                        data.filters[allFilters[1]][j],
-										//                                                        data.filters[allFilters[2]][k],
-										//                                                        data.filters[allFilters[3]][l],
-										//                                                        data.filters[allFilters[4]][m],
-										//                                                        data.searchKey],
-										//                                                        [data.viewFirstKey,
-										//                                                         data.filters[allFilters[0]][i],
-										//                                                         data.filters[allFilters[1]][j],
-										//                                                         data.filters[allFilters[2]][k],
-										//                                                         data.filters[allFilters[3]][l],
-										//                                                         data.filters[allFilters[4]][m],
-										//                                                         data.searchEndKey]));
-										queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-											data.filters[allFilters[0]][i],
-											data.filters[allFilters[1]][j],
-											data.filters[allFilters[2]][k],
-											data.filters[allFilters[3]][l],
-											data.filters[allFilters[4]][m],
-											data.searchKey],
-											[data.viewFirstKey,
-											 data.filters[allFilters[0]][i],
-											 data.filters[allFilters[1]][j],
-											 data.filters[allFilters[2]][k],
-											 data.filters[allFilters[3]][l],
-											 data.filters[allFilters[4]][m],
-											 data.searchEndKey])}));
+										queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+										                                                       data.filters[allFilters[0]][i],
+										                                                       data.filters[allFilters[1]][j],
+										                                                       data.filters[allFilters[2]][k],
+										                                                       data.filters[allFilters[3]][l],
+										                                                       data.filters[allFilters[4]][m],
+										                                                       data.searchKey],
+										                                                       [data.viewFirstKey,
+										                                                        data.filters[allFilters[0]][i],
+										                                                        data.filters[allFilters[1]][j],
+										                                                        data.filters[allFilters[2]][k],
+										                                                        data.filters[allFilters[3]][l],
+										                                                        data.filters[allFilters[4]][m],
+										                                                        data.searchEndKey]));
 								}
 								}
 							}
@@ -2217,34 +1952,20 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 							for(var k=0;k<data.filters[allFilters[2]].length;k++){
 								for(var l=0;l<data.filters[allFilters[3]].length;l++){
 									
-										// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-										//                                                        data.filters[allFilters[0]][i],
-										//                                                        data.filters[allFilters[1]][j],
-										//                                                        data.filters[allFilters[2]][k],
-										//                                                        data.filters[allFilters[3]][l],
-										//                                                        null,
-										//                                                        data.searchKey],
-										//                                                        [data.viewFirstKey,
-										//                                                         data.filters[allFilters[0]][i],
-										//                                                         data.filters[allFilters[1]][j],
-										//                                                         data.filters[allFilters[2]][k],
-										//                                                         data.filters[allFilters[3]][l],
-										//                                                         "z",
-										//                                                         data.searchEndKey]));
-										queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-											data.filters[allFilters[0]][i],
-											data.filters[allFilters[1]][j],
-											data.filters[allFilters[2]][k],
-											data.filters[allFilters[3]][l],
-											null,
-											data.searchKey],
-											[data.viewFirstKey,
-											 data.filters[allFilters[0]][i],
-											 data.filters[allFilters[1]][j],
-											 data.filters[allFilters[2]][k],
-											 data.filters[allFilters[3]][l],
-											 "z",
-											 data.searchEndKey])}));
+										queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+										                                                       data.filters[allFilters[0]][i],
+										                                                       data.filters[allFilters[1]][j],
+										                                                       data.filters[allFilters[2]][k],
+										                                                       data.filters[allFilters[3]][l],
+										                                                       null,
+										                                                       data.searchKey],
+										                                                       [data.viewFirstKey,
+										                                                        data.filters[allFilters[0]][i],
+										                                                        data.filters[allFilters[1]][j],
+										                                                        data.filters[allFilters[2]][k],
+										                                                        data.filters[allFilters[3]][l],
+										                                                        "z",
+										                                                        data.searchEndKey]));
 									
 								}
 							}
@@ -2256,34 +1977,20 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
 							for(var k=0;k<data.filters[allFilters[2]].length;k++){
 								
-									// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-									//                                                        data.filters[allFilters[0]][i],
-									//                                                        data.filters[allFilters[1]][j],
-									//                                                        data.filters[allFilters[2]][k],
-									//                                                        null,
-									//                                                        null,
-									//                                                        data.searchKey],
-									//                                                        [data.viewFirstKey,
-									//                                                         data.filters[allFilters[0]][i],
-									//                                                         data.filters[allFilters[1]][j],
-									//                                                         data.filters[allFilters[2]][k],
-									//                                                         "z",
-									//                                                         "z",
-									//                                                         data.searchEndKey]));
-									queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-										data.filters[allFilters[0]][i],
-										data.filters[allFilters[1]][j],
-										data.filters[allFilters[2]][k],
-										null,
-										null,
-										data.searchKey],
-										[data.viewFirstKey,
-										 data.filters[allFilters[0]][i],
-										 data.filters[allFilters[1]][j],
-										 data.filters[allFilters[2]][k],
-										 "z",
-										 "z",
-										 data.searchEndKey])}));
+									queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+									                                                       data.filters[allFilters[0]][i],
+									                                                       data.filters[allFilters[1]][j],
+									                                                       data.filters[allFilters[2]][k],
+									                                                       null,
+									                                                       null,
+									                                                       data.searchKey],
+									                                                       [data.viewFirstKey,
+									                                                        data.filters[allFilters[0]][i],
+									                                                        data.filters[allFilters[1]][j],
+									                                                        data.filters[allFilters[2]][k],
+									                                                        "z",
+									                                                        "z",
+									                                                        data.searchEndKey]));
 								
 							}
 						}
@@ -2293,34 +2000,20 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
 							
-								// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-								//                                                        data.filters[allFilters[0]][i],
-								//                                                        data.filters[allFilters[1]][j],
-								//                                                        null,
-								//                                                        null,
-								//                                                        null,
-								//                                                        data.searchKey],
-								//                                                        [data.viewFirstKey,
-								//                                                         data.filters[allFilters[0]][i],
-								//                                                         data.filters[allFilters[1]][j],
-								//                                                         "z",
-								//                                                         "z",
-								//                                                         "z",
-								//                                                         data.searchEndKey]));
-								queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-									data.filters[allFilters[0]][i],
-									data.filters[allFilters[1]][j],
-									null,
-									null,
-									null,
-									data.searchKey],
-									[data.viewFirstKey,
-									 data.filters[allFilters[0]][i],
-									 data.filters[allFilters[1]][j],
-									 "z",
-									 "z",
-									 "z",
-									 data.searchEndKey])}));
+								queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+								                                                       data.filters[allFilters[0]][i],
+								                                                       data.filters[allFilters[1]][j],
+								                                                       null,
+								                                                       null,
+								                                                       null,
+								                                                       data.searchKey],
+								                                                       [data.viewFirstKey,
+								                                                        data.filters[allFilters[0]][i],
+								                                                        data.filters[allFilters[1]][j],
+								                                                        "z",
+								                                                        "z",
+								                                                        "z",
+								                                                        data.searchEndKey]));
 							
 						}
 					}
@@ -2329,43 +2022,27 @@ async function getSchemaRecordsBySixFilters(data,callback) {
 				if(data.filters[allFilters[1]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						
-							// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-							//                                                        data.filters[allFilters[0]][i],
-							//                                                        null,
-							//                                                        null,
-							//                                                        null,
-							//                                                        null,
-							//                                                        data.searchKey],
-							//                                                        [data.viewFirstKey,
-							//                                                         data.filters[allFilters[0]][i],
-							//                                                         "z",
-							//                                                         "z",
-							//                                                         "z",
-							//                                                         "z",
-							//                                                         data.searchEndKey]));
-							queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-								data.filters[allFilters[0]][i],
-								null,
-								null,
-								null,
-								null,
-								data.searchKey],
-								[data.viewFirstKey,
-								 data.filters[allFilters[0]][i],
-								 "z",
-								 "z",
-								 "z",
-								 "z",
-								 data.searchEndKey])}));
+							queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+							                                                       data.filters[allFilters[0]][i],
+							                                                       null,
+							                                                       null,
+							                                                       null,
+							                                                       null,
+							                                                       data.searchKey],
+							                                                       [data.viewFirstKey,
+							                                                        data.filters[allFilters[0]][i],
+							                                                        "z",
+							                                                        "z",
+							                                                        "z",
+							                                                        "z",
+							                                                        data.searchEndKey]));
 						
 					}
 				}
 				if(data.filters[allFilters[0]].length==0){
 					
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,data.searchKey],
-						// 													  [data.viewFirstKey,"z","z","z","z","z",data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,null,null,null,null,data.searchKey],
-							[data.viewFirstKey,"z","z","z","z","z",data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,null,null,null,data.searchKey],
+																			  [data.viewFirstKey,"z","z","z","z","z",data.searchEndKey]));
 					
 				}
 				readyToSendResults(query,queries,data,callback)
@@ -2392,7 +2069,7 @@ exports.getSchemaRecordsBySixFilters=getSchemaRecordsBySixFilters;
  * @param callback
  *            userId org schema(doc) skip filters
  */
-async function getSchemaRecordsByFiveFilters(data,callback) {
+function getSchemaRecordsByFiveFilters(data,callback) {
 	var queries=[];
 	var schema=data.schemaRecord;
 	var designDoc=schema["@id"];
@@ -2402,30 +2079,18 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 	
 	
 	
-	// var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-	//                                                       null,
-	//                                                       null,
-	//                                                       null,
-	//                                                       null,
-	//                                                       data.searchKey],
-	// 													[data.viewFirstKey,
-	// 													 "z",
-	// 													 "z",
-	// 													 "z",
-	// 													 "z",
-	// 													 data.searchEndKey]);
-	var query =await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-		null,
-		null,
-		null,
-		null,
-		data.searchKey],
-	  [data.viewFirstKey,
-	   "z",
-	   "z",
-	   "z",
-	   "z",
-	   data.searchEndKey])});
+	var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+	                                                      null,
+	                                                      null,
+	                                                      null,
+	                                                      null,
+	                                                      data.searchKey],
+														[data.viewFirstKey,
+														 "z",
+														 "z",
+														 "z",
+														 "z",
+														 data.searchEndKey]);
 	if(data.filters){
 		if(data.filters[allFilters[0]].length==0 && 
 				data.filters[allFilters[1]].length==0 && 
@@ -2433,30 +2098,18 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 				data.filters[allFilters[3]].length==0 && 
 				data.filters[allFilters[4]].length==0 && 
 				!data.searchKey){
-			// query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-			//                                                   null,
-			//                                                   null,
-			//                                                   null,
-			//                                                   null,
-			//                                                   data.searchKey],
-			//                                                   [data.viewFirstKey,
-			//                                                    "z",
-			//                                                    "z",
-			//                                                    "z",
-			//                                                    "z",
-			//                                                    data.searchEndKey]);
-			query =await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-				null,
-				null,
-				null,
-				null,
-				data.searchKey],
-				[data.viewFirstKey,
-				 "z",
-				 "z",
-				 "z",
-				 "z",
-				 data.searchEndKey])});
+			query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+			                                                  null,
+			                                                  null,
+			                                                  null,
+			                                                  null,
+			                                                  data.searchKey],
+			                                                  [data.viewFirstKey,
+			                                                   "z",
+			                                                   "z",
+			                                                   "z",
+			                                                   "z",
+			                                                   data.searchEndKey]);
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
 				data.filters[allFilters[1]].length==0 && 
@@ -2464,30 +2117,18 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 				data.filters[allFilters[3]].length==0 && 
 				data.filters[allFilters[4]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
-				// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-				//                                                        data.filters[allFilters[0]][i],
-				//                                                        null,
-				//                                                        null,
-				//                                                        null,
-				//                                                        data.searchKey],
-				//                                                        [data.viewFirstKey,
-				//                                                         data.filters[allFilters[0]][i],
-				//                                                         "z",
-				//                                                         "z",
-				//                                                         "z",
-				//                                                         data.searchEndKey]));
-				queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-					data.filters[allFilters[0]][i],
-					null,
-					null,
-					null,
-					data.searchKey],
-					[data.viewFirstKey,
-					 data.filters[allFilters[0]][i],
-					 "z",
-					 "z",
-					 "z",
-					 data.searchEndKey])}));
+				queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+				                                                       data.filters[allFilters[0]][i],
+				                                                       null,
+				                                                       null,
+				                                                       null,
+				                                                       data.searchKey],
+				                                                       [data.viewFirstKey,
+				                                                        data.filters[allFilters[0]][i],
+				                                                        "z",
+				                                                        "z",
+				                                                        "z",
+				                                                        data.searchEndKey]));
 			}	
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
@@ -2497,30 +2138,18 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 				data.filters[allFilters[4]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-					//                                                        data.filters[allFilters[0]][i],
-					//                                                        data.filters[allFilters[1]][j],
-					//                                                        null,
-					//                                                        null,
-					//                                                        data.searchKey],
-					//                                                        [data.viewFirstKey,
-					//                                                         data.filters[allFilters[0]][i],
-					//                                                         data.filters[allFilters[1]][j],
-					//                                                         "z",
-					//                                                         "z",
-					//                                                         data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-						data.filters[allFilters[0]][i],
-						data.filters[allFilters[1]][j],
-						null,
-						null,
-						data.searchKey],
-						[data.viewFirstKey,
-						 data.filters[allFilters[0]][i],
-						 data.filters[allFilters[1]][j],
-						 "z",
-						 "z",
-						 data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+					                                                       data.filters[allFilters[0]][i],
+					                                                       data.filters[allFilters[1]][j],
+					                                                       null,
+					                                                       null,
+					                                                       data.searchKey],
+					                                                       [data.viewFirstKey,
+					                                                        data.filters[allFilters[0]][i],
+					                                                        data.filters[allFilters[1]][j],
+					                                                        "z",
+					                                                        "z",
+					                                                        data.searchEndKey]));
 				}
 			}
 			readyToSendResults(query,queries,data,callback)
@@ -2532,30 +2161,18 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
 					for(var k=0;k<data.filters[allFilters[2]].length;k++){
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-						//                                                        data.filters[allFilters[0]][i],
-						//                                                        data.filters[allFilters[1]][j],
-						//                                                        data.filters[allFilters[2]][k],
-						//                                                        null,
-						//                                                        data.searchKey],
-						//                                                        [data.viewFirstKey,
-						//                                                         data.filters[allFilters[0]][i],
-						//                                                         data.filters[allFilters[1]][j],
-						//                                                         data.filters[allFilters[2]][k],
-						//                                                         "z",
-						//                                                         data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-							data.filters[allFilters[0]][i],
-							data.filters[allFilters[1]][j],
-							data.filters[allFilters[2]][k],
-							null,
-							data.searchKey],
-							[data.viewFirstKey,
-							 data.filters[allFilters[0]][i],
-							 data.filters[allFilters[1]][j],
-							 data.filters[allFilters[2]][k],
-							 "z",
-							 data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+						                                                       data.filters[allFilters[0]][i],
+						                                                       data.filters[allFilters[1]][j],
+						                                                       data.filters[allFilters[2]][k],
+						                                                       null,
+						                                                       data.searchKey],
+						                                                       [data.viewFirstKey,
+						                                                        data.filters[allFilters[0]][i],
+						                                                        data.filters[allFilters[1]][j],
+						                                                        data.filters[allFilters[2]][k],
+						                                                        "z",
+						                                                        data.searchEndKey]));
 					}
 				}
 			}
@@ -2569,30 +2186,18 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
 					for(var k=0;k<data.filters[allFilters[2]].length;k++){
 						for(var l=0;l<data.filters[allFilters[3]].length;l++){
-							// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-							//                                                        data.filters[allFilters[0]][i],
-							//                                                        data.filters[allFilters[1]][j],
-							//                                                        data.filters[allFilters[2]][k],
-							//                                                        data.filters[allFilters[3]][l],
-							//                                                        data.searchKey],
-							//                                                        [data.viewFirstKey,
-							//                                                         data.filters[allFilters[0]][i],
-							//                                                         data.filters[allFilters[1]][j],
-							//                                                         data.filters[allFilters[2]][k],
-							//                                                         data.filters[allFilters[3]][l],
-							//                                                         data.searchEndKey]));
-							queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-								data.filters[allFilters[0]][i],
-								data.filters[allFilters[1]][j],
-								data.filters[allFilters[2]][k],
-								data.filters[allFilters[3]][l],
-								data.searchKey],
-								[data.viewFirstKey,
-								 data.filters[allFilters[0]][i],
-								 data.filters[allFilters[1]][j],
-								 data.filters[allFilters[2]][k],
-								 data.filters[allFilters[3]][l],
-								 data.searchEndKey])}));
+							queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+							                                                       data.filters[allFilters[0]][i],
+							                                                       data.filters[allFilters[1]][j],
+							                                                       data.filters[allFilters[2]][k],
+							                                                       data.filters[allFilters[3]][l],
+							                                                       data.searchKey],
+							                                                       [data.viewFirstKey,
+							                                                        data.filters[allFilters[0]][i],
+							                                                        data.filters[allFilters[1]][j],
+							                                                        data.filters[allFilters[2]][k],
+							                                                        data.filters[allFilters[3]][l],
+							                                                        data.searchEndKey]));
 						}
 					}
 				}
@@ -2620,11 +2225,10 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 					}
 				}
 			}
-			//query = ViewQuery.from(designDoc,viewName).keys(keys);
-			query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+			query = ViewQuery.from(designDoc,viewName).keys(keys);
 			readyToSendResults(query,queries,data,callback)
 		}else{
-			async function getActualKeys(){
+			function getActualKeys(){
 				var keys=[];
 				for(var i=0;i<data.filters[allFilters[0]].length;i++){
 					for(var j=0;j<data.filters[allFilters[1]].length;j++){
@@ -2646,41 +2250,27 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 					}
 				}
 				if(typeof data.skip!="undefined"){
-					//query = ViewQuery.from(designDoc,viewName).keys(keys).limit(limitCount).skip(data.skip);
-					query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys},{limit:limitCount},{skip:data.skip});
+					query = ViewQuery.from(designDoc,viewName).keys(keys).limit(limitCount).skip(data.skip);
 				}else{
-					//query = ViewQuery.from(designDoc,viewName).keys(keys);
-					query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+					query = ViewQuery.from(designDoc,viewName).keys(keys);
 				}
 				if(data.filters[allFilters[4]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
 							for(var k=0;k<data.filters[allFilters[2]].length;k++){
 								for(var l=0;l<data.filters[allFilters[3]].length;l++){
-									// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-									//                                                        data.filters[allFilters[0]][i],
-									//                                                        data.filters[allFilters[1]][j],
-									//                                                        data.filters[allFilters[2]][k],
-									//                                                        data.filters[allFilters[3]][l],
-									//                                                        data.searchKey],
-									//                                                        [data.viewFirstKey,
-									//                                                         data.filters[allFilters[0]][i],
-									//                                                         data.filters[allFilters[1]][j],
-									//                                                         data.filters[allFilters[2]][k],
-									//                                                         data.filters[allFilters[3]][l],
-									//                                                         data.searchEndKey]));
-									queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-										data.filters[allFilters[0]][i],
-										data.filters[allFilters[1]][j],
-										data.filters[allFilters[2]][k],
-										data.filters[allFilters[3]][l],
-										data.searchKey],
-										[data.viewFirstKey,
-										 data.filters[allFilters[0]][i],
-										 data.filters[allFilters[1]][j],
-										 data.filters[allFilters[2]][k],
-										 data.filters[allFilters[3]][l],
-										 data.searchEndKey])}));
+									queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+									                                                       data.filters[allFilters[0]][i],
+									                                                       data.filters[allFilters[1]][j],
+									                                                       data.filters[allFilters[2]][k],
+									                                                       data.filters[allFilters[3]][l],
+									                                                       data.searchKey],
+									                                                       [data.viewFirstKey,
+									                                                        data.filters[allFilters[0]][i],
+									                                                        data.filters[allFilters[1]][j],
+									                                                        data.filters[allFilters[2]][k],
+									                                                        data.filters[allFilters[3]][l],
+									                                                        data.searchEndKey]));
 								}
 							}
 						}
@@ -2690,30 +2280,18 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
 							for(var k=0;k<data.filters[allFilters[2]].length;k++){
-								// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-								//                                                        data.filters[allFilters[0]][i],
-								//                                                        data.filters[allFilters[1]][j],
-								//                                                        data.filters[allFilters[2]][k],
-								//                                                        null,
-								//                                                        data.searchKey],
-								//                                                        [data.viewFirstKey,
-								//                                                         data.filters[allFilters[0]][i],
-								//                                                         data.filters[allFilters[1]][j],
-								//                                                         data.filters[allFilters[2]][k],
-								//                                                         "z",
-								//                                                         data.searchEndKey]));
-								queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-									data.filters[allFilters[0]][i],
-									data.filters[allFilters[1]][j],
-									data.filters[allFilters[2]][k],
-									null,
-									data.searchKey],
-									[data.viewFirstKey,
-									 data.filters[allFilters[0]][i],
-									 data.filters[allFilters[1]][j],
-									 data.filters[allFilters[2]][k],
-									 "z",
-									 data.searchEndKey])}));
+								queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+								                                                       data.filters[allFilters[0]][i],
+								                                                       data.filters[allFilters[1]][j],
+								                                                       data.filters[allFilters[2]][k],
+								                                                       null,
+								                                                       data.searchKey],
+								                                                       [data.viewFirstKey,
+								                                                        data.filters[allFilters[0]][i],
+								                                                        data.filters[allFilters[1]][j],
+								                                                        data.filters[allFilters[2]][k],
+								                                                        "z",
+								                                                        data.searchEndKey]));
 							}
 						}
 					}
@@ -2721,87 +2299,51 @@ async function getSchemaRecordsByFiveFilters(data,callback) {
 				if(data.filters[allFilters[2]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
-							// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-							//                                                        data.filters[allFilters[0]][i],
-							//                                                        data.filters[allFilters[1]][j],
-							//                                                        null,
-							//                                                        null,
-							//                                                        data.searchKey],
-							//                                                        [data.viewFirstKey,
-							//                                                         data.filters[allFilters[0]][i],
-							//                                                         data.filters[allFilters[1]][j],
-							//                                                         "z",
-							//                                                         "z",
-							//                                                         data.searchEndKey]));
-							queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-								data.filters[allFilters[0]][i],
-								data.filters[allFilters[1]][j],
-								null,
-								null,
-								data.searchKey],
-								[data.viewFirstKey,
-								 data.filters[allFilters[0]][i],
-								 data.filters[allFilters[1]][j],
-								 "z",
-								 "z",
-								 data.searchEndKey])}));
+							queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+							                                                       data.filters[allFilters[0]][i],
+							                                                       data.filters[allFilters[1]][j],
+							                                                       null,
+							                                                       null,
+							                                                       data.searchKey],
+							                                                       [data.viewFirstKey,
+							                                                        data.filters[allFilters[0]][i],
+							                                                        data.filters[allFilters[1]][j],
+							                                                        "z",
+							                                                        "z",
+							                                                        data.searchEndKey]));
 						}
 					}
 				}
 
 				if(data.filters[allFilters[1]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-						//                                                        data.filters[allFilters[0]][i],
-						//                                                        null,
-						//                                                        null,
-						//                                                        null,
-						//                                                        data.searchKey],
-						//                                                        [data.viewFirstKey,
-						//                                                         data.filters[allFilters[0]][i],
-						//                                                         "z",
-						//                                                         "z",
-						//                                                         "z",
-						//                                                         data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-							data.filters[allFilters[0]][i],
-							null,
-							null,
-							null,
-							data.searchKey],
-							[data.viewFirstKey,
-							 data.filters[allFilters[0]][i],
-							 "z",
-							 "z",
-							 "z",
-							 data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+						                                                       data.filters[allFilters[0]][i],
+						                                                       null,
+						                                                       null,
+						                                                       null,
+						                                                       data.searchKey],
+						                                                       [data.viewFirstKey,
+						                                                        data.filters[allFilters[0]][i],
+						                                                        "z",
+						                                                        "z",
+						                                                        "z",
+						                                                        data.searchEndKey]));
 					}
 				}
 				if(data.filters[allFilters[0]].length==0){
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-					//                                                        null,
-					//                                                        null,
-					//                                                        null,
-					//                                                        null,
-					//                                                        data.searchKey],
-					//                                                        [data.viewFirstKey,
-					//                                                         "z",
-					//                                                         "z",
-					//                                                         "z",
-					//                                                         "z",
-					//                                                         data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-						null,
-						null,
-						null,
-						null,
-						data.searchKey],
-						[data.viewFirstKey,
-						 "z",
-						 "z",
-						 "z",
-						 "z",
-						 data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+					                                                       null,
+					                                                       null,
+					                                                       null,
+					                                                       null,
+					                                                       data.searchKey],
+					                                                       [data.viewFirstKey,
+					                                                        "z",
+					                                                        "z",
+					                                                        "z",
+					                                                        "z",
+					                                                        data.searchEndKey]));
 				}
 				readyToSendResults(query,queries,data,callback)
 			}
@@ -2827,7 +2369,7 @@ exports.getSchemaRecordsByFiveFilters=getSchemaRecordsByFiveFilters;
  * @param callback
  *            userId org schema(doc) skip filters
  */
-async function getSchemaRecordsByFourFilters(data,callback) {
+function getSchemaRecordsByFourFilters(data,callback) {
 	var queries=[];
 	var schema=data.schemaRecord;
 	var designDoc=schema["@id"];
@@ -2838,26 +2380,16 @@ async function getSchemaRecordsByFourFilters(data,callback) {
 	
 	
 	
-	// var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-	//                                                       null,
-	//                                                       null,
-	//                                                       null,
-	//                                                       data.searchKey],
-	//                                                       [data.viewFirstKey,
-	//                                                        "z",
-	//                                                        "z",
-	//                                                        "z",
-	//                                                        data.searchEndKey]);
-	var query =await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-		null,
-		null,
-		null,
-		data.searchKey],
-		[data.viewFirstKey,
-		 "z",
-		 "z",
-		 "z",
-		 data.searchEndKey])});
+	var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+	                                                      null,
+	                                                      null,
+	                                                      null,
+	                                                      data.searchKey],
+	                                                      [data.viewFirstKey,
+	                                                       "z",
+	                                                       "z",
+	                                                       "z",
+	                                                       data.searchEndKey]);
 	
 	//console.log(data.filters);
 	if(data.filters){
@@ -2866,52 +2398,32 @@ async function getSchemaRecordsByFourFilters(data,callback) {
 				data.filters[allFilters[2]].length==0 && 
 				data.filters[allFilters[3]].length==0 && 
 				!data.searchKey){
-			// query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-			//                                                   null,
-			//                                                   null,
-			//                                                   null,
-			//                                                   data.searchKey],
-			//                                                   [data.viewFirstKey,
-			//                                                    "z",
-			//                                                    "z",
-			//                                                    "z",
-			//                                                    data.searchEndKey]);
-			query =await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-				null,
-				null,
-				null,
-				data.searchKey],
-				[data.viewFirstKey,
-				 "z",
-				 "z",
-				 "z",
-				 data.searchEndKey])});
+			query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+			                                                  null,
+			                                                  null,
+			                                                  null,
+			                                                  data.searchKey],
+			                                                  [data.viewFirstKey,
+			                                                   "z",
+			                                                   "z",
+			                                                   "z",
+			                                                   data.searchEndKey]);
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
 				data.filters[allFilters[1]].length==0 && 
 				data.filters[allFilters[2]].length==0 && 
 				data.filters[allFilters[3]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
-				// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-				//                                                        data.filters[allFilters[0]][i],
-				//                                                        null,
-				//                                                        null,
-				//                                                        data.searchKey],
-				//                                                        [data.viewFirstKey,
-				//                                                         data.filters[allFilters[0]][i],
-				//                                                         "z",
-				//                                                         "z",
-				//                                                         data.searchEndKey]));
-				queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-					data.filters[allFilters[0]][i],
-					null,
-					null,
-					data.searchKey],
-					[data.viewFirstKey,
-					 data.filters[allFilters[0]][i],
-					 "z",
-					 "z",
-					 data.searchEndKey])}));
+				queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+				                                                       data.filters[allFilters[0]][i],
+				                                                       null,
+				                                                       null,
+				                                                       data.searchKey],
+				                                                       [data.viewFirstKey,
+				                                                        data.filters[allFilters[0]][i],
+				                                                        "z",
+				                                                        "z",
+				                                                        data.searchEndKey]));
 			}	
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
@@ -2920,26 +2432,16 @@ async function getSchemaRecordsByFourFilters(data,callback) {
 				data.filters[allFilters[3]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-					//                                                        data.filters[allFilters[0]][i],
-					//                                                        data.filters[allFilters[1]][j],
-					//                                                        null,
-					//                                                        data.searchKey],
-					//                                                        [data.viewFirstKey,
-					//                                                         data.filters[allFilters[0]][i],
-					//                                                         data.filters[allFilters[1]][j],
-					//                                                         "z",
-					//                                                         data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-						data.filters[allFilters[0]][i],
-						data.filters[allFilters[1]][j],
-						null,
-						data.searchKey],
-						[data.viewFirstKey,
-						 data.filters[allFilters[0]][i],
-						 data.filters[allFilters[1]][j],
-						 "z",
-						 data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+					                                                       data.filters[allFilters[0]][i],
+					                                                       data.filters[allFilters[1]][j],
+					                                                       null,
+					                                                       data.searchKey],
+					                                                       [data.viewFirstKey,
+					                                                        data.filters[allFilters[0]][i],
+					                                                        data.filters[allFilters[1]][j],
+					                                                        "z",
+					                                                        data.searchEndKey]));
 				}
 			}
 			readyToSendResults(query,queries,data,callback)
@@ -2950,26 +2452,16 @@ async function getSchemaRecordsByFourFilters(data,callback) {
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
 					for(var k=0;k<data.filters[allFilters[2]].length;k++){
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-						//                                                        data.filters[allFilters[0]][i],
-						//                                                        data.filters[allFilters[1]][j],
-						//                                                        data.filters[allFilters[2]][k],
-						//                                                        data.searchKey],
-						//                                                        [data.viewFirstKey,
-						//                                                         data.filters[allFilters[0]][i],
-						//                                                         data.filters[allFilters[1]][j],
-						//                                                         data.filters[allFilters[2]][k],
-						//                                                         data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-							data.filters[allFilters[0]][i],
-							data.filters[allFilters[1]][j],
-							data.filters[allFilters[2]][k],
-							data.searchKey],
-							[data.viewFirstKey,
-							 data.filters[allFilters[0]][i],
-							 data.filters[allFilters[1]][j],
-							 data.filters[allFilters[2]][k],
-							 data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+						                                                       data.filters[allFilters[0]][i],
+						                                                       data.filters[allFilters[1]][j],
+						                                                       data.filters[allFilters[2]][k],
+						                                                       data.searchKey],
+						                                                       [data.viewFirstKey,
+						                                                        data.filters[allFilters[0]][i],
+						                                                        data.filters[allFilters[1]][j],
+						                                                        data.filters[allFilters[2]][k],
+						                                                        data.searchEndKey]));
 					}
 				}
 			}
@@ -2992,11 +2484,10 @@ async function getSchemaRecordsByFourFilters(data,callback) {
 					}
 				}
 			}
-			//query = ViewQuery.from(designDoc,viewName).keys(keys);
-			query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+			query = ViewQuery.from(designDoc,viewName).keys(keys);
 			readyToSendResults(query,queries,data,callback)
 		}else{
-			async function getActualKeys(){
+			function getActualKeys(){
 				var keys=[];
 				for(var i=0;i<data.filters[allFilters[0]].length;i++){
 					for(var j=0;j<data.filters[allFilters[1]].length;j++){
@@ -3014,32 +2505,21 @@ async function getSchemaRecordsByFourFilters(data,callback) {
 						}
 					}
 				}
-				//query = ViewQuery.from(designDoc,viewName).keys(keys);
-				query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+				query = ViewQuery.from(designDoc,viewName).keys(keys);
 				if(data.filters[allFilters[3]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
 							for(var k=0;k<data.filters[allFilters[2]].length;k++){
-								// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-								//                                                        data.filters[allFilters[0]][i],
-								//                                                        data.filters[allFilters[1]][j],
-								//                                                        data.filters[allFilters[2]][k],
-								//                                                        data.searchKey],
-								//                                                        [data.viewFirstKey,
-								//                                                         data.filters[allFilters[0]][i],
-								//                                                         data.filters[allFilters[1]][j],
-								//                                                         data.filters[allFilters[2]][k],
-								//                                                         data.searchEndKey]));
-								queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-									data.filters[allFilters[0]][i],
-									data.filters[allFilters[1]][j],
-									data.filters[allFilters[2]][k],
-									data.searchKey],
-									[data.viewFirstKey,
-									 data.filters[allFilters[0]][i],
-									 data.filters[allFilters[1]][j],
-									 data.filters[allFilters[2]][k],
-									 data.searchEndKey])}));
+								queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+								                                                       data.filters[allFilters[0]][i],
+								                                                       data.filters[allFilters[1]][j],
+								                                                       data.filters[allFilters[2]][k],
+								                                                       data.searchKey],
+								                                                       [data.viewFirstKey,
+								                                                        data.filters[allFilters[0]][i],
+								                                                        data.filters[allFilters[1]][j],
+								                                                        data.filters[allFilters[2]][k],
+								                                                        data.searchEndKey]));
 							}
 						}
 					}
@@ -3047,75 +2527,45 @@ async function getSchemaRecordsByFourFilters(data,callback) {
 				if(data.filters[allFilters[2]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
-							// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-							//                                                        data.filters[allFilters[0]][i],
-							//                                                        data.filters[allFilters[1]][j],
-							//                                                        null,
-							//                                                        data.searchKey],
-							//                                                        [data.viewFirstKey,
-							//                                                         data.filters[allFilters[0]][i],
-							//                                                         data.filters[allFilters[1]][j],
-							//                                                         "z",
-							//                                                         data.searchEndKey]));
-							queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-								data.filters[allFilters[0]][i],
-								data.filters[allFilters[1]][j],
-								null,
-								data.searchKey],
-								[data.viewFirstKey,
-								 data.filters[allFilters[0]][i],
-								 data.filters[allFilters[1]][j],
-								 "z",
-								 data.searchEndKey])}));
+							queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+							                                                       data.filters[allFilters[0]][i],
+							                                                       data.filters[allFilters[1]][j],
+							                                                       null,
+							                                                       data.searchKey],
+							                                                       [data.viewFirstKey,
+							                                                        data.filters[allFilters[0]][i],
+							                                                        data.filters[allFilters[1]][j],
+							                                                        "z",
+							                                                        data.searchEndKey]));
 						}
 					}
 				}
 
 				if(data.filters[allFilters[1]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-						//                                                        data.filters[allFilters[0]][i],
-						//                                                        null,
-						//                                                        null,
-						//                                                        data.searchKey],
-						//                                                        [data.viewFirstKey,
-						//                                                         data.filters[allFilters[0]][i],
-						//                                                         "z",
-						//                                                         "z",
-						//                                                         data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-							data.filters[allFilters[0]][i],
-							null,
-							null,
-							data.searchKey],
-							[data.viewFirstKey,
-							 data.filters[allFilters[0]][i],
-							 "z",
-							 "z",
-							 data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+						                                                       data.filters[allFilters[0]][i],
+						                                                       null,
+						                                                       null,
+						                                                       data.searchKey],
+						                                                       [data.viewFirstKey,
+						                                                        data.filters[allFilters[0]][i],
+						                                                        "z",
+						                                                        "z",
+						                                                        data.searchEndKey]));
 					}
 				}
 				if(data.filters[allFilters[0]].length==0){
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-					//                                                        null,
-					//                                                        null,
-					//                                                        null,
-					//                                                        data.searchKey],
-					//                                                        [data.viewFirstKey,
-					//                                                         "z",
-					//                                                         "z",
-					//                                                         "z",
-					//                                                         data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-						null,
-						null,
-						null,
-						data.searchKey],
-						[data.viewFirstKey,
-						 "z",
-						 "z",
-						 "z",
-						 data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+					                                                       null,
+					                                                       null,
+					                                                       null,
+					                                                       data.searchKey],
+					                                                       [data.viewFirstKey,
+					                                                        "z",
+					                                                        "z",
+					                                                        "z",
+					                                                        data.searchEndKey]));
 				}
 				readyToSendResults(query,queries,data,callback)
 			}
@@ -3145,7 +2595,7 @@ exports.getSchemaRecordsByFourFilters=getSchemaRecordsByFourFilters;
  * @param callback
  *            userId org schema(doc) skip filters
  */
-async function getSchemaRecordsByThreeFilters(data,callback) {
+function getSchemaRecordsByThreeFilters(data,callback) {
 	var queries=[];
 	var schema=data.schemaRecord;
 	var designDoc=schema["@id"];
@@ -3156,51 +2606,34 @@ async function getSchemaRecordsByThreeFilters(data,callback) {
 	
 	
 	
-	//var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,data.searchKey],[data.viewFirstKey,"z","z",data.searchEndKey]);
-	var query=await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,null,data.searchKey],[data.viewFirstKey,"z","z",data.searchEndKey])});
+	var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,null,data.searchKey],[data.viewFirstKey,"z","z",data.searchEndKey]);
 	//console.log(data.filters);
 	if(data.filters){
 		if(data.filters[allFilters[0]].length==0 && 
 				data.filters[allFilters[1]].length==0 && 
 				data.filters[allFilters[2]].length==0 && 
 				!data.searchKey){
-			// query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-			//                                                   null,
-			//                                                   null,
-			//                                                   data.searchKey],
-			//                                                   [data.viewFirstKey,
-			//                                                    "z",
-			//                                                    "z",
-			//                                                    data.searchEndKey]);
-			query =await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-				null,
-				null,
-				data.searchKey],
-				[data.viewFirstKey,
-				 "z",
-				 "z",
-				 data.searchEndKey])});
+			query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+			                                                  null,
+			                                                  null,
+			                                                  data.searchKey],
+			                                                  [data.viewFirstKey,
+			                                                   "z",
+			                                                   "z",
+			                                                   data.searchEndKey]);
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
 				data.filters[allFilters[1]].length==0 && 
 				data.filters[allFilters[2]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
-				// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-				//                                                        data.filters[allFilters[0]][i],
-				//                                                        null,
-				//                                                        data.searchKey],
-				//                                                        [data.viewFirstKey,
-				//                                                         data.filters[allFilters[0]][i],
-				//                                                         "z",
-				//                                                         data.searchEndKey]));
-				queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-					data.filters[allFilters[0]][i],
-					null,
-					data.searchKey],
-					[data.viewFirstKey,
-					 data.filters[allFilters[0]][i],
-					 "z",
-					 data.searchEndKey])}));
+				queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+				                                                       data.filters[allFilters[0]][i],
+				                                                       null,
+				                                                       data.searchKey],
+				                                                       [data.viewFirstKey,
+				                                                        data.filters[allFilters[0]][i],
+				                                                        "z",
+				                                                        data.searchEndKey]));
 			}	
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && 
@@ -3208,22 +2641,14 @@ async function getSchemaRecordsByThreeFilters(data,callback) {
 				data.filters[allFilters[2]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
 				for(var j=0;j<data.filters[allFilters[1]].length;j++){
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-					//                                                        data.filters[allFilters[0]][i],
-					//                                                        data.filters[allFilters[1]][j],
-					//                                                        data.searchKey],
-					//                                                        [data.viewFirstKey,
-					//                                                         data.filters[allFilters[0]][i],
-					//                                                         data.filters[allFilters[1]][j],
-					//                                                         data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-						data.filters[allFilters[0]][i],
-						data.filters[allFilters[1]][j],
-						data.searchKey],
-						[data.viewFirstKey,
-						 data.filters[allFilters[0]][i],
-						 data.filters[allFilters[1]][j],
-						 data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+					                                                       data.filters[allFilters[0]][i],
+					                                                       data.filters[allFilters[1]][j],
+					                                                       data.searchKey],
+					                                                       [data.viewFirstKey,
+					                                                        data.filters[allFilters[0]][i],
+					                                                        data.filters[allFilters[1]][j],
+					                                                        data.searchEndKey]));
 				}
 			}
 			readyToSendResults(query,queries,data,callback)
@@ -3241,10 +2666,10 @@ async function getSchemaRecordsByThreeFilters(data,callback) {
 					}
 				}
 			}
-			query =await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+			query = ViewQuery.from(designDoc,viewName).keys(keys);
 			readyToSendResults(query,queries,data,callback)
 		}else{
-			async function getActualKeys(){
+			function getActualKeys(){
 				var keys=[];
 				for(var i=0;i<data.filters[allFilters[0]].length;i++){
 					for(var j=0;j<data.filters[allFilters[1]].length;j++){
@@ -3256,71 +2681,46 @@ async function getSchemaRecordsByThreeFilters(data,callback) {
 						}
 					}
 				}
-				//query = ViewQuery.from(designDoc,viewName).keys(keys);
-				query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+				query = ViewQuery.from(designDoc,viewName).keys(keys);
 				
 
 				if(data.filters[allFilters[2]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
 						for(var j=0;j<data.filters[allFilters[1]].length;j++){
-							// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-							//                                                        data.filters[allFilters[0]][i],
-							//                                                        data.filters[allFilters[1]][j],
-							//                                                        data.searchKey],
-							//                                                        [data.viewFirstKey,
-							//                                                         data.filters[allFilters[0]][i],
-							//                                                         data.filters[allFilters[1]][j],
-							//                                                         data.searchEndKey]));
-							queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-								data.filters[allFilters[0]][i],
-								data.filters[allFilters[1]][j],
-								data.searchKey],
-								[data.viewFirstKey,
-								 data.filters[allFilters[0]][i],
-								 data.filters[allFilters[1]][j],
-								 data.searchEndKey])}));
+							queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+							                                                       data.filters[allFilters[0]][i],
+							                                                       data.filters[allFilters[1]][j],
+							                                                       data.searchKey],
+							                                                       [data.viewFirstKey,
+							                                                        data.filters[allFilters[0]][i],
+							                                                        data.filters[allFilters[1]][j],
+							                                                        data.searchEndKey]));
 						}
 					}
 				}
 				
 				if(data.filters[allFilters[1]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-						//                                                        data.filters[allFilters[0]][i],
-						//                                                        null,
-						//                                                        data.searchKey],
-						//                                                        [data.viewFirstKey,
-						//                                                         data.filters[allFilters[0]][i],
-						//                                                         "z",
-						//                                                         data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-							data.filters[allFilters[0]][i],
-							null,
-							data.searchKey],
-							[data.viewFirstKey,
-							 data.filters[allFilters[0]][i],
-							 "z",
-							 data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+						                                                       data.filters[allFilters[0]][i],
+						                                                       null,
+						                                                       data.searchKey],
+						                                                       [data.viewFirstKey,
+						                                                        data.filters[allFilters[0]][i],
+						                                                        "z",
+						                                                        data.searchEndKey]));
 					}
 				}
 				
 				if(data.filters[allFilters[0]].length==0){
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-					//                                                        null,
-					//                                                        null,
-					//                                                        data.searchKey],
-					//                                                        [data.viewFirstKey,
-					//                                                         "z",
-					//                                                         "z",
-					//                                                         data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-						null,
-						null,
-						data.searchKey],
-						[data.viewFirstKey,
-						 "z",
-						 "z",
-						 data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+					                                                       null,
+					                                                       null,
+					                                                       data.searchKey],
+					                                                       [data.viewFirstKey,
+					                                                        "z",
+					                                                        "z",
+					                                                        data.searchEndKey]));
 				}
 				
 				readyToSendResults(query,queries,data,callback)
@@ -3338,7 +2738,7 @@ exports.getSchemaRecordsByThreeFilters=getSchemaRecordsByThreeFilters;
  * @param callback
  *            userId org schema(doc) skip filters
  */
-async function getSchemaRecordsByTwoFilters(data,callback) {
+function getSchemaRecordsByTwoFilters(data,callback) {
 	var queries=[];
 	var schema=data.schemaRecord;
 	var designDoc=schema["@id"];
@@ -3347,27 +2747,20 @@ async function getSchemaRecordsByTwoFilters(data,callback) {
 	
 	
 	
-	//var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,data.searchKey],[data.viewFirstKey,"z",data.searchEndKey]);
-	var query=await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,data.searchKey],[data.viewFirstKey,"z",data.searchEndKey])});
+	var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,data.searchKey],[data.viewFirstKey,"z",data.searchEndKey]);
+	
 	if(data.filters){
 		if(data.filters[allFilters[0]].length==0 && data.filters[allFilters[1]].length==0 && !data.searchKey){
-			//query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,data.searchKey],[data.viewFirstKey,"z",data.searchEndKey]);
-			query=await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,null,data.searchKey],[data.viewFirstKey,"z",data.searchEndKey])});
+			query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,null,data.searchKey],[data.viewFirstKey,"z",data.searchEndKey]);
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && data.filters[allFilters[1]].length==0){
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
-				// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-				//                                                        data.filters[allFilters[0]][i],
-				//                                                        data.searchKey],
-				//                                                        [data.viewFirstKey,
-				//                                                         data.filters[allFilters[0]][i],
-				//                                                         data.searchEndKey]));
-				queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-					data.filters[allFilters[0]][i],
-					data.searchKey],
-					[data.viewFirstKey,
-					 data.filters[allFilters[0]][i],
-					 data.searchEndKey])}));
+				queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+				                                                       data.filters[allFilters[0]][i],
+				                                                       data.searchKey],
+				                                                       [data.viewFirstKey,
+				                                                        data.filters[allFilters[0]][i],
+				                                                        data.searchEndKey]));
 			}	
 			readyToSendResults(query,queries,data,callback)
 		}else if(data.filters[allFilters[0]].length!=0 && data.filters[allFilters[1]].length!=0){
@@ -3377,49 +2770,36 @@ async function getSchemaRecordsByTwoFilters(data,callback) {
 					keys.push([data.viewFirstKey,data.filters[allFilters[0]][i],data.filters[allFilters[1]][j]]);
 				}
 			}
-			//query = ViewQuery.from(designDoc,viewName).keys(keys);
-			query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+			query = ViewQuery.from(designDoc,viewName).keys(keys);
 			readyToSendResults(query,queries,data,callback)
 		}else{
-			async function getActualKeys(){
+			function getActualKeys(){
 				var keys=[];
 				for(var i=0;i<data.filters[allFilters[0]].length;i++){
 					for(var j=0;j<data.filters[allFilters[1]].length;j++){
 						keys.push([data.viewFirstKey,data.filters[allFilters[0]][i],data.filters[allFilters[1]][j]]);
 					}
 				}
-				//query = ViewQuery.from(designDoc,viewName).keys(keys);
-				query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+				query = ViewQuery.from(designDoc,viewName).keys(keys);
+				
 				if(data.filters[allFilters[1]].length==0){
 					for(var i=0;i<data.filters[allFilters[0]].length;i++){
-						// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-						//                                                        data.filters[allFilters[0]][i],
-						//                                                        data.searchKey],
-						//                                                        [data.viewFirstKey,
-						//                                                         data.filters[allFilters[0]][i],
-						//                                                         data.searchEndKey]));
-						queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-							data.filters[allFilters[0]][i],
-							data.searchKey],
-							[data.viewFirstKey,
-							 data.filters[allFilters[0]][i],
-							 data.searchEndKey])}));
+						queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+						                                                       data.filters[allFilters[0]][i],
+						                                                       data.searchKey],
+						                                                       [data.viewFirstKey,
+						                                                        data.filters[allFilters[0]][i],
+						                                                        data.searchEndKey]));
 					}
 				}
 				
 				if(data.filters[allFilters[0]].length==0){
-					// queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
-					//                                                        null,
-					//                                                        data.searchKey],
-					//                                                        [data.viewFirstKey,
-					//                                                         "z",
-					//                                                         data.searchEndKey]));
-					queries.push(await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,
-						null,
-						data.searchKey],
-						[data.viewFirstKey,
-						 "z",
-						 data.searchEndKey])}));
+					queries.push(ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,
+					                                                       null,
+					                                                       data.searchKey],
+					                                                       [data.viewFirstKey,
+					                                                        "z",
+					                                                        data.searchEndKey]));
 				}
 				
 				
@@ -3477,7 +2857,7 @@ function getQueryFilters(data,schema,allFilters,callback){
  * @param callback
  *            userId org schema(doc) skip filters
  */
-async function getSchemaRecordsByOneFilters(data,callback) {
+function getSchemaRecordsByOneFilters(data,callback) {
 	var schema=data.schemaRecord;
 	var designDoc=schema["@id"];
 	var viewName=data.viewName;
@@ -3485,21 +2865,18 @@ async function getSchemaRecordsByOneFilters(data,callback) {
 	
 	
 	
-	//var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,data.searchKey],[data.viewFirstKey,data.searchEndKey]);
-	var query=await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,data.searchKey],[data.viewFirstKey,data.searchEndKey])});
+	var query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,data.searchKey],[data.viewFirstKey,data.searchEndKey]);
 	//console.log(data.filters);
 	if(data.filters){
 		if(data.filters[allFilters[0]].length==0 && !data.searchKey){
-			//query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,data.searchKey],[data.viewFirstKey,data.searchEndKey]);
-			query=await cbMasterBucket.viewQuery(designDoc,viewName,{range:([data.viewFirstKey,data.searchKey],[data.viewFirstKey,data.searchEndKey])});
+			query = ViewQuery.from(designDoc,viewName).range([data.viewFirstKey,data.searchKey],[data.viewFirstKey,data.searchEndKey]);
 			readyToSendResults(query,[],data,callback)
 		}else if(data.filters[allFilters[0]].length!=0){
 			var keys=[];
 			for(var i=0;i<data.filters[allFilters[0]].length;i++){
 				keys.push([data.viewFirstKey,data.filters[allFilters[0]][i]]);
 			}
-			//query = ViewQuery.from(designDoc,viewName).keys(keys);
-			query=await cbMasterBucket.viewQuery(designDoc,viewName,{keys:keys});
+			query = ViewQuery.from(designDoc,viewName).keys(keys);
 			readyToSendResults(query,[],data,callback)
 		}else{
 			readyToSendResults(query,[],data,callback)
@@ -3579,7 +2956,7 @@ function readyToSendResults(query,queries,data,callback){
 		if(typeof data.skip!="undefined"){
 			query.limit(limitCount).skip(data.skip);
 		}
-		//query.stale((data.stale && data.stale=="false")?ViewQuery.Update.BEFORE:ViewQuery.Update.NONE);
+		query.stale((data.stale && data.stale=="false")?ViewQuery.Update.BEFORE:ViewQuery.Update.NONE);
 		query.reduce(false);
 		CouchBaseUtil.executeViewInContentBucket(query, function(results) {
 			if(results.error){
@@ -3607,7 +2984,7 @@ function readyToSendResults(query,queries,data,callback){
 			if(typeof data.skip!="undefined"){
 				queries[j].limit(skipped+limitCount);
 			}
-			//queries[j].stale((data.stale && data.stale=="false")?ViewQuery.Update.BEFORE:ViewQuery.Update.NONE);
+			queries[j].stale((data.stale && data.stale=="false")?ViewQuery.Update.BEFORE:ViewQuery.Update.NONE);
 			queries[j].reduce(false);
 			//console.log(queries[j]);
 			CouchBaseUtil.executeViewInContentBucket(queries[j], function(results) {

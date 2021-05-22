@@ -1,14 +1,9 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
-var cbContentBucket=cluster.bucket("records");
+var cbContentBucket=cluster.openBucket("records");
 //var cbMasterBucket=cluster.openBucket("schemas");
-var cbDefinitionBucket=cluster.bucket("definitions");
-var cbContentCollection=cbContentCollection.defaultCollection();
-var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
+var cbDefinitionBucket=cluster.openBucket("definitions");
 var cloudinary = require('cloudinary');
 cloudinary.config({ 
    cloud_name: "dzd0mlvkl",
@@ -62,13 +57,12 @@ executeCode(0);
 function executeCode(skp){
 	skip=skp;
 	console.log("Current Skip "+ skip);
-cbDefinitionCollection.get("Colors",function(err, result) {
+cbDefinitionBucket.get("Colors",function(err, result) {
 	if (err) {console.log(err); executeCode(skp); return; }
 	colorGroups=result.value;
 //Test-test3
-	//var query = ViewQuery.from("ColorUpdation", "nocolor").skip(skip).limit(limit);//.stale(ViewQuery.Update.BEFORE);
-	var query=await cbContentBucket.viewQuery("ColorUpdation", "nocolor",skip(skip),limit(limit));
-	cluster.query(query, function(err, data) {
+	var query = ViewQuery.from("ColorUpdation", "nocolor").skip(skip).limit(limit);//.stale(ViewQuery.Update.BEFORE);
+	cbContentBucket.query(query, function(err, data) {
 		if(err){console.log(err);executeCode(skp);return;}
 		console.log(data.length);
 		if(data.length==0){
@@ -127,7 +121,7 @@ cbDefinitionCollection.get("Colors",function(err, result) {
 							docu.dependentProperties.color=newColor;
 							docu.dependentProperties.predominant=result.predominant;
 							docu.dependentProperties.colors=result.colors;
-							cbContentCollection.upsert(docu.recordId,docu,function(err, result) {
+							cbContentBucket.upsert(docu.recordId,docu,function(err, result) {
 								if (err) { console.log(err); }
 								setTimeout(function(){updateProduct(index+1);},2000);
 							});	

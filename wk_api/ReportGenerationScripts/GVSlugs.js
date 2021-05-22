@@ -1,14 +1,10 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://52.76.7.57");//52.77.86.146");//52.76.7.57");
+var cluster = new couchbase.Cluster("couchbase://52.76.7.57");//52.77.86.146");//52.76.7.57");
 var ViewQuery = couchbase.ViewQuery;
 var records="records";
 var schemas="schemas";
-var cbContentBucket=cluster.bucket(records);
-var cbMasterBucket=cluster.bucket(schemas);
-var cbContentCollection=cbContentBucket.defaultCollection();
+var cbContentBucket=cluster.openBucket(records);
+var cbMasterBucket=cluster.openBucket(schemas);
 
 
 var cities={
@@ -25,9 +21,8 @@ var cities={
 
 //var viewName="CatCitySuppliers";
 var viewName="MfrCitySuppliers";
-//var query = ViewQuery.from("MfrProCatCitySupplier", viewName).reduce(true).group(true)//.skip(0).limit(1);
-var query=await cbContentBucket.viewQuery("MfrProCatCitySupplier", viewName,reduce(true),group(true));
-cluster.query(query, function(err, data) {
+var query = ViewQuery.from("MfrProCatCitySupplier", viewName).reduce(true).group(true)//.skip(0).limit(1);
+cbContentBucket.query(query, function(err, data) {
 	if(err){
 		console.log(err);
 		return;
@@ -39,7 +34,7 @@ cluster.query(query, function(err, data) {
 	process(0);
 
 	function process(index){
-		cbContentCollection.get(data[index].key[1],function(err, result) {
+		cbContentBucket.get(data[index].key[1],function(err, result) {
 			if (err) { console.log(err);	}
 			if(cities[data[index].key[2]]==undefined){
 				console.log(data[index].key[2]);
@@ -100,7 +95,7 @@ cluster.query(query, function(err, data) {
 				
 				
 				
-				cbContentCollection.insert(doc.recordId,doc,function(err, result) {
+				cbContentBucket.insert(doc.recordId,doc,function(err, result) {
 					console.log(doc["@uniqueUserName"]);
 					if (err) { console.log(err); }
 					if((index+1)<data.length){

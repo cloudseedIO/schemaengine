@@ -75,9 +75,10 @@ var couchbaseStore = new CouchbaseStore({
 
 var couchbaseStore 	 = new CouchbaseStore({
     bucket:"sessions",
-    password:"eb586c9c77a615760b135e67c38b0c9c",
+    password:"5c16b79518a18e7bf573a9569dbd989d",
     host:config.cbAddress+":"+config.cbPort
 });
+
 app.use(expressSession({
 	secret:'fIrsT IndiAs E-cOmMeRce wITh sOciAl n/W APPlication',
 	store:couchbaseStore,

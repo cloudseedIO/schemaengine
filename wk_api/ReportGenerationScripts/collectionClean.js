@@ -1,16 +1,12 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
 var cluster = new couchbase.Cluster("couchbase://52.76.7.57");//52.77.86.146");//52.76.7.57");
 var ViewQuery = couchbase.ViewQuery;
-var bucket=cluster.bucket("records");
-//var query = ViewQuery.from("Test", "test")//.skip(0).limit(9).stale(ViewQuery.Update.BEFORE);
-var query=await bucket.viewQuery("Test", "test");
+var bucket=cluster.openBucket("records");
+var query = ViewQuery.from("Test", "test")//.skip(0).limit(9).stale(ViewQuery.Update.BEFORE);
 
 
 
-cluster.query(query, function(err, data) {
+bucket.query(query, function(err, data) {
 		if(err){
 			console.log(err);
 			return;

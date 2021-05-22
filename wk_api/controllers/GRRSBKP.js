@@ -36,9 +36,9 @@ function getRelated(request,callback){
 				knownKey=schema["@relations"][relation].knownKey;
 			}
 		}
-		var query = "SELECT `recordId` AS `id`, `recordId` As `value` FROM `records` WHERE docType=$1 AND `"+knownKey+"` =$2";
+		var query = N1qlQuery.fromString("SELECT `recordId` AS `id`, `recordId` As `value` FROM `records` WHERE docType=$1 AND `"+knownKey+"` =$2");
 		if(data.forCounts){
-			query = "SELECT COUNT (*) AS total FROM `records` WHERE docType=$1 AND `"+knownKey+"` =$2";
+			query = N1qlQuery.fromString("SELECT COUNT (*) AS total FROM `records` WHERE docType=$1 AND `"+knownKey+"` =$2");
 		}
 		query.adhoc = false;
 		CouchBaseUtil.executeN1QL(query,[data.relationRefSchema,data.recordId],function(results){
@@ -87,7 +87,7 @@ function checkJunctionExistance(request,callback){
 				values.push(data[keysToCheck[index]]);
 			}
 		
-			var query = "SELECT `recordId` FROM `records` "+whereString;
+			var query = N1qlQuery.fromString("SELECT `recordId` FROM `records` "+whereString);
 			query.adhoc = false;
 			CouchBaseUtil.executeN1QL(query,values,function(result){
 				if(result.length!=0){
@@ -171,7 +171,7 @@ function getRelatedRecords(request,callback){
 			if(typeof data.skip !="undefined" && data.skip!=null){
 				queryString +=" OFFSET "+data.skip+" ";
 			}
-			CouchBaseUtil.executeN1QL(queryString,[],function(results){
+			CouchBaseUtil.executeN1QL(N1qlQuery.fromString(queryString),[],function(results){
 				if(data.fromTrigger){
 					if(typeof callback=="function")
 						callback({
@@ -223,7 +223,7 @@ function getSearchResults(request,callback){
 	utility.getMainSchema(data,function(schema){
 		if(schema.error){callback(schema);return;}
 		var keys=GenericSummeryServer.getSummaryKeys(schema).keys;
-		var query = "SELECT `"+keys.join("`,`")+"` FROM `records` WHERE docType=$1 AND `recordId` IN $2";
+		var query = N1qlQuery.fromString("SELECT `"+keys.join("`,`")+"` FROM `records` WHERE docType=$1 AND `recordId` IN $2");
 		CouchBaseUtil.executeN1QL(query,[data.schema,data.recordIds],function(results){
 			var recs=[];
 			for(var index in results){

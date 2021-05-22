@@ -5,35 +5,32 @@
  * @author vikram.jakkampudi
  */
 var couchbase = require('couchbase');
-//const { config } = require('winston');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});//52.77.86.146");//52.76.7.57");//
+//var reactConfig=require('../config/ReactConfig');
+//config=reactConfig.init;
+config={};
+config.cbMasterBucket="schemas";
+config.cbContentBucket="records";
+var cluster = new couchbase.Cluster("couchbase://52.76.7.57");//52.77.86.146");//52.76.7.57");//
 var ViewQuery = couchbase.ViewQuery;
 
-var cbContentBucket=cluster.bucket("records");
-var cbMasterBucket=cluster.bucket("schemas");
-var cbDefinitionBucket=cluster.bucket("definitions");
-
-var cbContentCollection=cbContentBucket.defaultCollection();
-var cbMasterCollection=cbMasterBucket.defaultCollection();
-var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
+var cbContentBucket;
+var cbMasterBucket;
 
 
 
 //setTimeout(function(){
- cbContentBucket=cluster.bucket(cbContentBucket, function(err) {
+ cbContentBucket=cluster.openBucket(config.cbContentBucket, function(err) {
 	if (err) {
 		console.log(err);
-		 console.log({"error":"while connecting to bucket "+cbContentBucket});
+		 console.log({"error":"while connecting to bucket "+config.cbContentBucket});
 		}
 	});
- cbMasterBucket=cluster.bucket(cbMasterBucket, function(err) {
+ cbMasterBucket=cluster.openBucket(config.cbMasterBucket, function(err) {
 		if (err) {
-			 console.log({"error":"while connecting to bucket "+cbMasterBucket});
+			 console.log({"error":"while connecting to bucket "+config.cbMasterBucket});
 			}
 		});
- cbDefinitionBucket=cluster.bucket("definitions", function(err) {
+ cbDefinitionBucket=cluster.openBucket("definitions", function(err) {
 		if (err) {
 			 console.log({"error":"while connecting to bucket definitions"});
 			}
@@ -43,27 +40,27 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
  
  
 
- var cccluster= new couchbase.Cluster("couchbase://"+config.cbAddress);
+ var cccluster= new couchbase.Cluster("couchbase://52.77.86.146");
  var cccbContentBucket;
  var cccbMasterBucket;
 
  
 //setTimeout(function(){
- cccbContentBucket=cccluster.bucket("records", function(err) {
+ cccbContentBucket=cccluster.openBucket("records", function(err) {
 	if (err) {
 		console.log(err);
-		 console.log({"error":"while connecting to bucket "+cbContentBucket});
+		 console.log({"error":"while connecting to bucket "+config.cbContentBucket});
 		}
 	});
  
- cccbMasterBucket=cccluster.bucket("schemas", function(err) {
+ cccbMasterBucket=cccluster.openBucket("schemas", function(err) {
 	if (err) {
-		 console.log({"error":"while connecting to bucket "+cbMasterBucket});
+		 console.log({"error":"while connecting to bucket "+config.cbMasterBucket});
 		}
 	});
  
 
- cccbDefinitionBucket=cccluster.bucket("definitions", function(err) {
+ cccbDefinitionBucket=cccluster.openBucket("definitions", function(err) {
 	if (err) {
 		 console.log({"error":"while connecting to bucket definition"});
 		}
@@ -82,9 +79,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * getting the doc Id from the content bucket
   */
  function getDocumentByIdFromContentBucket(docId,callback){
- 	  cbContentCollection.get(docId,function(err, result) {
+ 	  cbContentBucket.get(docId,function(err, result) {
  		  if (err) {
- 			 callback({"error":"while getting the doc with id "+docId+"  from bucket"+cbContentBucket});
+ 			 callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbContentBucket});
  			  return;
  		  }
  		  callback(result);
@@ -99,9 +96,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * getting the doc from the master bucket
   */
  function getDocumentByIdFromMasterBucket(docId,callback){
-	cbMasterCollection.get(docId,function(err, result) {
+ 	cbMasterBucket.get(docId,function(err, result) {
  		  if (err) {
- 			callback({"error":"while getting the doc with id "+docId+"  from bucket"+cbMasterBucket});
+ 			callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
  			  return;
  		  }
  		  callback(result);
@@ -117,9 +114,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * getting the doc from the definition bucket
   */
  function getDocumentByIdFromDefinitionBucket(docId,callback){
- 	cbDefinitionCollection.get(docId,function(err, result) {
+ 	cbDefinitionBucket.get(docId,function(err, result) {
  		  if (err) {
- 			callback({"error":"while getting the doc with id "+docId+"  from bucket"+cbDefinitionBucket});
+ 			callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
  			  return;
  		  }
  		  callback(result);
@@ -136,7 +133,7 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
  	}
  	cbContentBucket.getMulti(docIds,function(err, result) {
  		  if (err && err!=1) {
- 				callback({"error":"while getting the docs with ids "+docIds+"  from bucket"+cbContentBucket});
+ 				callback({"error":"while getting the docs with ids "+docIds+"  from bucket"+config.cbContentBucket});
  				  return;
  			  }
  			  callback(result);
@@ -153,7 +150,7 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
  	}
  	cbMasterBucket.getMulti(docIds,function(err, result) {
  		  if (err) {
- 				callback({"error":"while getting the doc with id "+docId+"  from bucket"+cbMasterBucket});
+ 				callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
  				  return;
  			  }
  			  callback(result);
@@ -169,7 +166,7 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
  	}
  	cbDefinitionBucket.getMulti(docIds,function(err, result) {
  		  if (err) {
- 				callback({"error":"while getting the doc with id "+docId+"  from bucket"+cbDefinitionBucket});
+ 				callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
  				  return;
  			  }
  			  callback(result);
@@ -192,9 +189,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function replaceDocumentInContentBucket(docId,doc,callback){
- 	cbContentCollection.replace(docId,doc,function(err, result) {
+ 	cbContentBucket.replace(docId,doc,function(err, result) {
  			if (err) {
- 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbContentBucket});
+ 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
  				return;
  			}
  			callback(result);
@@ -210,9 +207,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function replaceDocumentInMasterBucket(docId,doc,callback){
- 	cbMasterCollection.replace(docId,doc,function(err, result) {
+ 	cbMasterBucket.replace(docId,doc,function(err, result) {
  			if (err) {
- 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbMasterBucket});
+ 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
  				return;
  			}
  			callback(result);
@@ -229,9 +226,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function replaceDocumentInDefinitionBucket(docId,doc,callback){
- 	cbDefinitionCollection.replace(docId,doc,function(err, result) {
+ 	cbDefinitionBucket.replace(docId,doc,function(err, result) {
  			if (err) {
- 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbDefinitionBucket});
+ 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
  				return;
  			}
  			callback(result);
@@ -263,9 +260,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function upsertDocumentInContentBucket(docId,doc,callback){
- 	cbContentCollection.upsert(docId,doc,function(err, result) {
+ 	cbContentBucket.upsert(docId,doc,function(err, result) {
  			if (err) {
- 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbContentBucket});
+ 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
  				return;
  			}
  			callback(result);
@@ -281,9 +278,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function upsertDocumentInMasterBucket(docId,doc,callback){
- 		cbMasterCollection.upsert(docId,doc,function(err, result) {
+ 		cbMasterBucket.upsert(docId,doc,function(err, result) {
  			if (err) {
- 					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbMasterBucket});
+ 					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
  				return;
  			}
  			callback(result);
@@ -300,9 +297,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function upsertDocumentInDefinitionBucket(docId,doc,callback){
- 		cbDefinitionCollection.upsert(docId,doc,function(err, result) {
+ 		cbDefinitionBucket.upsert(docId,doc,function(err, result) {
  			if (err) {
- 					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbDefinitionBucket});
+ 					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
  				return;
  			}
  			callback(result);
@@ -329,9 +326,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function insertDocumentInContentBucket(docId,doc,callback){
- 	cbContentCollection.insert(docId,doc,function(err, result) {
+ 	cbContentBucket.insert(docId,doc,function(err, result) {
  			if (err) {
- 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbContentBucket});
+ 				callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbContentBucket});
  				return;
  			}
  			callback(result);
@@ -347,9 +344,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function insertDocumentInMasterBucket(docId,doc,callback){
- 		cbMasterCollection.insert(docId,doc,function(err, result) {
+ 		cbMasterBucket.insert(docId,doc,function(err, result) {
  			if (err) {
- 					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbMasterBucket});
+ 					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbMasterBucket});
  				return;
  			}
  			callback(result);
@@ -366,9 +363,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * updating the doc using docId
   */
  function insertDocumentInDefinitionBucket(docId,doc,callback){
- 		cbDefinitionCollection.insert(docId,doc,function(err, result) {
+ 		cbDefinitionBucket.insert(docId,doc,function(err, result) {
  			if (err) {
- 					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+cbDefinitionBucket});
+ 					callback({"error":"while replacing  the doc with id "+docId+"  from bucket "+config.cbDefinitionBucket});
  				return;
  			}
  			callback(result);
@@ -393,9 +390,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   */
  function executeViewInContentBucket(query,callback){
  	//console.log(query);
- 	cluster.query(query, function(err, results) {
+ 	cbContentBucket.query(query, function(err, results) {
  		if(err){
- 			callback({"error":"while executing view in "+cbContentBucket,"query":query});
+ 			callback({"error":"while executing view in "+config.cbContentBucket,"query":query});
  			return;
  		}
  		callback(results);
@@ -410,9 +407,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * 
   */
  function executeViewInMasterBucket(query,callback){
- 	cluster.query(query, function(err, results) {
+ 	cbMasterBucket.query(query, function(err, results) {
  		if(err){
- 			callback({"error":"while executing view in "+cbMasterBucket,"query":query});
+ 			callback({"error":"while executing view in "+config.cbMasterBucket,"query":query});
  			return;
  		}
  		callback(results);
@@ -429,9 +426,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
   * 
   */
  function executeViewInDefinitionBucket(query,callback){
- 	cluster.query(query, function(err, results) {
+ 	cbDefinitionBucket.query(query, function(err, results) {
  		if(err){
- 			callback({"error":"while executing view in "+cbDefinitionBucket,"query":query});
+ 			callback({"error":"while executing view in "+config.cbDefinitionBucket,"query":query});
  			return;
  		}
  		callback(results);
@@ -453,9 +450,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
 
 
  function removeDocumentByIdFromMasterBucket(docId,callback){
- 	cbMasterCollection.remove(docId,function(err, result) {
+ 	cbMasterBucket.remove(docId,function(err, result) {
  		  if (err) {
- 			callback({"error":"while removing the doc with id "+docId+"  from bucket"+cbMasterBucket});
+ 			callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
  			  return;
  		  }
  		  callback(result);
@@ -465,9 +462,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
 
 
  function removeDocumentByIdFromContentBucket(docId,callback){
- 	cbContentCollection.remove(docId,function(err, result) {
+ 	cbContentBucket.remove(docId,function(err, result) {
  		  if (err) {
- 			callback({"error":"while removing the doc with id "+docId+"  from bucket"+cbContentBucket});
+ 			callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbContentBucket});
  			  return;
  		  }
  		  callback(result);
@@ -477,9 +474,9 @@ var cbDefinitionCollection=cbDefinitionBucket.defaultCollection();
 
 
  function removeDocumentByIdFromDefinitionBucket(docId,callback){
- 	cbDefinitionCollection.remove(docId,function(err, result) {
+ 	cbDefinitionBucket.remove(docId,function(err, result) {
  		  if (err) {
- 			callback({"error":"while removing the doc with id "+docId+"  from bucket"+cbDefinitionBucket});
+ 			callback({"error":"while removing the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
  			  return;
  		  }
  		  callback(result);
@@ -1538,7 +1535,7 @@ function evaluateExpression(expression,recordId,callback){
 			var record=recordRes.value;
 			var processed="record";
 			proceedToNext();
-			async function proceedToNext(){
+			function proceedToNext(){
 				expression=expression.replace(expression.split(/->|\./g)[0],"");
 				if(expression!="" && expression.split(/->|\./g).length>0){
 					if(expression.indexOf("->")==0){
@@ -1546,8 +1543,7 @@ function evaluateExpression(expression,recordId,callback){
 						record[expression.split(/->|\./g)[0]]=[];
 						processed+="."+expression.split(/->|\./g)[0];
 						
-						//var query = ViewQuery.from("relation","getRelated").key([recordId,expression.split(/->|\./g)[0]]).reduce(false).stale(ViewQuery.Update.NONE);
-						var query=await cbContentBucket.viewQuery("relation","getRelated",{key:([recordId,expression.split(/->|\./g)[0]]).reduce(false)});
+						var query = ViewQuery.from("relation","getRelated").key([recordId,expression.split(/->|\./g)[0]]).reduce(false).stale(ViewQuery.Update.NONE);
 						executeViewInContentBucket(query,function(junctionRecords){
 							console.log(junctionRecords.length);
 							processJunctionRecords(0);

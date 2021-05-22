@@ -1,16 +1,12 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://52.76.7.57");//52.77.86.146");//52.76.7.57");
+var cluster = new couchbase.Cluster("couchbase://52.76.7.57");//52.77.86.146");//52.76.7.57");
 var ViewQuery = couchbase.ViewQuery;
-var bucket=cluster.bucket("records");
-//var query = ViewQuery.from("Test", "test").skip(160)//.limit(1).stale(ViewQuery.Update.BEFORE);
-var query=await bucket.viewQuery("Test", "test");
+var bucket=cluster.openBucket("records");
+var query = ViewQuery.from("Test", "test").skip(160)//.limit(1).stale(ViewQuery.Update.BEFORE);
 
 
 
-cluster.query(query, function(err, data) {
+bucket.query(query, function(err, data) {
 		if(err){
 			console.log(err);
 			return;
@@ -21,12 +17,11 @@ cluster.query(query, function(err, data) {
 	}
 	updateProduct(0);
 
-	async function updateProduct(index){
+	function updateProduct(index){
 		var docu=data[index].value;
 		var architects=[];
-		//var innerQuery = ViewQuery.from("relation","getRelated").key([docu.recordId,"hasProvider"]).reduce(false).stale(ViewQuery.Update.NONE);
-		var innerQuery=await bucket.viewQuery("relation","getRelated",{key:[docu.recordId,"hasProvider"]},reduce(false));
-		cluster.query(innerQuery,function(err2,response){
+		var innerQuery = ViewQuery.from("relation","getRelated").key([docu.recordId,"hasProvider"]).reduce(false).stale(ViewQuery.Update.NONE);
+		bucket.query(innerQuery,function(err2,response){
 			if(err2){
 				nextProcess();
 				return;

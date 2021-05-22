@@ -6,19 +6,11 @@ var urlParser=require('./URLParser');
 var global=require("../utils/global.js");
 
 var logger = require('../services/logseed').logseed;
-var reactConfig=require('../../config/ReactConfig');
-var config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
 /**
  * 
  * @param data {schema, dependentSchema,cloudPointHostId}
  * @param callback
  */
-
- var cbMasterBucket=cluster.bucket("schemas");
- var cbContentBucket=cluster.bucket("records");
- var cbDefinitionBucket=cluster.bucket("definitions");
-
 function getMainSchema(data,callback){
 	var cloudPointHostId=data.cloudPointHostId;
 	CouchBaseUtil.getDocumentByIdFromMasterBucket(data.schema,function(response){
@@ -96,10 +88,9 @@ exports.getDefinition=getDefinition;
  * get all schemas structs dependent schemas
  * @param callback
  */
- async function getAllSchemasStructsDependentSchemas(cloudPointHostId,callback){
-	//var query = ViewQuery.from("schema","getAllSchemasStructsDependentSchemas").keys(["master",cloudPointHostId]).stale(ViewQuery.Update.NONE);
-	var response= await cbMasterBucket.viewQuery("schema","getAllSchemasStructsDependentSchemas",{keys:["master",cloudPointHostId]}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInMasterBucket(query,function(response){
+function getAllSchemasStructsDependentSchemas(cloudPointHostId,callback){
+	//stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInMasterBucket("schema","getAllSchemasStructsDependentSchemas",{keys:[["master",cloudPointHostId]]},function(response){
 		var config=ContentServer.getConfigByHostId(cloudPointHostId);
 		if(config.hostSpecificSchemas && !response.error && response.length>0){
 			for(var i=0;i<response.length;i++){
@@ -118,14 +109,13 @@ exports.getDefinition=getDefinition;
 		}
 		
 		callback(response);
-	//});	
+	});	
 }
 exports.getAllSchemasStructsDependentSchemas=getAllSchemasStructsDependentSchemas;
 
 function getAllSchemaNamesOfHost(host,callback){
-	//var query = ViewQuery.from("schema", "getAllSchemas").keys(["master",host]).stale(ViewQuery.Update.NONE);
-	var results=cbMasterBucket.viewQuery("schema", "getAllSchemas",{keys:["master",host]}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+	var query = ViewQuery.from("schema", "getAllSchemas").keys(["master",host]).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -139,14 +129,13 @@ function getAllSchemaNamesOfHost(host,callback){
 			}
 			callback(rowData);
 		}
-	//});
+	});
 }
 exports.getAllSchemaNamesOfHost=getAllSchemaNamesOfHost;
 
 function getAllLandingPages(host,callback){
-	//var query = ViewQuery.from("definitions", "landingPages").key(host).stale(ViewQuery.Update.NONE);
-	var results=cbDefinitionBucket.viewQuery("definitions", "landingPages",{key:host}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInDefinitionBucket(query, function(results) {
+	var query = ViewQuery.from("definitions", "landingPages").key(host).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInDefinitionBucket(query, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -160,14 +149,13 @@ function getAllLandingPages(host,callback){
 			}
 			callback(rowData);
 		}
-	//});
+	});
 }
 exports.getAllLandingPages=getAllLandingPages;
 
-async function getAllRoles(host,callback){
-	//var query = ViewQuery.from("Role", "allRoles").key(host).stale(ViewQuery.Update.NONE);
-	var results=await cbContentBucket.viewQuery("Role", "allRoles",{key:host}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+function getAllRoles(host,callback){
+	var query = ViewQuery.from("Role", "allRoles").key(host).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -181,7 +169,7 @@ async function getAllRoles(host,callback){
 			}
 			callback(rowData);
 		}
-	//});
+	});
 }
 exports.getAllRoles=getAllRoles;
 /**
@@ -206,9 +194,8 @@ exports.guid=guid;
  * @param callback
  */
 function getAllTriggers(cloudPointHostId,callback){
-	//var query = ViewQuery.from("Trigger","getAllTriggers").key([cloudPointHostId]).stale(ViewQuery.Update.NONE);
-	var response=cbMasterBucket.viewQuery("Trigger","getAllTriggers",{key:cloudPointHostId}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInMasterBucket(query,function(response){
+	var query = ViewQuery.from("Trigger","getAllTriggers").key([cloudPointHostId]).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInMasterBucket(query,function(response){
 		
 		/*
 		var config=ContentServer.getConfigByHostId(cloudPointHostId);
@@ -229,7 +216,7 @@ function getAllTriggers(cloudPointHostId,callback){
 		}*/
 		
 		callback(response);
-	//});	
+	});	
 }
 exports.getAllTriggers=getAllTriggers;
 
@@ -241,9 +228,8 @@ exports.getAllTriggers=getAllTriggers;
  * @param callback
  */
 function getAllRestApiServices(cloudPointHostId,callback){
-	//var query = ViewQuery.from("RestAPI","getAllRestApiServices").key([cloudPointHostId]).stale(ViewQuery.Update.NONE);
-	var response=cbMasterBucket.viewQuery("RestAPI","getAllRestApiServices",{key:cloudPointHostId}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInMasterBucket(query,function(response){
+	var query = ViewQuery.from("RestAPI","getAllRestApiServices").key([cloudPointHostId]).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInMasterBucket(query,function(response){
 		
 		/*
 		var config=ContentServer.getConfigByHostId(cloudPointHostId);
@@ -264,7 +250,7 @@ function getAllRestApiServices(cloudPointHostId,callback){
 		}*/
 		
 		callback(response);
-	//});	
+	});	
 }
 exports.getAllRestApiServices=getAllRestApiServices;
 

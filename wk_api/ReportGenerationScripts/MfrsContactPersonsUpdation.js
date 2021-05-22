@@ -1,15 +1,11 @@
 var couchbase = require('couchbase');
-
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
 var records="records";
 var schemas="schemas";
-var cbContentBucket=cluster.bucket(records);
-var cbMasterBucket=cluster.bucket(schemas);
+var cbContentBucket=cluster.openBucket(records);
+var cbMasterBucket=cluster.openBucket(schemas);
 var fs=require("fs");
 
 var contactPersons=[
@@ -4425,7 +4421,7 @@ function update(index){
 		console.log("PROCESSING:"+(index+1)+"  -> "+cp["Manufacturer Name"]+" ->"+cp["Record Id"]);
 		if(cp["Record Id"] && cp["Record Id"]!="NF"){
 				var query = N1qlQuery.fromString("SELECT raw records FROM records  WHERE recordId=$1 ");
-				cluster.query(query,[cp["Record Id"]] ,function(err, result) {
+				cbContentBucket.query(query,[cp["Record Id"]] ,function(err, result) {
 					var mfrRecord=result[0];
 					mfrRecord.contactPerson={
 						authorizationType:cp["Authorization Type"],
@@ -4434,13 +4430,13 @@ function update(index){
 						email:cp["POC Email"],
 						telephone:"+91-"+cp["POC Contact"]
 					};
-					cbContentCollection.upsert(mfrRecord.recordId,mfrRecord,function(err, result) {
+					cbContentBucket.upsert(mfrRecord.recordId,mfrRecord,function(err, result) {
 						update(index+1);
 					});
 				});
 		}else if(cp["Manufacturer Name"].trim()){
 				var query = N1qlQuery.fromString("SELECT recordId,name,contactPerson FROM records  WHERE docType=$1 AND lower(name) like $2 ");
-				cluster.query(query,["Manufacturer","%"+cp["Manufacturer Name"].trim().toLowerCase()+"%"] ,function(err, result) {
+				cbContentBucket.query(query,["Manufacturer","%"+cp["Manufacturer Name"].trim().toLowerCase()+"%"] ,function(err, result) {
 					if(result.length>0){
 						cp.expectedRecs=result;
 						notFound.push(cp);

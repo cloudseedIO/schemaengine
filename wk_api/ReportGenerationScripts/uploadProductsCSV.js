@@ -4,8 +4,8 @@ var ViewQuery = couchbase.ViewQuery;
 var records="records";
 var schemas="schemas";
 
-var cbContentBucket=cluster.bucket(records);
-var cbMasterBucket=cluster.bucket(schemas);
+var cbContentBucket=cluster.openBucket(records);
+var cbMasterBucket=cluster.openBucket(schemas);
 var global=require('../utils/global.js');
 var cloudinary = require('cloudinary');
 

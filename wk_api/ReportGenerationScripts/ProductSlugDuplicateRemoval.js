@@ -1,11 +1,8 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
-var bucket=cluster.bucket("records");
+var bucket=cluster.openBucket("records");
 
 /*
 var query = ViewQuery.from("Test", "test")//.skip(0).limit(1).stale(ViewQuery.Update.BEFORE);
@@ -54,7 +51,7 @@ bucket.query(query, function(err, data) {
 function executeView(querystring,params,callback){
 	var query = N1qlQuery.fromString(querystring);
 	query.adhoc = false;
-	cluster.query(query, params,function(err, results) {
+	bucket.query(query, params,function(err, results) {
 		if(err){
 			if(typeof callback=="function")
 				callback({"error":err,"query":query,"params":params});

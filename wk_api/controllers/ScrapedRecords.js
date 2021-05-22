@@ -14,8 +14,8 @@ var ViewQuery = couchbase.ViewQuery;
 var records="records";
 var schemas="schemas";
 
-var cbContentBucket=cluster.bucket(records);
-var cbMasterBucket=cluster.bucket(schemas);
+var cbContentBucket=cluster.openBucket(records);
+var cbMasterBucket=cluster.openBucket(schemas);
 var global=require('../utils/global.js');
 var cloudinary = require('cloudinary');
 var ViewQuery = couchbase.ViewQuery;
@@ -44,7 +44,7 @@ function getScrapedRecs(data, callback){
 	
 	var query="SELECT * FROM records WHERE `Manufacturer`='"+manufacturerId+"' AND `@derivedObjName`='"+dependentSchema+"' AND `$status`='under_review'  LIMIT 1";
 	try {
-		cluster.query(query, function(err, res){
+		cbContentBucket.query(N1qlQuery.fromString(query), function(err, res){
 			if(err){
 				console.log(err); 
 				callback(err);

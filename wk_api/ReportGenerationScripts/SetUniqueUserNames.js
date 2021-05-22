@@ -1,16 +1,12 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");//52.77.86.146");//52.76.7.57");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");//52.77.86.146");//52.76.7.57");
 var ViewQuery = couchbase.ViewQuery;
-var cbContentBucket=cluster.bucket("records");
-var cbContentCollection=cbContentBucket.defaultCollection();
-//var query = ViewQuery.from("Test", "test")//.skip(40000).limit(10000).stale(ViewQuery.Update.BEFORE);
-var query=await cbContentBucket.viewQuery("Test", "test");
+var bucket=cluster.openBucket("records");
+var query = ViewQuery.from("Test", "test")//.skip(40000).limit(10000).stale(ViewQuery.Update.BEFORE);
 
 
-cluster.query(query, function(err, data) {
+
+bucket.query(query, function(err, data) {
 		if(err){
 			console.log(err);
 			return;
@@ -155,7 +151,7 @@ cluster.query(query, function(err, data) {
 		
 		
 		console.log("Updating ........."+ (index*1+1) +"          "+docu.recordId+"             ");	
-		cbContentCollection.upsert(docu.recordId,docu,function(err, result) {
+		bucket.upsert(docu.recordId,docu,function(err, result) {
 			if (err) { console.log(err); }
 			if((index+1)<data.length){
 				updateProduct(index+1);

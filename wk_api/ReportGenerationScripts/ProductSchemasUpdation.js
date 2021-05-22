@@ -1,21 +1,15 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
 var records="records";
 var schemas="schemas";
-var cbContentBucket=cluster.bucket(records);
-var cbMasterBucket=cluster.bucket(schemas);
-var cbContentCollection=cbContentCollection.defaultCollection();
-var cbMasterCollection=cbMasterBucket.defaultCollection();
+var cbContentBucket=cluster.openBucket(records);
+var cbMasterBucket=cluster.openBucket(schemas);
 function toTitleCase(str){
     return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
 }
-//var query = ViewQuery.from("Test", "test")//.skip(0).limit(1).stale(ViewQuery.Update.BEFORE);
-var query=await cbMasterBucket.viewQuery("Test", "test");
-cluster.query(query, function(err, data) {
+var query = ViewQuery.from("Test", "test")//.skip(0).limit(1).stale(ViewQuery.Update.BEFORE);
+cbMasterBucket.query(query, function(err, data) {
 	if(err){
 		console.log(err);
 		return;
@@ -93,7 +87,7 @@ cluster.query(query, function(err, data) {
 			});
 		}*/
 		console.log("Updating ........."+ (index*1+1) +"          "+data[index].id+"             ");	
-		cbMasterCollection.upsert(data[index].id,docu,function(err, result) {
+		cbMasterBucket.upsert(data[index].id,docu,function(err, result) {
 			if (err) { console.log(err); }
 			if((index+1)<data.length){
 				updateProduct(index+1);

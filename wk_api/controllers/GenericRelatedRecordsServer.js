@@ -2,6 +2,7 @@ var urlParser=require('./URLParser');
 var couchbase = require('couchbase');
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
+var QuerywScanConsistency= couchbase.QuerywScanConsistency;
 var CouchBaseUtil=require('./CouchBaseUtil');
 var limitCount=require("../utils/global.js").limitCount*2+1//19;// 9
 var utility=require('./utility.js');
@@ -15,18 +16,12 @@ var logQueries=false;
  * @param callback
  */
 //Used in Hard Delete of parent record should trigger deletion of all its child records(GenericRecordServer:removeRecord)
-async function getRelated(request,callback){
+function getRelated(request,callback){
 	var data=urlParser.getRequestBody(request);
-	//var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName]).reduce(false);
-	var viewResult=await cbContentBucket.viewQuery("relation","getRelated",{key:[data.recordId,data.relationName]}).catch(e=>{console.log(e);});
-	// if(typeof data.skip != "undefined"){
-	// 	query.skip(data.skip).limit(limitCount);
-	// }
-	// //query.stale(ViewQuery.Update.BEFORE);
-	// CouchBaseUtil.executeViewInContentBucket(query,function(response){
-	// 	callback(response);
-	// });
-	return viewResult;
+	CouchBaseUtil.executeViewInContentBucket("relation","getRelated",
+	{key:[data.recordId,data.relationName],reduce:false,skip:data.skip,limit:data.skip?limitCount:undefined,stale:QuerywScanConsistency.RequestPlus},function(response){
+		callback(response);
+	});
 }
 exports.getRelated=getRelated;
 
@@ -37,19 +32,17 @@ exports.getRelated=getRelated;
  * @param callback
  * check whether the given records are related or not
  */
-async function checkRelated(request,callback){
+function checkRelated(request,callback){
 	var data=urlParser.getRequestBody(request);
 	var key=[data.recordId,data.relationName,data.relatedRecordId];
-	//var query = ViewQuery.from("relation","checkRelated").key(key).stale(ViewQuery.Update.NONE);
-	var viewResult=await cbContentBucket.viewQuery("relation","checkRelated",{key:key}).catch(e=>{console.log(e);});
-	// CouchBaseUtil.executeViewInContentBucket(query,function(result){
-	// 	if(result.length!=0){
-	// 		callback({result:"related"});
-	// 	}else{
-	// 		callback({result:"notRelated"});
-	// 	}
-	// });
-	return viewResult;
+	var query = ViewQuery.from("relation","checkRelated").key(key).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket(query,function(result){
+		if(result.length!=0){
+			callback({result:"related"});
+		}else{
+			callback({result:"notRelated"});
+		}
+	});
 }
 exports.checkRelated=checkRelated;
 
@@ -63,40 +56,36 @@ exports.checkRelated=checkRelated;
  * checks whther the two records aare related or  not
  * if relation exists returns related record Id(Junction recordId)
  */
-async function getRelatedRecordId(data,callback){
+function getRelatedRecordId(data,callback){
 	var key=[data.source,data.relationName,data.target];
-	//var query = ViewQuery.from("relation","checkRelated").key(key).stale(ViewQuery.Update.NONE);
-	var viewResult=await cbContentBucket.viewQuery("relation","checkRelated",{key:key}).catch(e=>{console.log(e);});
-	// CouchBaseUtil.executeViewInContentBucket(query,function(result){
-	// 	if(result.length!=0){
-	// 		callback({id:result[0].id});
-	// 	}else{
-	// 		callback({error:"notRelated"});
-	// 	}
-	// });
-	return viewResult;
+	var query = ViewQuery.from("relation","checkRelated").key(key).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket(query,function(result){
+		if(result.length!=0){
+			callback({id:result[0].id});
+		}else{
+			callback({error:"notRelated"});
+		}
+	});
 }
 exports.getRelatedRecordId=getRelatedRecordId;
 
 //returns juction records count for a relation
-async function getRelatedCount(request,callback){
+function getRelatedCount(request,callback){
 	var data=urlParser.getRequestBody(request);
-		//var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName])// .group(2)//.stale(ViewQuery.Update.NONE);
-		var viewResult=await cbContentBucket.viewQuery("relation","getRelated",{key:[data.recordId,data.relationName]}).catch(e=>{console.log(e);});
-		// CouchBaseUtil.executeViewInContentBucket(query,function(response){
-		// 	var count=0;
-		// 	if(response.length>0 && response[0].value){
-		// 		count=response[0].value;
-		// 	}
-		// 	callback(count);
-		// });
-		return viewResult;
+		var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName])// .group(2)//.stale(ViewQuery.Update.NONE);
+		CouchBaseUtil.executeViewInContentBucket(query,function(response){
+			var count=0;
+			if(response.length>0 && response[0].value){
+				count=response[0].value;
+			}
+			callback(count);
+		});
 }
 exports.getRelatedCount=getRelatedCount;
 
 
 //Get Related records
-async function getRelatedRecords(request,callback){
+function getRelatedRecords(request,callback){
 	var data=urlParser.getRequestBody(request);
 	if(data.rootSchema && (data.sortBy || data.filterRecords)){
 		//Following code added to support Sorting feature with n1ql query
@@ -145,7 +134,7 @@ async function getRelatedRecords(request,callback){
 					console.log(queryString);
 					console.log("==================");
 				}
-				CouchBaseUtil.executeN1QL(queryString,[],function(results){
+				CouchBaseUtil.executeN1QL(N1qlQuery.fromString(queryString),[],function(results){
 					if(data.fromTrigger){
 						if(typeof callback=="function")
 							callback({
@@ -183,48 +172,28 @@ async function getRelatedRecords(request,callback){
 			});
 		});
 	}else{
-		//var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName]).reduce(false);
-		var viewResult=await cbContentBucket.viewQuery("relation","getRelated",{key:[data.recordId,data.relationName]}).catch(e=>{console.log(e);});
-		// if(typeof data.skip != "undefined"){
-		// 	query.skip(data.skip).limit(limitCount);
-		// }
-		// // if(data.fromTrigger){
-		// // 	query.stale(ViewQuery.Update.BEFORE);
-		// // }else{
-		// // 	query.stale(ViewQuery.Update.NONE)
-		// // }
-		// CouchBaseUtil.executeViewInContentBucket(query,function(response){
-		// 	var recordIds=[];
-		// 	for(var i=0;i<response.length;i++){
-		// 		recordIds.push(response[i].id);
-		// 	}
-		// 	if(recordIds.length!=0){
-		// 		/*{
-		// 			recordIds:recordIds,
-		// 			rootSchema:data.rootSchema,
-		// 			relationRefSchema:data.relationRefSchema,
-		// 			userId:data.userId,
-		// 			org:data.org
-		// 		}*/
-		// 		request.body.recordIds=recordIds;
-		// 		request.body.rootSchema=data.rootSchema;
-		// 		request.body.relationRefSchema=data.relationRefSchema;
-		// 		request.body.userId=data.userId;
-		// 		request.body.org=data.org;
-
-		// 		getRelationRecords(request,function(relResp){
-		// 			callback(relResp);
-		// 		});
-		// 	}else{
-		// 		callback([]);
-		// 	}
-		// });
-
-		var recordIds=[];
-			for(var i=0;i<viewResult.length;i++){
-				recordIds.push(viewResult[i].id);
+		var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName]).reduce(false);
+		if(typeof data.skip != "undefined"){
+			query.skip(data.skip).limit(limitCount);
+		}
+		if(data.fromTrigger){
+			query.stale(ViewQuery.Update.BEFORE);
+		}else{
+			query.stale(ViewQuery.Update.NONE)
+		}
+		CouchBaseUtil.executeViewInContentBucket(query,function(response){
+			var recordIds=[];
+			for(var i=0;i<response.length;i++){
+				recordIds.push(response[i].id);
 			}
 			if(recordIds.length!=0){
+				/*{
+					recordIds:recordIds,
+					rootSchema:data.rootSchema,
+					relationRefSchema:data.relationRefSchema,
+					userId:data.userId,
+					org:data.org
+				}*/
 				request.body.recordIds=recordIds;
 				request.body.rootSchema=data.rootSchema;
 				request.body.relationRefSchema=data.relationRefSchema;
@@ -237,6 +206,7 @@ async function getRelatedRecords(request,callback){
 			}else{
 				callback([]);
 			}
+		});
 	}
 }
 exports.getRelatedRecords=getRelatedRecords;
@@ -304,7 +274,7 @@ function getRelationRecords(request,callback){
 			var keys=GenericSummeryServer.getSummaryKeys(relSchema).keys;
 			//var queryString = "SELECT `"+keys.join("`,`")+"` FROM `records` WHERE docType= $1  AND `recordId` IN $2";
 			var queryString = "SELECT `"+keys.join("`,`")+"` FROM `records` USE KEYS $2";
-			CouchBaseUtil.executeN1QL(queryString,[data.relationRefSchema,data.recordIds],function(results){
+			CouchBaseUtil.executeN1QL(N1qlQuery.fromString(queryString),[data.relationRefSchema,data.recordIds],function(results){
 				if(results.error){
 					callback(results);
 					return;
@@ -352,7 +322,7 @@ function getSearchResults(request,callback){
 		if(schema.error){callback(schema);return;}
 		var keys=GenericSummeryServer.getSummaryKeys(schema).keys;
 		//var query = N1qlQuery.fromString("SELECT `"+keys.join("`,`")+"` FROM `records` WHERE docType=$1 AND `recordId` IN $2");
-		var query = "SELECT `"+keys.join("`,`")+"` FROM `records` USE KEYS $2";
+		var query = N1qlQuery.fromString("SELECT `"+keys.join("`,`")+"` FROM `records` USE KEYS $2");
 		CouchBaseUtil.executeN1QL(query,[data.schema,data.recordIds],function(results){
 			var recs=[];
 			for(var index in results){

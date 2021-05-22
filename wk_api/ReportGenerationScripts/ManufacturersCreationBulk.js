@@ -1,13 +1,9 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
 var records = "records";
-var cbContentBucket = cluster.bucket(records);
-var cbContentCollection=cbContentBucket.defaultCollection();
+var cbContentBucket = cluster.openBucket(records);
 var global = require('../utils/global.js');
 var cloudinary = require('cloudinary');
 var categories = require('./productCategories.json');
@@ -3618,7 +3614,7 @@ var manufacturers = [
 function executeView(querystring, params, callback) {
     var query = N1qlQuery.fromString(querystring);
     query.adhoc = false;
-    cluster.query(query, params, function(err, results) {
+    cbContentBucket.query(query, params, function(err, results) {
         if (err) {
             if (typeof callback == "function")
                 callback({
@@ -3848,7 +3844,7 @@ function createMFRRecord(data, callback) {
     }
 
     function doneCreation() {
-        cbContentCollection.upsert(record.recordId, record, function(err, result) {
+        cbContentBucket.upsert(record.recordId, record, function(err, result) {
             if (err) {
                 if (typeof callback == "function")
                     callback({
@@ -3942,7 +3938,7 @@ function createMFRProCatRecord(catId, imageId, mfrRecord, callback) {
             }
 
             function doneCreation() {
-                cbContentCollection.upsert(record.recordId, record, function(err, result) {
+                cbContentBucket.upsert(record.recordId, record, function(err, result) {
                     if (err) {
                         if (typeof callback == "function")
                             callback({

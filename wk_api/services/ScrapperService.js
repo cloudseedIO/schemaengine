@@ -96,7 +96,7 @@ exports.service = function(request,response){
 			response.send("Invalid configuration");
 		}
 	}else if(operationValue=="getSitemap"){
-		var query="SELECT * FROM sitemaps WHERE meta.id()=$1";
+		var query=N1qlQuery.fromString("SELECT * FROM sitemaps WHERE meta.id()=$1");
 		query.adhoc = false;
 		CouchBaseUtil.executeN1QL(query,[data.id],function(response){
 			var sitemap;

@@ -1,20 +1,16 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
 var records="records";
-var cbContentBucket=cluster.bucket(records);
-var cbContentCollection=cbContentBucket.defaultCollection();
+var cbContentBucket=cluster.openBucket(records);
 var global=require('../utils/global.js');
 var dateUpdated="2018/09/14 17:20:00 GMT+0530";
 var Manufacturers=[];
 function executeView(querystring,params,callback){
 	var query = N1qlQuery.fromString(querystring);
 	query.adhoc = false;
-	cluster.query(query, params,function(err, results) {
+	cbContentBucket.query(query, params,function(err, results) {
 		if(err){
 			if(typeof callback=="function")
 				callback({"error":err,"query":query,"params":params});
@@ -26,7 +22,7 @@ function executeView(querystring,params,callback){
 }
 
 function getDocumentFromContent(docId,callback){
-	cbContentCollection.get(docId,function(err, result){
+	cbContentBucket.get(docId,function(err, result){
 		if(err){
 			if(typeof callback=="function")
 				callback({"error":err});

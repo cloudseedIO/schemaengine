@@ -8,15 +8,15 @@
  */
 
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://35.154.234.150");// 52.77.86.146");//52.76.7.57");
+var cluster = new couchbase.Cluster("couchbase://35.154.234.150");// 52.77.86.146");//52.76.7.57");
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
 
-var cbContentBucket = cluster.bucket("records");
-var cbMasterBucket = cluster.bucket("schemas");
+var records = "records";
+var schemas = "schemas";
+
+var cbContentBucket = cluster.openBucket(records);
+var cbMasterBucket = cluster.openBucket(schemas);
 // var global=require('../utils/global.js');
 var cloudinary = require('cloudinary');
 
@@ -2927,12 +2927,12 @@ function temp(a){
 
 
 
-async function checkForRecord(scrappedRec, callback){
+function checkForRecord(scrappedRec, callback){
 	if(dataParseTemplate.checkForRecord){
 	var mfrProductNo=scrappedRec.mfrProductNo;
 	mfrProductNo = mfrProductNo?mfrProductNo.trim():mfrProductNo;
 
-	await cluster.query("SELECT * FROM records WHERE `Manufacturer`='Manufacturere2b399ea-ad89-0ecf-5206-5c564f589bf7' AND `mfrProductNo`='"+mfrProductNo+"'", function(err, res){
+	cbContentBucket.query(N1qlQuery.fromString("SELECT * FROM records WHERE `Manufacturer`='Manufacturere2b399ea-ad89-0ecf-5206-5c564f589bf7' AND `mfrProductNo`='"+mfrProductNo+"'"), function(err, res){
 	if(err){
 	console.log(err);
 	callback(err);

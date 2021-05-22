@@ -1,15 +1,13 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
+var cluster = new couchbase.Cluster("couchbase://db.wishkarma.com");
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
-var cbContentBucket=cluster.bucket("records");
-var cbMasterBucket=cluster.bucket("schemas");
+var records="records";
+var schemas="schemas";
+var cbContentBucket=cluster.openBucket(records);
+var cbMasterBucket=cluster.openBucket(schemas);
 
-//var query = ViewQuery.from("Test", "NonWordCharsCheck");//.skip(0).limit(1).stale(ViewQuery.Update.BEFORE);
-var query=await cbContentBucket.viewQuery("Test", "NonWordCharsCheck");
+var query = ViewQuery.from("Test", "NonWordCharsCheck");//.skip(0).limit(1).stale(ViewQuery.Update.BEFORE);
 /*
  function (doc, meta) {
   
@@ -25,7 +23,7 @@ var query=await cbContentBucket.viewQuery("Test", "NonWordCharsCheck");
 function executeView(querystring,params,callback){
 	var query = N1qlQuery.fromString(querystring);
 	query.adhoc = false;
-	cluster.query(query, params,function(err, results) {
+	cbContentBucket.query(query, params,function(err, results) {
 		if(err){
 			if(typeof callback=="function")
 				callback({"error":err,"query":query,"params":params});
@@ -37,7 +35,7 @@ function executeView(querystring,params,callback){
 }
 
 
-cluster.query(query, function(err, data) {
+cbContentBucket.query(query, function(err, data) {
 		if(err){
 			console.log(err);
 			return;

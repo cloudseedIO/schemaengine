@@ -24,8 +24,6 @@ cloudinary.config({
 
 var logger = require('../services/logseed').logseed;
 
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-var cbContentBucket=cluster.bucket("records");
 
 exports.service = function(request,response){
 	var hostname=request.headers.host.split(":")[0];
@@ -199,16 +197,15 @@ function getUserById(data,callback){
 }
 exports.getUserById=getUserById;
 
-async function getUniqueUserName(data,callback){
-	//var query = ViewQuery.from("User", "getUniqueUserName").key(data.recordId).stale(ViewQuery.Update.NONE);
-	var response=await cbContentBucket.viewQuery("User", "getUniqueUserName",{key:data.recordId});
-	//CouchBaseUtil.executeViewInContentBucket(query,function(response){
+function getUniqueUserName(data,callback){
+	var query = ViewQuery.from("User", "getUniqueUserName").key(data.recordId).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket(query,function(response){
 		if(response && response.length && response.length==1 && response[0].value){
 			callback(response[0].value);
 		}else{
 			callback("");
 		}
-	//});
+	});
 }
 exports.getUniqueUserName=getUniqueUserName;
 
@@ -235,10 +232,9 @@ function updateUser(UserDoc,callback){
 exports.updateUser=updateUser;
 
 
-async function validateUser(data,callback){
-	//var query = ViewQuery.from("User", "UserPassword").key(data.userName).stale(ViewQuery.Update.BEFORE);
-	var results=await cbContentBucket.viewQuery("User", "UserPassword",{key:data.userName}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(query,function(results){
+function validateUser(data,callback){
+	var query = ViewQuery.from("User", "UserPassword").key(data.userName).stale(ViewQuery.Update.BEFORE);
+	CouchBaseUtil.executeViewInContentBucket(query,function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -248,14 +244,13 @@ async function validateUser(data,callback){
 		}else{
 			callback("invaliduser");
 		}
-	//});		
+	});		
 }
 exports.validateUser=validateUser;
 
-async function getUserDocByUserName(data,callback){
-	//var query = ViewQuery.from("User", "UserByLoginId").key(data.userName).stale(ViewQuery.Update.BEFORE);
-	var results=await cbContentBucket.viewQuery("User", "UserByLoginId",{key:data.userName}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(query,function(results){
+function getUserDocByUserName(data,callback){
+	var query = ViewQuery.from("User", "UserByLoginId").key(data.userName).stale(ViewQuery.Update.BEFORE);
+	CouchBaseUtil.executeViewInContentBucket(query,function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -266,13 +261,12 @@ async function getUserDocByUserName(data,callback){
 			rowData.push(results[i].value);	
 		}
 		callback(rowData[0]);
-	//});	
+	});	
 }
 exports.getUserDocByUserName=getUserDocByUserName;
-async function getUserDocByEmail(data,callback){
-	//var query = ViewQuery.from("User", "UserByEmail").key((data.email).toLowerCase()).stale(ViewQuery.Update.BEFORE);
-	var results=await cbContentBucket.viewQuery("User", "UserByEmail",{key:(data.email).toLowerCase()}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(query,function(results){
+function getUserDocByEmail(data,callback){
+	var query = ViewQuery.from("User", "UserByEmail").key((data.email).toLowerCase()).stale(ViewQuery.Update.BEFORE);
+	CouchBaseUtil.executeViewInContentBucket(query,function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -463,7 +457,7 @@ async function getUserDocByEmail(data,callback){
 		}
 	
 		
-	//});	
+	});	
 }
 exports.getUserDocByEmail=getUserDocByEmail;
 
@@ -482,10 +476,9 @@ function get_gravatar(email, size) {
 exports.get_gravatar=get_gravatar;
 */}
 
-async function getUserShortDetails(data,callback){
-	//var query = ViewQuery.from("User", "UserDetail").key(data.id).stale(ViewQuery.Update.NONE);
-	var results=await cbContentBucket.viewQuery("User", "UserDetail",{key:data.id}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(query,function(results){
+function getUserShortDetails(data,callback){
+	var query = ViewQuery.from("User", "UserDetail").key(data.id).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket(query,function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -495,7 +488,7 @@ async function getUserShortDetails(data,callback){
 			rowData.push(results[i].value);	
 		}
 		callback(rowData);
-	//});	
+	});	
 }
 exports.getUserShortDetails=getUserShortDetails;
 
@@ -550,12 +543,11 @@ function updateLastLoggedIn(data,callback){
 		});
 	});
 }
-async function checkUserExistance(request,callback){
+function checkUserExistance(request,callback){
 	var hostname=request.headers.host.split(":")[0];
 	var config=ContentServer.getConfigDetails(hostname);
-	//var query = ViewQuery.from("UserRole", "allUserRoles").key([config.cloudPointHostId,request.session.userData.recordId]);
-	var response=await cbContentBucket.viewQuery("UserRole", "allUserRoles",{key:[config.cloudPointHostId,request.session.userData.recordId]}).catch(e=>{console.log(e);});
-	//CouchBaseUtil.executeViewInContentBucket(query,function(response){
+	var query = ViewQuery.from("UserRole", "allUserRoles").key([config.cloudPointHostId,request.session.userData.recordId]);
+	CouchBaseUtil.executeViewInContentBucket(query,function(response){
 		if(response.error){
 			callback({userAssociatedWithAnOrg:true});
 			return;
@@ -565,7 +557,7 @@ async function checkUserExistance(request,callback){
 		}else{
 			callback({userAssociatedWithAnOrg:true,allOrgs:response});
 		}
-	//});	
+	});	
 }
 
 
@@ -687,7 +679,7 @@ function changePassword(code,callback){
 			//An index MUST BE created to execute this 
 			//CREATE INDEX `wk_resetPasswordCode` ON `records`(`resetPasswordCode`) WHERE (`resetPasswordCode` is not missing) USING GSI
 			var  qryString = " SELECT `records`  FROM records WHERE `resetPasswordCode`='"+code+"'";
-			CouchBaseUtil.executeViewInContentBucket(qryString,function(result){
+			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
 				if(result.length){
 					userDoc = result[0].records;
 					callback({
@@ -714,7 +706,7 @@ function activateAccount(code,callback){
 			//AN INDEX must be there for the below query
 			//CREATE INDEX `wk_activationCode` ON `records`(`activationCode`) WHERE (`activationCode` is not missing) USING GSI
 			var  qryString = " SELECT `records`  FROM records WHERE `activationCode`='"+code+"'";
-			CouchBaseUtil.executeViewInContentBucket(qryString,function(result){
+			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
 				if(result.length){
 					//User found using activation code
 					//look for org domain
@@ -737,14 +729,14 @@ function activateAccount(code,callback){
 									"WHERE ANY domain IN `orgDomain` SATISFIES domain='"+(orgDomain)+"'  END  "+
 									" AND (docType='Provider' OR docType='Manufacturer' OR docType='Developer' OR docType='Supplier' OR docType='ServiceProvider' OR docType='Organization')"
 					//check for org page with the found org domain
-					CouchBaseUtil.executeViewInContentBucket(qryString1,function(result){
+					CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString1),function(result){
 						if(result && result.length){//org found
 							//Org exists, so create a user role
 							orgDoc = result[0].records;
 							var orgType=orgDoc.docType;
 							//check for user role existance if not create new
 							qryString = " SELECT `records`  FROM records WHERE `docType`='UserRole' AND `User`='"+(userDoc.recordId)+"'  AND `org`='"+(orgDoc.recordId)+"'";
-							CouchBaseUtil.executeViewInContentBucket(qryString,function(result){
+							CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
 								if(result && result.length==0){
 									//Roles not found, create a role
 									CouchBaseUtil.getDocumentByIdFromDefinitionBucket("RoleMappings",function(roles){
@@ -857,7 +849,7 @@ function joinPage(code,callback){
 			//AN INDEX must be there for the below query
 			//CREATE INDEX `wk_activationCode` ON `records`(`activationCode`) WHERE (`activationCode` is not missing) USING GSI
 			var  qryString = " SELECT `records`  FROM records WHERE `activationCode`='"+code+"'";
-			CouchBaseUtil.executeViewInContentBucket(qryString,function(result){
+			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
 				if(result.length){
 					console.log("User found using activation code");
 					userDoc = result[0].records;
@@ -878,7 +870,7 @@ function joinPage(code,callback){
 									"FROM records "+
 									"WHERE ANY domain IN `orgDomain` SATISFIES domain='"+(orgDomain)+"'  END  "+
 									" AND (docType='Provider' OR docType='Manufacturer' OR docType='Developer' OR docType='Supplier' OR docType='ServiceProvider' OR docType='Organization')"
-					CouchBaseUtil.executeViewInContentBucket(qryString,function(result){
+					CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
 						if(result && result.length){
 							console.log("Org exists");
 							orgDoc = result[0].records;

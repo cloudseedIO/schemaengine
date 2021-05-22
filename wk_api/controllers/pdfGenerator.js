@@ -354,7 +354,7 @@ function generatePDF(request,response){
 							//var slpcfq = ViewQuery.from("relation","getRelated").key([recordId,"specListHasProductCategory"]).reduce(false).stale(ViewQuery.Update.BEFORE);
 							//CouchBaseUtil.executeViewInContentBucket(slpcfq,function(slpcs){
 
-							var query = "SELECT `recordId` AS `id`, `recordId` As `value` FROM `records` WHERE docType=$1 AND `SpecList` =$2 ORDER BY `itemNumberTranslation`";
+							var query = N1qlQuery.fromString("SELECT `recordId` AS `id`, `recordId` As `value` FROM `records` WHERE docType=$1 AND `SpecList` =$2 ORDER BY `itemNumberTranslation`");
 							query.adhoc = false;
 							CouchBaseUtil.executeN1QL(query,["SpecListProductCategory",recordId],function(slpcs){
 								var lines="";
@@ -403,7 +403,7 @@ function generatePDF(request,response){
 											var html=architectHeader+scheduleName+specHeader+lines;
 											//var schedule = ViewQuery.from("SpecListProductCategoryProduct","schedule").keys([[recordId,"specifiedFinalized"],[recordId,"specifiedFinalizedRevised"]]).reduce(false).stale(ViewQuery.Update.BEFORE);
 											//CouchBaseUtil.executeViewInContentBucket(schedule,function(schedulesRes){
-											var query = "SELECT `recordId` AS `id`, `recordId` As `value` FROM records WHERE docType=$1 AND `$status` IN $2  AND SpecList=$3";
+											var query = N1qlQuery.fromString("SELECT `recordId` AS `id`, `recordId` As `value` FROM records WHERE docType=$1 AND `$status` IN $2  AND SpecList=$3");
 											query.adhoc = false;
 											CouchBaseUtil.executeN1QL(query,["SpecListProductCategoryProduct",["specifiedFinalizedRevised","specifiedFinalized"],recordId],function(schedulesRes){
 
@@ -853,7 +853,7 @@ function getSpecListProductCategoryProductContent(record,callback){
 	});
 }
 function getComponents(recordId,callback){
-	var query = "SELECT * FROM `records` WHERE docType=$1 AND `SpecListProductCategoryProduct`=$2 ORDER BY `itemNumberTranslation`";
+	var query = N1qlQuery.fromString("SELECT * FROM `records` WHERE docType=$1 AND `SpecListProductCategoryProduct`=$2 ORDER BY `itemNumberTranslation`");
 	query.adhoc = false;
 	var mapSetData={
 			recordId:recordId,

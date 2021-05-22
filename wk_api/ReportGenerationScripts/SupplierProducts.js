@@ -1,13 +1,10 @@
 var couchbase = require('couchbase');
-var reactConfig=require('../../config/ReactConfig');
-config=reactConfig.init;
-cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});
-//var cluster = new couchbase.Cluster("couchbase://52.76.7.57");//52.77.86.146");//52.76.7.57");
+var cluster = new couchbase.Cluster("couchbase://52.76.7.57");//52.77.86.146");//52.76.7.57");
 var ViewQuery = couchbase.ViewQuery;
-var cbContentBucket=cluster.openBucket("records");
-var cbMasterBucket=cluster.openBucket("schemas");
-
-var cbContentCollection=cbContentBucket.defaultCollection();
+var records="records";
+var schemas="schemas";
+var cbContentBucket=cluster.openBucket(records);
+var cbMasterBucket=cluster.openBucket(schemas);
 var fs=require("fs");
 
 //var supId="Supplierc4a45c57-bbae-488c-557d-ad5c929a8909";
@@ -15,15 +12,14 @@ var supId="SupplierStanjo";
 //var supId="Supplierb4f24d17-e3c1-c5ca-02e8-bdba83feaa5d";
 var supName="";
 var Result={};
-cbContentCollection.get(supId,async function(serr, result) {
+cbContentBucket.get(supId,function(serr, result) {
 	if (serr) { console.log(serr);	}
 	try{
 	 supName=result.value.name;
 	}catch(err){}
 	Result[supName]={};
-	//var query = ViewQuery.from("MfrProCatCitySupplier", "getSupCat").key(["public",supId]).reduce(true).group(-1).stale(ViewQuery.Update.BEFORE);
-	var query=await cbContentBucket.viewQuery("MfrProCatCitySupplier", "getSupCat",{key:["public",supId]},reduce(true),group(-1));
-	cluster.query(query, function(err, data) {
+	var query = ViewQuery.from("MfrProCatCitySupplier", "getSupCat").key(["public",supId]).reduce(true).group(-1).stale(ViewQuery.Update.BEFORE);
+	cbContentBucket.query(query, function(err, data) {
 		if(err){
 			console.log(err);
 			return;
@@ -39,16 +35,15 @@ cbContentCollection.get(supId,async function(serr, result) {
 		process(0);
 		function process(index){
 			console.log("Processing "+ index);
-			cbContentCollection.get(allCategories[index],async function(caterr, catresult) {
+			cbContentBucket.get(allCategories[index],function(caterr, catresult) {
 				if (caterr) { console.log(caterr);	}
 				var catName="";
 				try{
 					catName=catresult.value.categoryName;
 				}catch(err){}
 				
-				//var innerQuery = ViewQuery.from("relation","getRelated").key([allCategories[index],"hasProduct"]).reduce(false).stale(ViewQuery.Update.NONE);
-				var innerQuery=await cbContentBucket.viewQuery("relation","getRelated",{key:[allCategories[index],"hasProduct"]},reduce(false));
-				cluster.query(innerQuery,function(relerr,relresponse){
+				var innerQuery = ViewQuery.from("relation","getRelated").key([allCategories[index],"hasProduct"]).reduce(false).stale(ViewQuery.Update.NONE);
+				cbContentBucket.query(innerQuery,function(relerr,relresponse){
 					if(relerr){
 						console.log(relerr);
 						return;
@@ -65,7 +60,7 @@ cbContentCollection.get(supId,async function(serr, result) {
 								  proProcess(0);
 								  function proProcess(inn){
 									  console.log("inn " +inn);
-									  cbContentCollection.get(recordIds[inn],function(proError, proResult) {
+									  cbContentBucket.get(recordIds[inn],function(proError, proResult) {
 										  if(proError){console.log(proError);}
 										  if(!Result[supName][catName]){
 											  Result[supName][catName]={};

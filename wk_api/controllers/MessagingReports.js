@@ -34,15 +34,14 @@ if(process.env.NODE_ENV=="production"){
 		});
 	});
 }
-exports.service =async function(request,response){
+exports.service = function(request,response){
 	response.contentType("application/json");
 	response.header("Cache-Control", "no-cache");
 	var operationValue = urlParser.getRequestQuery(request).operation; 
 	var body=urlParser.getRequestBody(request);
 	switch(operationValue){
 		case "countByUserId":
-			//var query = ViewQuery.from("notifications", "countByUserId").reduce(true).group(true);
-			var query=await cbMessagebucket.viewQuery("notifications", "countByUserId",{reduce:true},{group:true});
+			var query = ViewQuery.from("notifications", "countByUserId").reduce(true).group(true);
 			if(body.skip && !isNaN(body.skip)){
 				query.skip(body.skip*1);
 			}
@@ -88,8 +87,7 @@ exports.service =async function(request,response){
 			}
 			break;
 		case "noResponseTopics":
-			//var query = ViewQuery.from("notifications", "noResponseTopics").reduce(false);
-			var query=await cbMessagebucket.viewQuery("notifications", "noResponseTopics",{reduce:false});
+			var query = ViewQuery.from("notifications", "noResponseTopics").reduce(false);
 			if(body.skip && !isNaN(body.skip)){
 				query.skip(body.skip*1);
 			}
@@ -103,8 +101,7 @@ exports.service =async function(request,response){
 			});
 			break;
 		case "allPendingChats":
-			//var query = ViewQuery.from("notifications", "allPendingChats").reduce(false);
-			var query=await cbMessagebucket.viewQuery("notifications", "allPendingChats",{reduce:false});
+			var query = ViewQuery.from("notifications", "allPendingChats").reduce(false);
 			if(body.skip && !isNaN(body.skip)){
 				query.skip(body.skip*1);
 			}
@@ -119,8 +116,7 @@ exports.service =async function(request,response){
 			break;
 			break;
 		case "allPendingTopicsByUser":
-			//var query = ViewQuery.from("notifications", "allPendingTopicsByUser");
-			var query=await cbMessagebucket.viewQuery("notifications", "allPendingTopicsByUser");
+			var query = ViewQuery.from("notifications", "allPendingTopicsByUser");
 			if(body.key){
 				query.key(body.key).reduce(false);
 			}else{
@@ -223,9 +219,8 @@ return {
 	};
 }
 
-async function invokeEmailTriggerForUnAttendedChats(key,callback){
-	//var query = ViewQuery.from("notifications","countByUserId").group(true).reduce(true);
-	var query=await cbMessagebucket.viewQuery("notifications","countByUserId",{group:true},{reduce:true});
+function invokeEmailTriggerForUnAttendedChats(key,callback){
+	var query = ViewQuery.from("notifications","countByUserId").group(true).reduce(true);
 	if(key){
 		query.key(key);
 	}

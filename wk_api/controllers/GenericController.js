@@ -6,14 +6,14 @@ var ContentServer=require('../ContentServer.js');
 var GenericServer=require('./GenericServer.js');
 var GenericSummeryServer=require('./GenericSummeryServer.js');
 var GenericRecordServer=require('./GenericRecordServer.js');
-var UploadProducts=require('../ReportGenerationScripts/uploadProductsCSV.js');
+//var UploadProducts=require('../ReportGenerationScripts/uploadProductsCSV.js');
 var GenericRelatedRecordsServer=require('./GenericRelatedRecordsServer.js');
 var utility=require('./utility.js');
 var OnTheFlyTrigger=require("./OnTheFlyTrigger.js");
 var TriggerController=require("./TriggerController.js");
 var MailServer=require("./MailServer.js");
 var Box_com_API=require("../services/Box_com_API.js");
-var ScrapedRecords=require('./ScrapedRecords.js');
+// var ScrapedRecords=require('./ScrapedRecords.js');
 
 
 exports.service = function(request,response){
@@ -364,14 +364,16 @@ exports.service = function(request,response){
 			});
 			break;
 		case "setData":
-			UploadProducts.setData(request.body,function(jsonObject){
+			/*UploadProducts.setData(request.body,function(jsonObject){
 				response.send({"data":jsonObject});
-			});
+			});*/
+			response.send({"data":"functionality to be upgraded to Latest versions"});
 			break;
 		case "getScrapedRecs":
-			ScrapedRecords.getScrapedRecs(request.body, function(res){
+			/*ScrapedRecords.getScrapedRecs(request.body, function(res){
 				response.send(res);
-			});
+			});*/
+			response.send({"data":"functionality to be upgraded to Latest versions"})
 			break;
 		case "getBoxCredentials":
 			Box_com_API.getBoxCredentials(request,function(jsonObject){
