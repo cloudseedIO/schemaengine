@@ -139,10 +139,14 @@ async function getDocumentsByIdsFromContentBucket(docIds,callback){
 	}
 	try{
 		try{
-			const result = await cbContentCollection.getMulti(docIds);
+			var arrayOfResults={};
+			for(var i=0;i<docIds.length;i++){
+				arrayOfResults[docIds[i]]=await cbContentCollection.get(docIds[i]);
+			}
 			if(typeof callback=="function")
-			  callback(result);
+			  callback(arrayOfResults);
 		}catch(error){
+			console.log(error);
 			if(typeof callback=="function")
 			callback({"error":"while getting the docs with ids "+docIds+"  from bucket"+config.cbContentBucket});
 		}
@@ -164,9 +168,12 @@ async function getDocumentsByIdsFromMasterBucket(docIds,callback){
 	}
 	
 	try{
-		const result = await cbMasterCollection.getMulti(docIds);
+		var arrayOfResults={};
+		for(var i=0;i<docIds.length;i++){
+			arrayOfResults[docIds[i]]=await cbMasterCollection.get(docIds[i]);
+		}
 		if(typeof callback=="function")
-		  callback(result);
+			callback(arrayOfResults);
 	}catch(error){
 		if(typeof callback=="function")
 		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
@@ -183,9 +190,12 @@ async function getDocumentsByIdsFromDefinitionBucket(docIds,callback){
 	}
 	
 	try{
-		const result = await cbDefinitionCollection.getMulti(docIds);
+		var arrayOfResults={};
+		for(var i=0;i<docIds.length;i++){
+			arrayOfResults[docIds[i]]=await cbDefinitionCollection.get(docIds[i]);
+		}
 		if(typeof callback=="function")
-		  callback(result);
+			callback(arrayOfResults);
 	}catch(error){
 		if(typeof callback=="function")
 		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbDefinitionBucket});
@@ -533,26 +543,18 @@ exports.executeViewInContentBucket=executeViewInContentBucket;*/
 
 
 async function executeViewInContentBucket(dd,vn,options,callback){
-	console.log(dd)
-	console.log(vn)
-	console.log(options)
 	const viewResult = await cbContentBucket.viewQuery(
 		dd,
 		vn,
 		options,
 		function(err, results) {
-			console.log("QUERY CALLBACK")
-			console.log(err)
-			console.log(results)
 			if(err){
 				callback({"error":"while executing view in "+config.cbContentBucket,"query":dd+"->"+vn,"options":options});
 				return;
 			}
-			callback(results);
+			callback(results.rows);
 		}
-	  )
-	  console.log("VIEWRESUL")
-	  console.log(viewResult)
+	  );
 }
 exports.executeViewInContentBucket=executeViewInContentBucket;
 
@@ -573,7 +575,7 @@ async function executeViewInMasterBucket(dd,vn,options,callback){
 				callback({"error":"while executing view in "+config.cbMasterBucket,"query":dd+"->"+vn,"options":options});
 				return;
 			}
-			callback(results);
+			callback(results.rows);
 		}
 	  )
 }
@@ -597,7 +599,7 @@ async function executeViewInDefinitionBucket(dd,vn,options,callback){
 				callback({"error":"while executing view in "+config.cbDefinitionBucket,"query":dd+"->"+vn,"options":options});
 				return;
 			}
-			callback(results);
+			callback(results.rows);
 		}
 	  )
 }
@@ -627,7 +629,7 @@ async function executeViewInMessagesBucket(query,callback){
 				callback({"error":"while executing view in "+config.cbMessagesBucket,"query":dd+"->"+vn,"options":options});
 				return;
 			}
-			callback(results);
+			callback(results.rows);
 		}
 	  )
 }
@@ -654,7 +656,7 @@ async function executeViewInSitemapsBucket(query,callback){
 				callback({"error":"while executing view in "+config.cbSitemapsBucket,"query":dd+"->"+vn,"options":options});
 				return;
 			}
-			callback(results);
+			callback(results.rows);
 		}
 	  )
 }

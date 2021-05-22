@@ -524,13 +524,16 @@ function getSchemasAndMethodsByRole(cloudPointHostId,role,callback){
 	var config=ContentServer.getConfigByHostId(cloudPointHostId);
 	var cloudPointAdminRole=config.cloudPointAdminRole;
 
-	var query = ViewQuery.from("Role", "RoleDetail").key([cloudPointHostId,role]).stale(ViewQuery.Update.NONE);
+	//stale(ViewQuery.Update.NONE);
+	var params={};
 	if(typeof role=="object"){
 		var keys=[];
 		for(var i=0;i<role.length;i++){
 			keys.push([cloudPointHostId,role[i]]);
 		}
-		query = ViewQuery.from("Role", "RoleDetail").keys(keys).stale(ViewQuery.Update.NONE);
+		params.keys=keys;
+	}else{
+		params.key=[cloudPointHostId,role];
 	}
 	if(role==cloudPointAdminRole){
 		utility.getAllSchemaNamesOfHost(cloudPointHostId,function(allschemas){
@@ -549,7 +552,7 @@ function getSchemasAndMethodsByRole(cloudPointHostId,role,callback){
 			callback(allschemaroles);
 		});
 	}else{
-		CouchBaseUtil.executeViewInContentBucket(query,function(response){
+		CouchBaseUtil.executeViewInContentBucket("Role", "RoleDetail",params,function(response){
 			if(response.error){
 				callback(response);
 				return;
