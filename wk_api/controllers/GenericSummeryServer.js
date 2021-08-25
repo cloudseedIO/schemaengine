@@ -381,9 +381,9 @@ function getSchemaRecordsN1ql(data,callback){
 		console.log(queryString);
 		console.log("==================================");
 	}
-	var query=N1qlQuery.fromString(queryString)
-	query.adhoc = false;
-	CouchBaseUtil.executeViewInContentBucket(query,function(results){
+	//var query=N1qlQuery.fromString(queryString)
+	//query.adhoc = false;
+	CouchBaseUtil.executeN1QL(queryString,{parameters:[]},function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -403,10 +403,10 @@ function getSchemaRecordsN1ql(data,callback){
 function getApplicableFilters(data,callback){
 	utility.getMainSchema(data,function(schema){
 		if(schema.error){callback(schema);return;}
-		if(schema.summaryDatabase=="ES" || schema.summaryDatabase=="ElasticSearch"){
+		/*if(schema.summaryDatabase=="ES" || schema.summaryDatabase=="ElasticSearch"){
 			getApplicableFiltersES(data,callback);
 			return;
-		}
+		}*/
 		var allFilters=data.allFilters;
 		var filters=data.selectedFilters;
 		var filtersToGet=allFilters;
@@ -548,9 +548,9 @@ function getApplicableFilters(data,callback){
 					console.log(queryString);
 					console.log("=====================================");
 				}
-				var query=N1qlQuery.fromString(queryString);
-				query.adhoc = false;
-				CouchBaseUtil.executeN1QL(query,[],function(response){
+				/*var query=N1qlQuery.fromString(queryString);
+				query.adhoc = false;*/
+				CouchBaseUtil.executeN1QL(queryString,{ parameters:[]},function(response){
 					var tempRes=[];
 					if(response.error){
 						console.log(response);
@@ -1119,10 +1119,10 @@ function getSchemaRecords(data,callback){
 			return;
 		}
 		data.schemaRecord=schema;
-		if(schema.summaryDatabase=="ES" || schema.summaryDatabase=="ElasticSearch"){
+		/*if(schema.summaryDatabase=="ES" || schema.summaryDatabase=="ElasticSearch"){
 			getSchemaRecordsES(data,callback);return;
 			return;
-		}
+		}*/
 		getSchemaRecordsN1ql(data,callback);return;
 		
 		

@@ -1504,9 +1504,10 @@ function checkIdentifier(request,data,callback){
 			return;
 		}
 		identifier=result.value["@identifier"];
-		var query = N1qlQuery.fromString('SELECT recordId FROM records WHERE cloudPointHostId = $1 AND org = $2 AND docType =  $3 AND lower(`'+identifier+'`)= $4');
-		query.adhoc = false;
-		CouchBaseUtil.executeN1QLInContentBucket(query,[cloudPointHostId,data.org,data.schemaName,data.identifier.toLowerCase()],function(results){
+		var queryString='SELECT recordId FROM records WHERE cloudPointHostId = $1 AND org = $2 AND docType =  $3 AND lower(`'+identifier+'`)= $4';
+		//var query = N1qlQuery.fromString(queryString);
+		//query.adhoc = false;
+		CouchBaseUtil.executeN1QLInContentBucket(querystring,{parameters:[cloudPointHostId,data.org,data.schemaName,data.identifier.toLowerCase()]},function(results){
 			callback(results);
 		});
 	});

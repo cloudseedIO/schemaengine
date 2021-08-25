@@ -2,7 +2,7 @@ var urlParser=require('./URLParser');
 var couchbase = require('couchbase');
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
-var QuerywScanConsistency= couchbase.QuerywScanConsistency;
+var QueryScanConsistency= couchbase.QueryScanConsistency;
 var CouchBaseUtil=require('./CouchBaseUtil');
 var limitCount=require("../utils/global.js").limitCount*2+1//19;// 9
 var utility=require('./utility.js');
@@ -19,7 +19,7 @@ var logQueries=false;
 function getRelated(request,callback){
 	var data=urlParser.getRequestBody(request);
 	CouchBaseUtil.executeViewInContentBucket("relation","getRelated",
-	{key:[data.recordId,data.relationName],reduce:false,skip:data.skip,limit:data.skip?limitCount:undefined,stale:QuerywScanConsistency.RequestPlus},function(response){
+	{key:[data.recordId,data.relationName],reduce:false,skip:data.skip,limit:data.skip?limitCount:undefined,stale:QueryScanConsistency.RequestPlus},function(response){
 		callback(response);
 	});
 }
@@ -134,7 +134,7 @@ function getRelatedRecords(request,callback){
 					console.log(queryString);
 					console.log("==================");
 				}
-				CouchBaseUtil.executeN1QL(N1qlQuery.fromString(queryString),[],function(results){
+				CouchBaseUtil.executeN1QL(queryString,{parameters:[]},function(results){
 					if(data.fromTrigger){
 						if(typeof callback=="function")
 							callback({
@@ -274,7 +274,7 @@ function getRelationRecords(request,callback){
 			var keys=GenericSummeryServer.getSummaryKeys(relSchema).keys;
 			//var queryString = "SELECT `"+keys.join("`,`")+"` FROM `records` WHERE docType= $1  AND `recordId` IN $2";
 			var queryString = "SELECT `"+keys.join("`,`")+"` FROM `records` USE KEYS $2";
-			CouchBaseUtil.executeN1QL(N1qlQuery.fromString(queryString),[data.relationRefSchema,data.recordIds],function(results){
+			CouchBaseUtil.executeN1QL(queryString,{parameters:[data.relationRefSchema,data.recordIds]},function(results){
 				if(results.error){
 					callback(results);
 					return;
@@ -322,8 +322,8 @@ function getSearchResults(request,callback){
 		if(schema.error){callback(schema);return;}
 		var keys=GenericSummeryServer.getSummaryKeys(schema).keys;
 		//var query = N1qlQuery.fromString("SELECT `"+keys.join("`,`")+"` FROM `records` WHERE docType=$1 AND `recordId` IN $2");
-		var query = N1qlQuery.fromString("SELECT `"+keys.join("`,`")+"` FROM `records` USE KEYS $2");
-		CouchBaseUtil.executeN1QL(query,[data.schema,data.recordIds],function(results){
+		var query = "SELECT `"+keys.join("`,`")+"` FROM `records` USE KEYS $2";
+		CouchBaseUtil.executeN1QL(query,{parameters:[data.schema,data.recordIds]},function(results){
 			var recs=[];
 			for(var index in results){
 				recs.push({id:results[index].recordId,key:[],value:results[index]})

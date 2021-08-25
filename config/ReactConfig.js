@@ -47,7 +47,7 @@ configuration.cbUsername="Administrator";
 configuration.cbPassword="password";
 
 //configuration.cbAddress="ec2-35-154-234-150.ap-south-1.compute.amazonaws.com";
-configuration.cbAddress="63.142.252.3";
+configuration.cbAddress="127.0.0.1";
 
 //configuration.esAddress="13.127.67.38";
 configuration.esAddress="63.142.252.3";

@@ -81,7 +81,7 @@ var couchbaseStore 	 = new CouchbaseStore({
 
 app.use(expressSession({
 	secret:'fIrsT IndiAs E-cOmMeRce wITh sOciAl n/W APPlication',
-	store:couchbaseStore,
+	//store:couchbaseStore,
 	resave: false,//Forces the session to be saved back to the session store, even if the session was never modified during the request.
 	saveUninitialized: false,//false option makes initial session created is not saved after modification it is saved
 	cookie: { maxAge: 8*60*60*1000 }//24*60*60*1000 one day

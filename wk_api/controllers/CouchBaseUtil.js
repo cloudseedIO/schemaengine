@@ -77,6 +77,7 @@ async function getDocumentByIdFromMasterBucket(docId,callback){
 		if(typeof callback=="function")
 		  callback(result);
 	}catch(error){
+		console.log(error);
 		if(typeof callback=="function")
 		callback({"error":"while getting the doc with id "+docId+"  from bucket"+config.cbMasterBucket});
 	}
@@ -549,6 +550,7 @@ async function executeViewInContentBucket(dd,vn,options,callback){
 		options,
 		function(err, results) {
 			if(err){
+				console.log(err)
 				callback({"error":"while executing view in "+config.cbContentBucket,"query":dd+"->"+vn,"options":options});
 				return;
 			}
@@ -761,7 +763,9 @@ async function executeN1QLInContentBucket(query,params,callback){
 exports.executeN1QLInContentBucket=executeN1QLInContentBucket;
 
 async function executeN1QL(query,params,callback){
-	await cluster.query(query, params,function(err, results) {
+	console.log(query);
+	console.log(params);
+	await cluster.query(query, (params && params.parameters)?params.parameters:[],function(err, results) {
 		if(err){
 			logger.error({type:"N1QLQueryError",error:err});
 			if(typeof callback=="function")
@@ -769,7 +773,7 @@ async function executeN1QL(query,params,callback){
 			return;
 		}
 		if(typeof callback=="function")
-			callback(results);
+			callback(results.rows);
 	});
 }
 exports.executeN1QL=executeN1QL;

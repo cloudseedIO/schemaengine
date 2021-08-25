@@ -23,6 +23,7 @@ cloudinary.config({
 });
 
 var logger = require('../services/logseed').logseed;
+const { ViewScanConsistency } = require('couchbase');
 
 
 exports.service = function(request,response){
@@ -198,8 +199,8 @@ function getUserById(data,callback){
 exports.getUserById=getUserById;
 
 function getUniqueUserName(data,callback){
-	var query = ViewQuery.from("User", "getUniqueUserName").key(data.recordId).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(response){
+	//var query = ViewQuery.from("User", "getUniqueUserName").key(data.recordId).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket("User", "getUniqueUserName",{key:data.recordId,stale:ViewScanConsistency.NotBounded},function(response){
 		if(response && response.length && response.length==1 && response[0].value){
 			callback(response[0].value);
 		}else{
@@ -233,8 +234,8 @@ exports.updateUser=updateUser;
 
 
 function validateUser(data,callback){
-	var query = ViewQuery.from("User", "UserPassword").key(data.userName).stale(ViewQuery.Update.BEFORE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(results){
+	//var query = ViewQuery.from("User", "UserPassword").key(data.userName).stale(ViewQuery.Update.BEFORE);
+	CouchBaseUtil.executeViewInContentBucket("User", "UserPassword",{key:data.userName,stale:ViewScanConsistency.RequestPlus},function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -249,8 +250,8 @@ function validateUser(data,callback){
 exports.validateUser=validateUser;
 
 function getUserDocByUserName(data,callback){
-	var query = ViewQuery.from("User", "UserByLoginId").key(data.userName).stale(ViewQuery.Update.BEFORE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(results){
+	//var query = ViewQuery.from("User", "UserByLoginId").key(data.userName).stale(ViewQuery.Update.BEFORE);
+	CouchBaseUtil.executeViewInContentBucket("User", "UserByLoginId",{key:data.userName,stale:ViewScanConsistency.RequestPlus},function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -265,8 +266,8 @@ function getUserDocByUserName(data,callback){
 }
 exports.getUserDocByUserName=getUserDocByUserName;
 function getUserDocByEmail(data,callback){
-	var query = ViewQuery.from("User", "UserByEmail").key((data.email).toLowerCase()).stale(ViewQuery.Update.BEFORE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(results){
+	//var query = ViewQuery.from("User", "UserByEmail").key((data.email).toLowerCase()).stale(ViewQuery.Update.BEFORE);
+	CouchBaseUtil.executeViewInContentBucket("User", "UserByEmail",{key:data.email.toLowerCase(),stale:ViewScanConsistency.RequestPlus},function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -477,8 +478,8 @@ exports.get_gravatar=get_gravatar;
 */}
 
 function getUserShortDetails(data,callback){
-	var query = ViewQuery.from("User", "UserDetail").key(data.id).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(results){
+	//var query = ViewQuery.from("User", "UserDetail").key(data.id).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket("User", "UserDetail",{key:data.id,stale:ViewScanConsistency.NotBounded},function(results){
 		if(results.error){
 			callback(results);
 			return;
@@ -546,8 +547,8 @@ function updateLastLoggedIn(data,callback){
 function checkUserExistance(request,callback){
 	var hostname=request.headers.host.split(":")[0];
 	var config=ContentServer.getConfigDetails(hostname);
-	var query = ViewQuery.from("UserRole", "allUserRoles").key([config.cloudPointHostId,request.session.userData.recordId]);
-	CouchBaseUtil.executeViewInContentBucket(query,function(response){
+	//var query = ViewQuery.from("UserRole", "allUserRoles").key([config.cloudPointHostId,request.session.userData.recordId]);
+	CouchBaseUtil.executeViewInContentBucket("UserRole", "allUserRoles",{key:[config.cloudPointHostId,request.session.userData.recordId]},function(response){
 		if(response.error){
 			callback({userAssociatedWithAnOrg:true});
 			return;

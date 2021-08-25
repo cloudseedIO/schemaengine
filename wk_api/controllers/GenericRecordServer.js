@@ -1787,18 +1787,18 @@ function getAudits(data,callback){
 	if(typeof data.skip !="undefined" && data.skip!=null){
 		query +=" OFFSET "+data.skip+" ";
 	}
-	var qo=N1qlQuery.fromString(query);
-	qo.adhoc = false;
-	CouchBaseUtil.executeN1QLInAuditBucket(qo,[data.recordId],function(results){
+	/*var qo=N1qlQuery.fromString(query);
+	qo.adhoc = false;*/
+	CouchBaseUtil.executeN1QLInAuditBucket(query,{parameters:[data.recordId]},function(results){
 		callback(results);
 	});
 }
 exports.getAudits=getAudits;
 //count total audits of a subscriber
 function getTotalAudits(data,callback){
-	var query = N1qlQuery.fromString('SELECT count(*) AS total FROM audit  WHERE ANY item IN subscribers SATISFIES item = $1 END ');
-	query.adhoc = false;
-	CouchBaseUtil.executeN1QLInAuditBucket(query,[data.recordId],function(results){
+	var query = 'SELECT count(*) AS total FROM audit  WHERE ANY item IN subscribers SATISFIES item = $1 END ';
+	//query.adhoc = false;
+	CouchBaseUtil.executeN1QLInAuditBucket(query,{parameters:[data.recordId]},function(results){
 		try{callback({total:results[0].total});}catch(err){callback({total:0})}
 	});
 }
@@ -1815,7 +1815,7 @@ function getResults(data,callback){
 	if(typeof data.skip !="undefined" && data.skip!=null){
 		query +=" OFFSET "+data.skip+" ";
 	}
-	CouchBaseUtil.executeN1QLInAuditBucket(N1qlQuery.fromString(query),data.params,function(results){
+	CouchBaseUtil.executeN1QLInAuditBucket(query,{parameters:data.params},function(results){
 		callback(results);
 	});
 }
@@ -1826,7 +1826,7 @@ function getTotalResults(data,callback){
 	query=query.replace("SELECT","select");
 	query=query.replace("FROM","from");
 	query=query.replace(query.substring(query.lastIndexOf("select")+6,query.lastIndexOf("from"))," count(*) as total ");
-	CouchBaseUtil.executeN1QLInAuditBucket(N1qlQuery.fromString(query),data.params,function(results){
+	CouchBaseUtil.executeN1QLInAuditBucket(query,{parameters:data.params},function(results){
 		try{callback({total:results[0].total});}catch(err){callback({total:0})}
 	});
 }

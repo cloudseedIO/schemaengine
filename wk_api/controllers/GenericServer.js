@@ -1,5 +1,6 @@
 var urlParser=require('./URLParser');
 var couchbase = require('couchbase');
+var QueryScanConsistency= couchbase.QueryScanConsistency;
 var ViewQuery = couchbase.ViewQuery;
 var N1qlQuery = couchbase.N1qlQuery;
 var CouchBaseUtil=require('./CouchBaseUtil');
@@ -14,6 +15,7 @@ var global=require('../utils/global.js');
 
 var Immutable = require('immutable');
 var logger = require('../services/logseed').logseed;
+const { ViewScanConsistency } = require('couchbase');
 var logQueries=false;
 
 function getNavigationLinks(data,callback){
@@ -350,9 +352,9 @@ function getAllOrgs(cloudPointHostId,callback){
 		//callback(allOrgs);
 	//});
 	// select distinct r1.org,r2.name,r2.docType,r2.recordId from records r1 join records r2  on keys r1.org  where r1.docType="UserRole";
-	var query=N1qlQuery.fromString("SELECT DISTINCT org FROM records WHERE docType=$1");
-	query.adhoc = false;
-	CouchBaseUtil.executeN1QL(query,["UserRole"],function(response){
+	var query="SELECT DISTINCT org FROM records WHERE docType=$1";
+	//query.adhoc = false;
+	CouchBaseUtil.executeN1QL(query,{parameters:["UserRole"]},function(response){
 		var allOrgs=[];
 		if(Array.isArray(response)){
 			response.forEach(function(ob){
@@ -398,9 +400,9 @@ function getAllOrgsWithOrgType(request,callback){
 	if(body.skip){
 		query+=(" OFFSET "+(body.skip*1)+" LIMIT "+(body.limit?body.limit:global.limitCount));
 	}
-	var qo=N1qlQuery.fromString(query);
-	query.adhoc = false;
-	CouchBaseUtil.executeN1QL(qo,["UserRole",body.orgType],function(response){
+	/*var qo=N1qlQuery.fromString(query);
+	query.adhoc = false;*/
+	CouchBaseUtil.executeN1QL(query,{parameters:["UserRole",body.orgType]},function(response){
 		callback(response);
 	});
 }
@@ -422,9 +424,9 @@ function getUserOrgs(request,callback){
 	 }else{
 		 callback([]);
 	 }
-	var query = ViewQuery.from("UserRole", "UserRoles").key([cloudPointHostId,request.session.userData.recordId]);
+	//var query = ViewQuery.from("UserRole", "UserRoles").key([cloudPointHostId,request.session.userData.recordId]);
 	//query.stale(ViewQuery.Update.BEFORE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(response){
+	CouchBaseUtil.executeViewInContentBucket("UserRole","UserRoles",{key:[cloudPointHostId,request.session.userData.recordId],stale:ViewScanConsistency.RequestPlus},function(response){
 		if(Array.isArray(response)){
 			var orgs=[];
 			for(var i=0;i<response.length;i++){
@@ -476,14 +478,14 @@ function getUserDefaultRoleForOrg(request,callback){
 	 }else{
 		 callback("RoleForMembersManager");
 	 }
-	var query = ViewQuery.from("UserRole", "UserRoles").key([cloudPointHostId,request.session.userData.recordId]);
+	//var query = ViewQuery.from("UserRole", "UserRoles").key([cloudPointHostId,request.session.userData.recordId]);
 	//query.stale(ViewQuery.Update.BEFORE);
 	CouchBaseUtil.getDocumentByIdFromDefinitionBucket("RoleMappings",function(result){
 		if(result.error){
 			callback("RoleForMembersManager");
 		}else{
 			var RoleMappings=result.value;
-			CouchBaseUtil.executeViewInContentBucket(query,function(response){
+			CouchBaseUtil.executeViewInContentBucket("UserRole", "UserRoles",{key:[cloudPointHostId,request.session.userData.recordId],stale:ViewScanConsistency.RequestPlus},function(response){
 				if(Array.isArray(response)){
 					var roles=[];
 					var publicOrgRole="RoleForCommonUser";
@@ -580,7 +582,8 @@ function getUserSiblingOrgs(cloudPointHostId,userId,callback){
 		userId="CommonUser";
 	}
 	//query.stale(ViewQuery.Update.BEFORE);
-	CouchBaseUtil.executeViewInContentBucket("UserRole", "UserRoles",{key:[cloudPointHostId,userId]},function(response){
+	CouchBaseUtil.executeViewInContentBucket("UserRole", "UserRoles",{key:[cloudPointHostId,userId],stale:ViewScanConsistency.RequestPlus},function(response){
+		console.log(response)
 		if(response.error){
 			callback(response);
 			return;
@@ -807,12 +810,12 @@ exports.getSchemaRoleOnOrg=getSchemaRoleOnOrg;
  */
 function checkForExistance(request,callback){
 	var data=urlParser.getRequestBody(request);
-	var stale=ViewQuery.Update.BEFORE;
+	var stale=ViewScanConsistency.RequestPlus;//ViewQuery.Update.BEFORE;
 	if(data.stale && data.stale=="NONE"){
-		stale=ViewQuery.Update.NONE;
+		stale=ViewScanConsistency.NotBounded;//ViewQuery.Update.NONE;
 	}
-	var query = ViewQuery.from("User","uniqueUserName").key(data.id.toUpperCase()).stale(stale);
-	CouchBaseUtil.executeViewInContentBucket(query,function(res){
+	//var query = ViewQuery.from("User","uniqueUserName").key(data.id.toUpperCase()).stale(stale);
+	CouchBaseUtil.executeViewInContentBucket("User","uniqueUserName",{key:data.id.toUpperCase(),stale:stale},function(res){
 		if(res.length==0){
 			callback({exists:false,result:res});
 		}else{
@@ -827,12 +830,12 @@ exports.checkForExistance=checkForExistance;
  */
 function checkForExistanceInSchemas(request,callback){
 	var data=urlParser.getRequestBody(request);
-	var stale=ViewQuery.Update.BEFORE;
+	var stale=ViewScanConsistency.RequestPlus;//ViewQuery.Update.BEFORE;
 	if(data.stale && data.stale=="NONE"){
-		stale=ViewQuery.Update.NONE;
+		stale=ViewScanConsistency.NotBounded;//ViewQuery.Update.NONE;
 	}
-	var query = ViewQuery.from("genericMeta", "uniqueUserNames").key(data.id.toUpperCase()).stale(stale);
-	CouchBaseUtil.executeViewInMasterBucket(query,function(res){
+	//var query = ViewQuery.from("genericMeta", "uniqueUserNames").key(data.id.toUpperCase()).stale(stale);
+	CouchBaseUtil.executeViewInMasterBucket("genericMeta", "uniqueUserNames",{key:data.id.toUpperCase(),stale:stale},function(res){
 		if(res.error || res.length==0){
 			callback({exists:false,result:res});
 		}else{
@@ -848,12 +851,12 @@ exports.checkForExistanceInSchemas=checkForExistanceInSchemas;
  */
 function checkForExistanceInLandings(request,callback){
 	var data=urlParser.getRequestBody(request);
-	var stale=ViewQuery.Update.BEFORE;
+	var stale=ViewScanConsistency.RequestPlus;//ViewQuery.Update.BEFORE;
 	if(data.stale && data.stale=="NONE"){
-		stale=ViewQuery.Update.NONE;
+		stale=ViewScanConsistency.NotBounded;//ViewQuery.Update.NONE;
 	}
-	var query = ViewQuery.from("definitions", "uniqueUserNames").key(data.id.toUpperCase()).stale(stale);
-	CouchBaseUtil.executeViewInDefinitionBucket(query,function(res){
+	//var query = ViewQuery.from("definitions", "uniqueUserNames").key(data.id.toUpperCase()).stale(stale);
+	CouchBaseUtil.executeViewInDefinitionBucket("definitions", "uniqueUserNames",{key:data.id.toUpperCase(),stale:stale},function(res){
 		if(res.error || res.length==0){
 			callback({exists:false,result:res});
 		}else{
@@ -929,9 +932,9 @@ function getGroupData(request,callback){
 		});
 	}
 	function continueToNext(){
-		if(data.esQuery){
+		/*if(data.esQuery){
 			executeGroupViewESQuery(data,callback);
-		}else if(data.n1ql){
+		}else */if(data.n1ql){
 			executeGroupViewN1ql(data,callback);
 		}else{
 			var query = ViewQuery.from(data.schema, data.viewName).key(data.key).reduce(true).group(true);
@@ -944,9 +947,9 @@ function getGroupData(request,callback){
 exports.getGroupData=getGroupData;
 
 function executeGroupViewN1ql(data,callback){
-	var qo=N1qlQuery.fromString(data.n1ql);
-	qo.adhoc = false;
-	CouchBaseUtil.executeN1QL(qo,data.key,function(results){
+	/*var qo=N1qlQuery.fromString(data.n1ql);
+	qo.adhoc = false;*/
+	CouchBaseUtil.executeN1QL(data.n1ql,data.key,function(results){
 		if(results.error){
 			logger.error({type:"GS:executeGroupViewN1ql",error:results.error});
 			callback(results);
@@ -1298,9 +1301,9 @@ exports.getSlugDetails=getSlugDetails;
 
 function getExploreUniqueUserName(request,callback){
 	var data=urlParser.getRequestBody(request);
-	var query = ViewQuery.from("discover", "getUniqueUserName").key(data["@uniqueUserName"]).stale(ViewQuery.Update.NONE);
+	//var query = ViewQuery.from("discover", "getUniqueUserName").key(data["@uniqueUserName"]).stale(ViewQuery.Update.NONE);
 
-	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	CouchBaseUtil.executeViewInContentBucket("discover", "getUniqueUserName",{key:data["@uniqueUserName"],stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error  ||
 				!Array.isArray(results) ||
 				results.length==0 ||
@@ -1322,8 +1325,8 @@ exports.getExploreUniqueUserName=getExploreUniqueUserName;
 
 function checkUniqueUserName(request,callback){
 	var data=urlParser.getRequestBody(request);
-	var query = ViewQuery.from("discover", "checkUniqueUserName").key(data.searchText).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	//var query = ViewQuery.from("discover", "checkUniqueUserName").key(data.searchText).stale(ViewQuery.Update.NONE);
+	CouchBaseUtil.executeViewInContentBucket("discover", "checkUniqueUserName",{key:data.searchText,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error  ||
 				!Array.isArray(results) ||
 				results.length==0 ||
@@ -1437,8 +1440,8 @@ function setOrgSpecificValuesForAllRelatedRecords(data,callback){
 					callback(orgMappingResult);
 				}else{
 					var orgMappings=orgMappingResult.value;
-					var relatedRecsQuery = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName]).reduce(false).stale(ViewQuery.Update.BEFORE);
-					CouchBaseUtil.executeViewInContentBucket(relatedRecsQuery,function(relatedRecordsIdsRes){
+					//var relatedRecsQuery = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName]).reduce(false).stale(ViewQuery.Update.BEFORE);
+					CouchBaseUtil.executeViewInContentBucket("relation","getRelated",{key:[data.recordId,data.relationName],reduce:false,stale:ViewScanConsistency.NotBounded},function(relatedRecordsIdsRes){
 						if(relatedRecordsIdsRes.error){
 							callback(relatedRecordsIdsRes);
 						}else{
@@ -1535,8 +1538,8 @@ exports.getShortDetails=getShortDetails;
 */
 
 function getSpecList(schema,data,callback){
-	var query=N1qlQuery.fromString("SELECT * from records where docType=$1 AND lower(name)=$2 and org=$3");
-	CouchBaseUtil.executeN1QL(query,["SpecList",data.SpecList?data.SpecList.trim().toLowerCase():"",data.org],function(specSearchRes){
+	var query="SELECT * from records where docType=$1 AND lower(name)=$2 and org=$3";
+	CouchBaseUtil.executeN1QL(query,{parameters:["SpecList",data.SpecList?data.SpecList.trim().toLowerCase():"",data.org]},function(specSearchRes){
 	if(specSearchRes.error){callback(specSearchRes);return;}
 	if(specSearchRes.length>0){
 		callback(specSearchRes[0].records);
@@ -1576,8 +1579,8 @@ function getSpecList(schema,data,callback){
 }
 
 function getSpecListProductCategory(schema,data,callback){
-	var query=N1qlQuery.fromString("SELECT * from records where docType=$1 AND lower(comment)=$2 and org=$3");
-	CouchBaseUtil.executeN1QL(query,["SpecListProductCategory",data.comment?data.comment.trim().toLowerCase():"",data.org],function(specSearchRes){
+	var query="SELECT * from records where docType=$1 AND lower(comment)=$2 and org=$3";
+	CouchBaseUtil.executeN1QL(query,{parameters:["SpecListProductCategory",data.comment?data.comment.trim().toLowerCase():"",data.org]},function(specSearchRes){
 	if(specSearchRes.error){callback(specSearchRes);return;}
 	if(specSearchRes.length>0){
 		callback(specSearchRes[0].records);
@@ -1850,9 +1853,9 @@ function getMfrReports(body,callback){
 	}else{
 			query+=(" OFFSET "+(body.skip?body.skip*1:"0")+" LIMIT "+(body.limit?((body.limit*1)+1):"10"));
 	}
-	var query1=N1qlQuery.fromString(query);
-	query1.adhoc = false;
-	CouchBaseUtil.executeN1QL(query1,["SpecListProductCategory",body.filters?body.filters.ProductCategory:[],body.filters?body.filters.org:[]],function(response){
+	/*var query1=N1qlQuery.fromString(query);
+	query1.adhoc = false;*/
+	CouchBaseUtil.executeN1QL(query,{parameters:["SpecListProductCategory",body.filters?body.filters.ProductCategory:[],body.filters?body.filters.org:[]]},function(response){
 		var allReports=[];
 		if(Array.isArray(response)){
 			response.forEach(function(ob){

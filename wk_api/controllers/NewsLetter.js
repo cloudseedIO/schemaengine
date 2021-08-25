@@ -318,8 +318,8 @@ function getMailData(data,callback){
 }
 function getNewsLetters(callback){
 	var query = 'SELECT raw records FROM records WHERE docType="NewsLetter"';
-	var qo=N1qlQuery.fromString(query);
-	CouchBaseUtil.executeN1QL(qo,[],function(results){
+	//var qo=N1qlQuery.fromString(query);
+	CouchBaseUtil.executeN1QL(query,{parameters:[]},function(results){
 		callback(results);
 	});
 }
@@ -329,16 +329,16 @@ function deleteNewsLetter(recordId,callback){
 
 function getMfrRecords(callback){
 	var query = 'SELECT recordId,name,address,contacted,`$status` FROM records WHERE docType="Manufacturer"';
-	var qo=N1qlQuery.fromString(query);
-	CouchBaseUtil.executeN1QL(qo,[],function(results){
+	//var qo=N1qlQuery.fromString(query);
+	CouchBaseUtil.executeN1QL(query,{parameters:[]},function(results){
 		callback(results);
 	});
 }
 function updateMfrAsContacted(recordId,callback){
 	if(recordId){
 		var query = 'UPDATE records USE KEYS $1 SET contacted=true returning recordId,contacted';
-		var qo=N1qlQuery.fromString(query);
-		CouchBaseUtil.executeN1QL(qo,[recordId],function(results){
+		//var qo=N1qlQuery.fromString(query);
+		CouchBaseUtil.executeN1QL(query,{parameters:[recordId]},function(results){
 			if(typeof callback=="function")
 			callback(results);
 		});
@@ -387,23 +387,23 @@ function unsubscribe(recordId,callback){
 }
 function getMfrCats(recordId,callback){
 	var query = 'SELECT raw records FROM records WHERE docType="MfrProCat" AND Manufacturer= $1 ORDER BY name ASC';
-	var qo=N1qlQuery.fromString(query);
-	CouchBaseUtil.executeN1QL(qo,[recordId],function(results){
+	//var qo=N1qlQuery.fromString(query);
+	CouchBaseUtil.executeN1QL(query,{parameters:[recordId]},function(results){
 		callback(results);
 	});
 }
 function getMfrCatsProCounts(recordId,catIds,callback){
 	var query='select productCategory,count(*) as total from records where docType="Product" AND Manufacturer = $1 AND productCategory in $2  GROUP BY productCategory ORDER BY total DESC';
-	var qo=N1qlQuery.fromString(query);
-	CouchBaseUtil.executeN1QL(qo,[recordId,catIds],function(results){
+	//var qo=N1qlQuery.fromString(query);
+	CouchBaseUtil.executeN1QL(query,{parameters:[recordId,catIds]},function(results){
 		callback(results);
 	});
 }
 
 function getMfrCatsCount(recordId,callback){
 	var query = 'SELECT count(*) as count FROM records WHERE docType="MfrProCat" AND Manufacturer= $1';
-	var qo=N1qlQuery.fromString(query);
-	CouchBaseUtil.executeN1QL(qo,[recordId],function(results){
+	//var qo=N1qlQuery.fromString(query);
+	CouchBaseUtil.executeN1QL(query,{parameters:[recordId]},function(results){
 		var count=0;
 		if(results.length>0){
 			count=results[0].count;
@@ -414,8 +414,8 @@ function getMfrCatsCount(recordId,callback){
 
 function getMfrProCount(recordId,callback){
 	var query = 'SELECT count(*) as count FROM records WHERE docType="Product" AND Manufacturer= $1 ORDER BY name ASC';
-	var qo=N1qlQuery.fromString(query);
-	CouchBaseUtil.executeN1QL(qo,[recordId],function(results){
+	//var qo=N1qlQuery.fromString(query);
+	CouchBaseUtil.executeN1QL(query,{parameters:[recordId]},function(results){
 		var count=0;
 		if(results.length>0){
 			count=results[0].count;
@@ -426,8 +426,8 @@ function getMfrProCount(recordId,callback){
 
 function getMfrSamplePro(recordId,callback){
 	var query = 'SELECT raw records FROM records WHERE docType="Product" AND Manufacturer= $1 ORDER BY name ASC LIMIT 20';
-	var qo=N1qlQuery.fromString(query);
-	CouchBaseUtil.executeN1QL(qo,[recordId],function(results){
+	//var qo=N1qlQuery.fromString(query);
+	CouchBaseUtil.executeN1QL(query,{parameters:[recordId]},function(results){
 		callback(results);
 	});
 }

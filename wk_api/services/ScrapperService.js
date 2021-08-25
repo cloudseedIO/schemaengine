@@ -96,9 +96,10 @@ exports.service = function(request,response){
 			response.send("Invalid configuration");
 		}
 	}else if(operationValue=="getSitemap"){
-		var query=N1qlQuery.fromString("SELECT * FROM sitemaps WHERE meta.id()=$1");
+		var querystring="SELECT * FROM sitemaps WHERE meta.id()=$1";
+		var query=N1qlQuery.fromString(querystring);
 		query.adhoc = false;
-		CouchBaseUtil.executeN1QL(query,[data.id],function(response){
+		CouchBaseUtil.executeN1QL(querystring,{parameters:[data.id]},function(response){
 			var sitemap;
 			if(Array.isArray(response) && response.length>0){
 				sitemap=response[0].sitemaps;
