@@ -766,7 +766,7 @@ function processTriggerNew(triggerDocId, recordId, userId, org, callback,request
 											var delData = action.actions.delete;
 											var qry = {"select": ["recordId"], "from": "records","where":  delData };
 											constructN1QL(qry, Data['recordId'], function(finalQry){
-												CouchBaseUtil.executeViewInContentBucket(couchbase.N1qlQuery.fromString(finalQry), function(queryResult){
+												CouchBaseUtil.executeViewInContentBucket(finalQry,{parameters:[]}, function(queryResult){
 													console.log(queryResult);
 													if(queryResult && queryResult.length>0 && queryResult[0].recordId){
 														GenericRecordServer.removeRecord(request,queryResult[0].recordId,function(){
@@ -1053,7 +1053,7 @@ function processTriggerNew(triggerDocId, recordId, userId, org, callback,request
 											constructN1QL(qry, Data['recordId'], function(finalQry){
 												if(qry.from == "records"){
 													logger("final query: ", finalQry);
-													CouchBaseUtil.executeViewInContentBucket(couchbase.N1qlQuery.fromString(finalQry), function(queryResult){
+													CouchBaseUtil.executeViewInContentBucket(finalQry,{parameters:[]}, function(queryResult){
 														logger("query results: ", queryResult);
 														if(action.actions.n1ql.if &&
 																action.actions.n1ql.if.cond

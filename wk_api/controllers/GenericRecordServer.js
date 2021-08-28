@@ -3,8 +3,6 @@ var urlParser=require('./URLParser');
 var couchbase = require('couchbase');
 var reactConfig=require('../../config/ReactConfig');
 config=reactConfig.init;
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 var CouchBaseUtil=require('./CouchBaseUtil');
 var ContentServer=require('../ContentServer.js');
 var cloudinary = require('cloudinary');
@@ -1787,8 +1785,6 @@ function getAudits(data,callback){
 	if(typeof data.skip !="undefined" && data.skip!=null){
 		query +=" OFFSET "+data.skip+" ";
 	}
-	/*var qo=N1qlQuery.fromString(query);
-	qo.adhoc = false;*/
 	CouchBaseUtil.executeN1QLInAuditBucket(query,{parameters:[data.recordId]},function(results){
 		callback(results);
 	});

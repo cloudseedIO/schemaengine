@@ -7,9 +7,8 @@ var cluster = new couchbase.Cluster("couchbase://"+config.cbAddress);//config.cb
 var CouchBaseUtil=require('./CouchBaseUtil.js');
 var ContentServer=require('../ContentServer.js');
 var utility=require('./utility.js');
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 var global=require('../utils/global.js');
+const { ViewScanConsistency } = require('couchbase');
 cloudinary.config({ 
    cloud_name: config.clCloud_name,
    api_key: config.clAPI_key, 
@@ -168,8 +167,7 @@ exports.service = function(request,response){
 function getSchemaObjects(request,callback){
 	var hostname=request.headers.host.split(":")[0];
 	var cloudPointHostId=(ContentServer.getConfigDetails(hostname))?ContentServer.getConfigDetails(hostname).cloudPointHostId:undefined;
-	var query = ViewQuery.from("schema", "getSchemas").key(cloudPointHostId).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+	CouchBaseUtil.executeViewInMasterBucket("schema", "getSchemas",{key:cloudPointHostId,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -352,8 +350,7 @@ function saveSchema(request,data,callback) {
 								getDerivedObjectSchemas2(e+1);
 							}else{
 								 console.log("document with id "+schema["@id"]+" updation sucessfully");
-									var query = ViewQuery.from("common", "removeRecords").key(data["@id"]+"-"+removableDerivedObjects[e]).stale(ViewQuery.Update.NONE);
-									CouchBaseUtil.executeViewInContentBucket(query, function(records) {
+									CouchBaseUtil.executeViewInContentBucket("common", "removeRecords",{key:data["@id"]+"-"+removableDerivedObjects[e],stale:ViewScanConsistency.NotBounded}, function(records) {
 										if(records.error){
 											console.log("@@@@@@@@@@@@@@@@@@ error genereted while getting  records");
 											console.log("@@@@@@@@@@@@@@@@@@ reference function getDerivedObjectSchemas2()");
@@ -445,8 +442,7 @@ function saveSchema(request,data,callback) {
 										getDerivedObjectSchemas(a+1);
 									}else{
 										 console.log("document with id "+schema["@id"]+" updation sucessfully");
-										var query = ViewQuery.from("common", "removeRecords").key(data["@id"]+"-"+options[a]).stale(ViewQuery.Update.NONE);
-										CouchBaseUtil.executeViewInContentBucket(query, function(recordIds) {
+										CouchBaseUtil.executeViewInContentBucket("common", "removeRecords",{key:data["@id"]+"-"+options[a],stale:ViewScanConsistency.NotBounded}, function(recordIds) {
 											if(recordIds.error){
 												console.log("@@@@@@@@@@@@@@@@@@ error genereted while executing view ");
 												console.log("@@@@@@@@@@@@@@@@@@ reference function getDerivedObjectSchemas()");
@@ -737,8 +733,7 @@ function saveSchema(request,data,callback) {
 function getCustomSchema(request,callback){
 	var hostname=request.headers.host.split(":")[0];
 	var cloudPointHostId=(ContentServer.getConfigDetails(hostname))?ContentServer.getConfigDetails(hostname).cloudPointHostId:undefined;
-	var query = ViewQuery.from("schema", "getCustomSchema").key(cloudPointHostId).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+	CouchBaseUtil.executeViewInMasterBucket("schema", "getCustomSchema",{key:cloudPointHostId,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -756,8 +751,7 @@ function getCustomSchema(request,callback){
  * @param callback		---	returns list of matched docs if available else null
  */
 function getDocs(data,callback){
-	var query = ViewQuery.from("getDoc", "getDocsList").key(data.name).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	CouchBaseUtil.executeViewInContentBucket("getDoc", "getDocsList",{key:data.name,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -827,14 +821,12 @@ function getDefinition(data,callback){
 	});
 }
 function getUITemplates(callback){
-	var query = ViewQuery.from("definitions", "UITemplate").stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInDefinitionBucket(query, function(results) {
+	CouchBaseUtil.executeViewInDefinitionBucket("definitions", "UITemplate",{stale:ViewScanConsistency.NotBounded}, function(results) {
 		callback(results);
 	});
 }
 function getSchemaRelatedUITemplates(data,callback){
-	var query = ViewQuery.from("definitions", "SchemaRelatedUITemplates").key(data.schemaName).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInDefinitionBucket(query, function(results) {
+	CouchBaseUtil.executeViewInDefinitionBucket("definitions", "SchemaRelatedUITemplates",{key:data.schemaName,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -916,8 +908,7 @@ function getCloudinaryData(publicId,callback){
 }
 
 /*function getStructNames(callback){
-	var query = ViewQuery.from("schema", "getStructNames").stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+	CouchBaseUtil.executeViewInMasterBucket("schema", "getStructNames",{}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -933,8 +924,7 @@ function getCloudinaryData(publicId,callback){
 function getUserSchemas(request,data,callback){
 	var hostname=request.headers.host.split(":")[0];
 	var cloudPointHostId=(ContentServer.getConfigDetails(hostname))?ContentServer.getConfigDetails(hostname).cloudPointHostId:undefined;
-	var query = ViewQuery.from("schema", "getUserSchemas").key([cloudPointHostId,data.name]).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+	CouchBaseUtil.executeViewInMasterBucket("schema", "getUserSchemas",{key:[cloudPointHostId,data.name],stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -947,9 +937,8 @@ function getUserSchemas(request,data,callback){
 	});
 }
 
-/*function getUserStructs(request,callback){
-	var query = ViewQuery.from("schema", "getUserStructs").stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+/*function getUserStructs(request,callback){\
+	CouchBaseUtil.executeViewInMasterBucket("schema", "getUserStructs", function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -1041,8 +1030,7 @@ function getUserSchemas(request,data,callback){
  */
 function getDependentRecords(data,callback){
 
-	var query = ViewQuery.from(data.ddname, data.viewName).key(data.recordInput).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	CouchBaseUtil.executeViewInContentBucket(data.ddname, data.viewName,{key:data.recordInput,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -1267,8 +1255,7 @@ function schemaViewCreation(data,callback){
 function getSuperTypeSchemas(request,data,callback){
 	var hostname=request.headers.host.split(":")[0];
 	var cloudPointHostId=(ContentServer.getConfigDetails(hostname))?ContentServer.getConfigDetails(hostname).cloudPointHostId:undefined;
-	var query = ViewQuery.from("schema", "getSuperTypeSchemas").key([cloudPointHostId,data.superType]).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+	CouchBaseUtil.executeViewInMasterBucket("schema", "getSuperTypeSchemas",{key:[cloudPointHostId,data.superType],stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -1287,8 +1274,7 @@ function getSuperTypeSchemas(request,data,callback){
 }
 
 function getDerivedObjects(data,callback){
-	var query = ViewQuery.from("schema", "getDerivedObjects").key(data.name).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+	CouchBaseUtil.executeViewInMasterBucket("schema", "getDerivedObjects",{key:data.name,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -1306,8 +1292,7 @@ function getDerivedObjects(data,callback){
 }
 function getAllSchemas(callback){
 	//testVideoUpload1();
-	var query = ViewQuery.from("schema", "getAllSchemas").stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInMasterBucket(query, function(results) {
+	CouchBaseUtil.executeViewInMasterBucket("schema", "getAllSchemas",{stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -1327,8 +1312,7 @@ exports.getAllSchemas = getAllSchemas;
 
 
 /*function checkUniqueIdentifier(data,callback){
-	var query = ViewQuery.from("getDoc", "getDocsList").key(data.schema).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	CouchBaseUtil.executeViewInContentBucket("getDoc", "getDocsList",{key:data.schema}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -1486,9 +1470,8 @@ function checkIdentifier(request,data,callback){
 
 	var hostname=request.headers.host.split(":")[0];
 	var cloudPointHostId=(ContentServer.getConfigDetails(hostname))?ContentServer.getConfigDetails(hostname).cloudPointHostId:undefined;
-
-	/*var query = ViewQuery.from("Identifier", "getUnique").key([cloudPointHostId,data.org,data.schemaName,data.identifier]).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+    /*
+	CouchBaseUtil.executeViewInContentBucket("Identifier", "getUnique",{key:[cloudPointHostId,data.org,data.schemaName,data.identifier]}, function(results) {
 		if(results.error){
 			callback(results);
 			return;
@@ -1505,8 +1488,6 @@ function checkIdentifier(request,data,callback){
 		}
 		identifier=result.value["@identifier"];
 		var queryString='SELECT recordId FROM records WHERE cloudPointHostId = $1 AND org = $2 AND docType =  $3 AND lower(`'+identifier+'`)= $4';
-		//var query = N1qlQuery.fromString(queryString);
-		//query.adhoc = false;
 		CouchBaseUtil.executeN1QLInContentBucket(querystring,{parameters:[cloudPointHostId,data.org,data.schemaName,data.identifier.toLowerCase()]},function(results){
 			callback(results);
 		});

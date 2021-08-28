@@ -1,6 +1,5 @@
 var couchbase = require('couchbase');
 var QueryScanConsistency= couchbase.QueryScanConsistency;
-var ViewQuery = couchbase.ViewQuery;
 var CouchBaseUtil=require('./CouchBaseUtil');
 var ContentServer=require('../ContentServer.js');
 var urlParser=require('./URLParser');
@@ -91,7 +90,6 @@ exports.getDefinition=getDefinition;
  * @param callback
  */
 function getAllSchemasStructsDependentSchemas(cloudPointHostId,callback){
-	//stale(ViewQuery.Update.NONE);
 	CouchBaseUtil.executeViewInMasterBucket("schema","getAllSchemasStructsDependentSchemas",{keys:["master",cloudPointHostId],stale:ViewScanConsistency.NotBounded},function(response){
 		var config=ContentServer.getConfigByHostId(cloudPointHostId);
 		if(config.hostSpecificSchemas && !response.error && response.length>0){
@@ -116,7 +114,6 @@ function getAllSchemasStructsDependentSchemas(cloudPointHostId,callback){
 exports.getAllSchemasStructsDependentSchemas=getAllSchemasStructsDependentSchemas;
 
 function getAllSchemaNamesOfHost(host,callback){
-	//var query = ViewQuery.from("schema", "getAllSchemas").keys(["master",host]).stale(ViewQuery.Update.NONE);
 	CouchBaseUtil.executeViewInMasterBucket("schema", "getAllSchemas",{keys:["master",host],stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
@@ -136,7 +133,6 @@ function getAllSchemaNamesOfHost(host,callback){
 exports.getAllSchemaNamesOfHost=getAllSchemaNamesOfHost;
 
 function getAllLandingPages(host,callback){
-	//var query = ViewQuery.from("definitions", "landingPages").key(host).stale(ViewQuery.Update.NONE);
 	CouchBaseUtil.executeViewInDefinitionBucket("definitions", "landingPages",{key:host,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
@@ -156,7 +152,6 @@ function getAllLandingPages(host,callback){
 exports.getAllLandingPages=getAllLandingPages;
 
 function getAllRoles(host,callback){
-	//var query = ViewQuery.from("Role", "allRoles").key(host).stale(ViewQuery.Update.NONE);
 	CouchBaseUtil.executeViewInContentBucket("Role", "allRoles",{key:host,stale:ViewScanConsistency.NotBounded}, function(results) {
 		if(results.error){
 			callback(results);
@@ -196,7 +191,6 @@ exports.guid=guid;
  * @param callback
  */
 function getAllTriggers(cloudPointHostId,callback){
-	//var query = ViewQuery.from("Trigger","getAllTriggers").key([cloudPointHostId]).stale(ViewQuery.Update.NONE);
 	CouchBaseUtil.executeViewInMasterBucket("Trigger","getAllTriggers",{key:[cloudPointHostId],stale:ViewScanConsistency.NotBounded},function(response){
 		
 		/*
@@ -230,7 +224,6 @@ exports.getAllTriggers=getAllTriggers;
  * @param callback
  */
 function getAllRestApiServices(cloudPointHostId,callback){
-	//var query = ViewQuery.from("RestAPI","getAllRestApiServices").key([cloudPointHostId]).stale(ViewQuery.Update.NONE);
 	CouchBaseUtil.executeViewInMasterBucket("RestAPI","getAllRestApiServices",{key:[cloudPointHostId],stale:ViewScanConsistency.NotBounded},function(response){
 		
 		/*

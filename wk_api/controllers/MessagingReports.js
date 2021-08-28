@@ -4,8 +4,6 @@
 var urlParser=require('./URLParser');
 var CouchBaseUtil=require('./CouchBaseUtil');
 var couchbase = require('couchbase');
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 var GenericServer=require('./GenericServer.js');
 var utility=require('./utility.js');
 var mailgun=require('../services/clsMailgun.js');
@@ -41,16 +39,18 @@ exports.service = function(request,response){
 	var body=urlParser.getRequestBody(request);
 	switch(operationValue){
 		case "countByUserId":
-			var query = ViewQuery.from("notifications", "countByUserId").reduce(true).group(true);
+			var options={};
+			options.reduce=false;
+			options.group=true;
 			if(body.skip && !isNaN(body.skip)){
-				query.skip(body.skip*1);
+				options.skip=body.skip*1;
 			}
 			if(body.limit && !isNaN(body.limit)){
-				query.limit(body.limit*1+1);
+				options.limit=body.limit*1+1;
 			}else{
-				query.limit(limitCount);
+				options.limit=limitCount;
 			}
-			CouchBaseUtil.executeViewInMessagesBucket(query,function(data){
+			CouchBaseUtil.executeViewInMessagesBucket("notifications", "countByUserId",options,function(data){
 				response.send(data);
 			});
 			break;
@@ -87,50 +87,54 @@ exports.service = function(request,response){
 			}
 			break;
 		case "noResponseTopics":
-			var query = ViewQuery.from("notifications", "noResponseTopics").reduce(false);
+			var options={};
+			options.reduce=false;
 			if(body.skip && !isNaN(body.skip)){
-				query.skip(body.skip*1);
+				options.skip=body.skip*1;
 			}
 			if(body.limit && !isNaN(body.limit)){
-				query.limit(body.limit*1+1);
+				options.limit=body.limit*1+1;
 			}else{
-				query.limit(limitCount);
+				options.limit=limitCount;
 			}
-			CouchBaseUtil.executeViewInMessagesBucket(query,function(data){
+			CouchBaseUtil.executeViewInMessagesBucket("notifications", "noResponseTopics",options,function(data){
 				response.send(data);
 			});
 			break;
 		case "allPendingChats":
-			var query = ViewQuery.from("notifications", "allPendingChats").reduce(false);
+			var options={};
+			options.reduce=false;
 			if(body.skip && !isNaN(body.skip)){
-				query.skip(body.skip*1);
+				options.skip=body.skip*1;
 			}
 			if(body.limit && !isNaN(body.limit)){
-				query.limit(body.limit*1+1);
+				options.limit=body.limit*1+1;
 			}else{
-				query.limit(limitCount);
+				options.limit=limitCount;
 			}
-			CouchBaseUtil.executeViewInMessagesBucket(query,function(data){
+			CouchBaseUtil.executeViewInMessagesBucket("notifications", "allPendingChats",options,function(data){
 				response.send(data);
 			});
 			break;
 			break;
 		case "allPendingTopicsByUser":
-			var query = ViewQuery.from("notifications", "allPendingTopicsByUser");
+			var options={};
 			if(body.key){
-				query.key(body.key).reduce(false);
+				options.key=body.key;
+				options.reduce=false;
 			}else{
-				query.reduce(true).group(true);
+				options.reduce=true;
+				options.group=true;
 			}
 			if(body.skip && !isNaN(body.skip)){
-				query.skip(body.skip*1);
+				options.skip=body.skip*1;
 			}
 			if(body.limit && !isNaN(body.limit)){
-				query.limit(body.limit*1+1);
+				options.limit=body.limit*1+1;
 			}else{
-				query.limit(limitCount);
+				options.limit=limitCount;
 			}
-			CouchBaseUtil.executeViewInMessagesBucket(query,function(data){
+			CouchBaseUtil.executeViewInMessagesBucket("notifications", "allPendingTopicsByUser",options,function(data){
 				response.send(data);
 			});
 			break;
@@ -220,11 +224,7 @@ return {
 }
 
 function invokeEmailTriggerForUnAttendedChats(key,callback){
-	var query = ViewQuery.from("notifications","countByUserId").group(true).reduce(true);
-	if(key){
-		query.key(key);
-	}
-	CouchBaseUtil.executeViewInMessagesBucket(query, function(counts) {
+	CouchBaseUtil.executeViewInMessagesBucket("notifications","countByUserId",{group:true,reduce:true,key:key}, function(counts) {
 		if(counts.error){
 			console.log(error);
 			if(typeof callback=="function")

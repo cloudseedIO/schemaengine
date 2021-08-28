@@ -7,8 +7,6 @@ var urlParser=require('../controllers/URLParser');
 //var CouchBaseUtil=require('./CouchBaseUtil.js');
 //var ContentServer=require('../ContentServer.js');
 //var utility=require('./utility.js');
-//var ViewQuery = couchbase.ViewQuery;
-//var N1qlQuery = couchbase.N1qlQuery;
 //var global=require('../utils/global.js');
 
 /*cloudinary.config({ 
@@ -23,7 +21,6 @@ var Queue = require('../bulkUpload/Queue').Queue;
 var Job = require('../bulkUpload/Job').Queue;
 var fs=require('fs');
 var couchbase = require('couchbase');
-var N1qlQuery = couchbase.N1qlQuery;
 
 var scraper;
 var siteTemplate;
@@ -97,8 +94,6 @@ exports.service = function(request,response){
 		}
 	}else if(operationValue=="getSitemap"){
 		var querystring="SELECT * FROM sitemaps WHERE meta.id()=$1";
-		var query=N1qlQuery.fromString(querystring);
-		query.adhoc = false;
 		CouchBaseUtil.executeN1QL(querystring,{parameters:[data.id]},function(response){
 			var sitemap;
 			if(Array.isArray(response) && response.length>0){

@@ -18,7 +18,6 @@ var ContentServer=require('../ContentServer.js');
 var Mailgun = require('../services/clsMailgun.js');
 var SchemaController=require('./SchemaController');
 var QuickBooks = require("../services/QuickBooksService");
-var ViewQuery = couchbase.ViewQuery;
 var ContentServer=require('../ContentServer.js');
 var global=require('../utils/global.js');
 var UserController=require('./UserController.js');
@@ -320,10 +319,9 @@ function service(request, response){
             " AND `author`= '"+(userId)+"' "+
             " GROUP BY `org`";
 			
-			var N1qlQuery = couchbase.N1qlQuery;
 			
 			
-			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(boards){
+			CouchBaseUtil.executeViewInContentBucket(qryString,{parameters:[]},function(boards){
 				
 				CouchBaseUtil.getDocumentsByIdsFromContentBucket(orgs, function(prjctRecs){
 					var revisedBoards=[];
@@ -541,9 +539,8 @@ function service(request, response){
 		case "changePasswordEmail":
 			
 			var emailId = (request.body.email).toLowerCase();
-			var N1qlQuery = couchbase.N1qlQuery;
 			var qryString = "SELECT * FROM records WHERE `docType` = 'User' AND `email` = '"+emailId+"'"; 
-			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
+			CouchBaseUtil.executeViewInContentBucket(qryString,{parameters:[]},function(result){
 				if(result.length>0 && result[0].records && Object.keys(result[0].records).length>0){
 					var userDoc=result.length>0?result[0].records:{};
 					if(userDoc.hasOwnProperty("activation") && userDoc.activation){
@@ -945,10 +942,9 @@ function service(request, response){
 					var userDoc=result.value;
 					var userMailPre = (userDoc.email).split("@")[0];
 					
-					var N1qlQuery = couchbase.N1qlQuery;
 					var qryString = " SELECT `records`  FROM records WHERE `docType`='UserRole' AND `User`='"+(userDoc.recordId)+"'  AND `org`='"+(orgDoc.recordId)+"'";
 							
-						CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
+						CouchBaseUtil.executeViewInContentBucket(qryString,{parameters:[]},function(result){
 							if(result && result.length==0){
 								console.log("Roles not found, create a role");
 								CouchBaseUtil.getDocumentByIdFromDefinitionBucket("RoleMappings",function(roles){

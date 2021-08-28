@@ -7,8 +7,6 @@ var logger = require('../services/logseed').logseed;
 config=reactConfig.init;
 var cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});  //config.cbAddress+":"+config.cbPort
 //cluster.authenticate(config.cbUsername, config.cbPassword);
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 
 var cbMasterBucket=cluster.bucket(config.cbMasterBucket);
 var cbContentBucket=cluster.bucket(config.cbContentBucket);

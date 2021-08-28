@@ -9,8 +9,23 @@ var reactConfig=require('../../config/ReactConfig');
 var config=reactConfig.init;
 var couchbase = require('couchbase');
 //var cluster = new couchbase.Cluster("couchbase://35.154.234.150");//52.77.86.146");//52.76.7.57");
-var cluster = new couchbase.Cluster("couchbase://"+config.cbAddress);//config.cbAddress+":"+config.cbPort
-var ViewQuery = couchbase.ViewQuery;
+var cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});  //config.cbAddress+":"+config.cbPort
+
+async function executeN1QL(query,params,callback){
+	console.log(query);
+	console.log(params);
+	await cluster.query(query, (params && params.parameters)?params.parameters:[],function(err, results) {
+		if(err){
+			logger.error({type:"N1QLQueryError",error:err});
+			if(typeof callback=="function")
+			callback({"error":err,"query":query,"params":params});
+			return;
+		}
+		if(typeof callback=="function")
+			callback(results.rows);
+	});
+}
+
 var records="records";
 var schemas="schemas";
 
@@ -18,8 +33,6 @@ var cbContentBucket=cluster.openBucket(records);
 var cbMasterBucket=cluster.openBucket(schemas);
 var global=require('../utils/global.js');
 var cloudinary = require('cloudinary');
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 var CouchBaseUtil=require('./CouchBaseUtil');
 
 
@@ -44,7 +57,7 @@ function getScrapedRecs(data, callback){
 	
 	var query="SELECT * FROM records WHERE `Manufacturer`='"+manufacturerId+"' AND `@derivedObjName`='"+dependentSchema+"' AND `$status`='under_review'  LIMIT 1";
 	try {
-		cbContentBucket.query(N1qlQuery.fromString(query), function(err, res){
+		executeN1QL(query,{parameters:[]}, function(err, res){
 			if(err){
 				console.log(err); 
 				callback(err);

@@ -1,7 +1,5 @@
 var urlParser=require('./URLParser');
 var couchbase = require('couchbase');
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 var QueryScanConsistency= couchbase.QueryScanConsistency;
 var CouchBaseUtil=require('./CouchBaseUtil');
 var limitCount=require("../utils/global.js").limitCount*2+1//19;// 9
@@ -9,6 +7,7 @@ var utility=require('./utility.js');
 var GenericRecordServer=require('./GenericRecordServer.js');
 var GenericSummeryServer=require('./GenericSummeryServer.js');
 var logger = require('../services/logseed').logseed;
+const { ViewScanConsistency } = require('couchbase');
 var logQueries=false;
 /**
  * get related records ids
@@ -35,8 +34,7 @@ exports.getRelated=getRelated;
 function checkRelated(request,callback){
 	var data=urlParser.getRequestBody(request);
 	var key=[data.recordId,data.relationName,data.relatedRecordId];
-	var query = ViewQuery.from("relation","checkRelated").key(key).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(result){
+	CouchBaseUtil.executeViewInContentBucket("relation","checkRelated",{key:key,stale:ViewScanConsistency.NotBounded},function(result){
 		if(result.length!=0){
 			callback({result:"related"});
 		}else{
@@ -58,8 +56,7 @@ exports.checkRelated=checkRelated;
  */
 function getRelatedRecordId(data,callback){
 	var key=[data.source,data.relationName,data.target];
-	var query = ViewQuery.from("relation","checkRelated").key(key).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(result){
+	CouchBaseUtil.executeViewInContentBucket("relation","checkRelated",{key:key,stale:ViewScanConsistency.NotBounded},function(result){
 		if(result.length!=0){
 			callback({id:result[0].id});
 		}else{
@@ -72,8 +69,7 @@ exports.getRelatedRecordId=getRelatedRecordId;
 //returns juction records count for a relation
 function getRelatedCount(request,callback){
 	var data=urlParser.getRequestBody(request);
-		var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName])// .group(2)//.stale(ViewQuery.Update.NONE);
-		CouchBaseUtil.executeViewInContentBucket(query,function(response){
+		CouchBaseUtil.executeViewInContentBucket("relation","getRelated",{key:[data.recordId,data.relationName]},function(response){
 			var count=0;
 			if(response.length>0 && response[0].value){
 				count=response[0].value;
@@ -172,16 +168,17 @@ function getRelatedRecords(request,callback){
 			});
 		});
 	}else{
-		var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relationName]).reduce(false);
+		var options={key:[data.recordId,data.relationName],reduce:false}
 		if(typeof data.skip != "undefined"){
-			query.skip(data.skip).limit(limitCount);
+			options.skip=data.skip;
+			options.limit=limitCount;
 		}
 		if(data.fromTrigger){
-			query.stale(ViewQuery.Update.BEFORE);
+			options.stale=ViewScanConsistency.RequestPlus
 		}else{
-			query.stale(ViewQuery.Update.NONE)
+			options.stale=ViewScanConsistency.NotBounded;
 		}
-		CouchBaseUtil.executeViewInContentBucket(query,function(response){
+		CouchBaseUtil.executeViewInContentBucket("relation","getRelated",options,function(response){
 			var recordIds=[];
 			for(var i=0;i<response.length;i++){
 				recordIds.push(response[i].id);
@@ -256,11 +253,8 @@ function getRelationRecords(request,callback){
 			});
 			//if the relation view doesn't require full View
 		}else if(data.relationView==undefined || (data.relationView!="GoDetail" && data.relationView!="TableEditView")){
-			/*var query = ViewQuery.from(data.relationRefSchema,"summary").keys(data.recordIds).reduce(false);
-			if(data.stale==false){
-				query.stale(ViewQuery.Update.BEFORE);
-			}
-			CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+			/*
+			CouchBaseUtil.executeViewInContentBucket(data.relationRefSchema,"summary",{keys:data.recordIds,reduce:false,stale:data.stale==false?ViewScanConsistency.RequestPlus:ViewScanConsistency.NotBounded}, function(results) {
 				if(results.error){
 					callback(results);
 					return;
@@ -313,15 +307,13 @@ function getSearchResults(request,callback){
 	/*if(!data.userId){
 		data.userId="CommonUser";
 	}
-	var query = ViewQuery.from(data.schema,"summary").keys(data.recordIds).reduce(false);
-	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	CouchBaseUtil.executeViewInContentBucket(data.schema,"summary",{keys:data.recordIds,reduce:false}, function(results) {
 		callback({records:results});
 	});
 */
 	utility.getMainSchema(data,function(schema){
 		if(schema.error){callback(schema);return;}
 		var keys=GenericSummeryServer.getSummaryKeys(schema).keys;
-		//var query = N1qlQuery.fromString("SELECT `"+keys.join("`,`")+"` FROM `records` WHERE docType=$1 AND `recordId` IN $2");
 		var query = "SELECT `"+keys.join("`,`")+"` FROM `records` USE KEYS $2";
 		CouchBaseUtil.executeN1QL(query,{parameters:[data.schema,data.recordIds]},function(results){
 			var recs=[];

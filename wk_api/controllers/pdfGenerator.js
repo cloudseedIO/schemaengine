@@ -3,8 +3,6 @@ var CouchBaseUtil=require('./CouchBaseUtil.js');
 var utility=require('./utility.js');
 var couchbase = require('couchbase');
 var global=require('../utils/global.js');
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 var GenericServer=require('./GenericServer.js');
 var logger = require('../services/logseed').logseed;
 var fs=require('fs');
@@ -351,11 +349,7 @@ function generatePDF(request,response){
 								showReqNumColumn=true;
 								showItemNumberColumn=true;
 							}
-							//var slpcfq = ViewQuery.from("relation","getRelated").key([recordId,"specListHasProductCategory"]).reduce(false).stale(ViewQuery.Update.BEFORE);
-							//CouchBaseUtil.executeViewInContentBucket(slpcfq,function(slpcs){
 							var querystring="SELECT `recordId` AS `id`, `recordId` As `value` FROM `records` WHERE docType=$1 AND `SpecList` =$2 ORDER BY `itemNumberTranslation`";
-							/*var query = N1qlQuery.fromString(querystring);
-							query.adhoc = false;*/
 							CouchBaseUtil.executeN1QL(querystring,{parameters:["SpecListProductCategory",recordId]},function(slpcs){
 								var lines="";
 								if(slpcs.error){
@@ -401,11 +395,7 @@ function generatePDF(request,response){
 											lines+="</tbody>" +
 													"</table>"
 											var html=architectHeader+scheduleName+specHeader+lines;
-											//var schedule = ViewQuery.from("SpecListProductCategoryProduct","schedule").keys([[recordId,"specifiedFinalized"],[recordId,"specifiedFinalizedRevised"]]).reduce(false).stale(ViewQuery.Update.BEFORE);
-											//CouchBaseUtil.executeViewInContentBucket(schedule,function(schedulesRes){
 											var querystring="SELECT `recordId` AS `id`, `recordId` As `value` FROM records WHERE docType=$1 AND `$status` IN $2  AND SpecList=$3";
-											var query = N1qlQuery.fromString(querystring);
-											query.adhoc = false;
 											CouchBaseUtil.executeN1QL(querystring,{parameters:["SpecListProductCategoryProduct",["specifiedFinalizedRevised","specifiedFinalized"],recordId]},function(schedulesRes){
 
 												var schedules=[];
@@ -855,8 +845,6 @@ function getSpecListProductCategoryProductContent(record,callback){
 }
 function getComponents(recordId,callback){
 	var querystring="SELECT * FROM `records` WHERE docType=$1 AND `SpecListProductCategoryProduct`=$2 ORDER BY `itemNumberTranslation`";
-	/*var query = N1qlQuery.fromString(querystring);
-	query.adhoc = false;*/
 	var mapSetData={
 			recordId:recordId,
 			relationName:"hasComponent",

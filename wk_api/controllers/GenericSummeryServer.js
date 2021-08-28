@@ -2,8 +2,6 @@ var reactConfig=require('../../config/ReactConfig');
 var config=reactConfig.init;
 var urlParser=require('./URLParser');
 var couchbase = require('couchbase');
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 
 var CouchBaseUtil=require('./CouchBaseUtil');
 var limitCount=require("../utils/global.js").summaryLimitCount*2+1//19;// 9
@@ -381,8 +379,6 @@ function getSchemaRecordsN1ql(data,callback){
 		console.log(queryString);
 		console.log("==================================");
 	}
-	//var query=N1qlQuery.fromString(queryString)
-	//query.adhoc = false;
 	CouchBaseUtil.executeN1QL(queryString,{parameters:[]},function(results){
 		if(results.error){
 			callback(results);
@@ -548,8 +544,6 @@ function getApplicableFilters(data,callback){
 					console.log(queryString);
 					console.log("=====================================");
 				}
-				/*var query=N1qlQuery.fromString(queryString);
-				query.adhoc = false;*/
 				CouchBaseUtil.executeN1QL(queryString,{ parameters:[]},function(response){
 					var tempRes=[];
 					if(response.error){

@@ -1,7 +1,5 @@
 var urlParser=require('./URLParser');
 var couchbase = require('couchbase');
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 var CouchBaseUtil=require('./CouchBaseUtil');
 var limitCount=require("../utils/global.js").limitCount*2+1//19;// 9
 var utility=require('./utility.js');
@@ -18,12 +16,14 @@ var GenericSummeryServer=require('./GenericSummeryServer.js');
 
 function getRelated(request,callback){
 	var data=urlParser.getRequestBody(request);
-	/*var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relation]).reduce(false);
+	/*
+	var options={reduce:false,key:[data.recordId,data.relation]};
 	if(typeof data.skip != "undefined"){
-		query.skip(data.skip).limit(limitCount);
+		options.skip=data.skip;
+		options.limit=limitCount;
 	}
-	query.stale(ViewQuery.Update.BEFORE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(response){
+	options.stale=ViewScanConsistency.RequestPlus;
+	CouchBaseUtil.executeViewInContentBucket("relation","getRelated",options,function(response){
 		if(typeof callback=="function"){
 			callback(response);
 		}
@@ -87,8 +87,6 @@ function checkJunctionExistance(request,callback){
 				values.push(data[keysToCheck[index]]);
 			}
 			var querystring="SELECT `recordId` FROM `records` "+whereString;
-			//var query = N1qlQuery.fromString(querystring);
-			//query.adhoc = false;
 			CouchBaseUtil.executeN1QL(querystring,{parameters:values},function(result){
 				if(result.length!=0){
 					if(typeof callback=="function")
@@ -109,16 +107,17 @@ exports.checkJunctionExistance=checkJunctionExistance;
 
 function getRelatedRecords(request,callback){
 	var data=urlParser.getRequestBody(request);
-	/*var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relation]).reduce(false);
+	/*var options={key:[data.recordId,data.relation],reduce:false};
 	if(typeof data.skip != "undefined"){
-		query.skip(data.skip).limit(limitCount);
+		options.skip=data.skip;
+		options.limit=limitCount;
 	}
 	if(data.fromTrigger){
-		query.stale(ViewQuery.Update.BEFORE);
+		options.stale=ViewScanConsistency.RequestPlus;
 	}else{
-		query.stale(ViewQuery.Update.NONE)
+		options.stale=ViewScanConsistency.NotBounded
 	}
-	CouchBaseUtil.executeViewInContentBucket(query,function(response){
+	CouchBaseUtil.executeViewInContentBucket("relation","getRelated",options,function(response){
 		var recordIds=[];
 		for(var i=0;i<response.length;i++){
 			recordIds.push(response[i].id);
@@ -216,15 +215,13 @@ function getSearchResults(request,callback){
 	/*if(!data.userId){
 		data.userId="CommonUser";
 	}
-	var query = ViewQuery.from(data.schema,"summary").keys(data.recordIds).reduce(false);
-	CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+	CouchBaseUtil.executeViewInContentBucket(data.schema,"summary",{keys:data.recordIds,reduce:false}, function(results) {
 		callback({records:results});
 	});*/
 	utility.getMainSchema(data,function(schema){
 		if(schema.error){callback(schema);return;}
 		var keys=GenericSummeryServer.getSummaryKeys(schema).keys;
 		var querystring="SELECT `"+keys.join("`,`")+"` FROM `records` WHERE docType=$1 AND `recordId` IN $2";
-		//var query = N1qlQuery.fromString(querystring);
 		CouchBaseUtil.executeN1QL(querystring,{parameters:[data.schema,data.recordIds]},function(results){
 			var recs=[];
 			for(var index in results){
@@ -248,8 +245,7 @@ exports.getSearchResults=getSearchResults;
 function checkRelated(request,callback){
 	/*var data=urlParser.getRequestBody(request);
 	var key=[data.recordId,data.relation,data.relatedRecordId];
-	var query = ViewQuery.from("relation","checkRelated").key(key).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(result){
+	CouchBaseUtil.executeViewInContentBucket("relation","checkRelated",{key:key,stale:ViewScanConsistency.NotBounded},function(result){
 		if(result.length!=0){
 			callback({result:"related"});
 		}else{
@@ -267,9 +263,8 @@ exports.checkRelated=checkRelated;
  * @param callback
  */
 function getRelatedRecordId(data,callback){
-	/*var key=[data.source,data.relation,data.target];
-	var query = ViewQuery.from("relation","checkRelated").key(key).stale(ViewQuery.Update.NONE);
-	CouchBaseUtil.executeViewInContentBucket(query,function(result){
+	/*var key=[data.source,data.relation,data.target];\
+	CouchBaseUtil.executeViewInContentBucket("relation","checkRelated",{key:key,stale:ViewScanConsistency.NotBounded},function(result){
 		if(result.length!=0){
 			callback({id:result[0].id});
 		}else{
@@ -299,8 +294,7 @@ exports.getRelatedRecordId=getRelatedRecordId;
 
 function getRelatedCount(request,callback){
 	/*var data=urlParser.getRequestBody(request);
-	var query = ViewQuery.from("relation","getRelated").key([data.recordId,data.relation])// .group(2)//.stale(ViewQuery.Update.NONE);
-		CouchBaseUtil.executeViewInContentBucket(query,function(response){
+		CouchBaseUtil.executeViewInContentBucket("relation","getRelated",{key:[data.recordId,data.relation]},function(response){
 			var count=0;
 			if(response.length>0 && response[0].value){
 				count=response[0].value;
@@ -345,11 +339,7 @@ exports.getRelatedCount=getRelatedCount;
 					});
 			});
 		}else if(data.relationView==undefined || (data.relationView!="GoDetail" && data.relationView!="TableEditView")){
-			var query = ViewQuery.from(data.relationRefSchema,"summary").keys(data.recordIds).reduce(false);
-			if(data.stale==false){
-				query.stale(ViewQuery.Update.BEFORE);
-			}
-			CouchBaseUtil.executeViewInContentBucket(query, function(results) {
+			CouchBaseUtil.executeViewInContentBucket(data.relationRefSchema,"summary",{keys:data.recordIds,reduce:false,stale:data.stale==false?ViewScanConsistency.RequestPlus:ViewScanConsistency.NotBounded}, function(results) {
 				if(results.error){
 					callback(results);
 					return;

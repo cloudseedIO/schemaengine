@@ -7,8 +7,6 @@ var SchemaController=require('./SchemaController.js');
 var couchbase = require('couchbase');
 var reactConfig=require('../../config/ReactConfig');
 config=reactConfig.init;
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
 var CouchBaseUtil=require('./CouchBaseUtil.js');
 
 var GenericServer=require('./GenericServer.js');
@@ -199,7 +197,6 @@ function getUserById(data,callback){
 exports.getUserById=getUserById;
 
 function getUniqueUserName(data,callback){
-	//var query = ViewQuery.from("User", "getUniqueUserName").key(data.recordId).stale(ViewQuery.Update.NONE);
 	CouchBaseUtil.executeViewInContentBucket("User", "getUniqueUserName",{key:data.recordId,stale:ViewScanConsistency.NotBounded},function(response){
 		if(response && response.length && response.length==1 && response[0].value){
 			callback(response[0].value);
@@ -234,7 +231,6 @@ exports.updateUser=updateUser;
 
 
 function validateUser(data,callback){
-	//var query = ViewQuery.from("User", "UserPassword").key(data.userName).stale(ViewQuery.Update.BEFORE);
 	CouchBaseUtil.executeViewInContentBucket("User", "UserPassword",{key:data.userName,stale:ViewScanConsistency.RequestPlus},function(results){
 		if(results.error){
 			callback(results);
@@ -250,7 +246,6 @@ function validateUser(data,callback){
 exports.validateUser=validateUser;
 
 function getUserDocByUserName(data,callback){
-	//var query = ViewQuery.from("User", "UserByLoginId").key(data.userName).stale(ViewQuery.Update.BEFORE);
 	CouchBaseUtil.executeViewInContentBucket("User", "UserByLoginId",{key:data.userName,stale:ViewScanConsistency.RequestPlus},function(results){
 		if(results.error){
 			callback(results);
@@ -266,7 +261,6 @@ function getUserDocByUserName(data,callback){
 }
 exports.getUserDocByUserName=getUserDocByUserName;
 function getUserDocByEmail(data,callback){
-	//var query = ViewQuery.from("User", "UserByEmail").key((data.email).toLowerCase()).stale(ViewQuery.Update.BEFORE);
 	CouchBaseUtil.executeViewInContentBucket("User", "UserByEmail",{key:data.email.toLowerCase(),stale:ViewScanConsistency.RequestPlus},function(results){
 		if(results.error){
 			callback(results);
@@ -478,7 +472,6 @@ exports.get_gravatar=get_gravatar;
 */}
 
 function getUserShortDetails(data,callback){
-	//var query = ViewQuery.from("User", "UserDetail").key(data.id).stale(ViewQuery.Update.NONE);
 	CouchBaseUtil.executeViewInContentBucket("User", "UserDetail",{key:data.id,stale:ViewScanConsistency.NotBounded},function(results){
 		if(results.error){
 			callback(results);
@@ -547,7 +540,6 @@ function updateLastLoggedIn(data,callback){
 function checkUserExistance(request,callback){
 	var hostname=request.headers.host.split(":")[0];
 	var config=ContentServer.getConfigDetails(hostname);
-	//var query = ViewQuery.from("UserRole", "allUserRoles").key([config.cloudPointHostId,request.session.userData.recordId]);
 	CouchBaseUtil.executeViewInContentBucket("UserRole", "allUserRoles",{key:[config.cloudPointHostId,request.session.userData.recordId]},function(response){
 		if(response.error){
 			callback({userAssociatedWithAnOrg:true});
@@ -680,7 +672,7 @@ function changePassword(code,callback){
 			//An index MUST BE created to execute this 
 			//CREATE INDEX `wk_resetPasswordCode` ON `records`(`resetPasswordCode`) WHERE (`resetPasswordCode` is not missing) USING GSI
 			var  qryString = " SELECT `records`  FROM records WHERE `resetPasswordCode`='"+code+"'";
-			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
+			CouchBaseUtil.executeViewInContentBucket(qryString,{parameters:[]},function(result){
 				if(result.length){
 					userDoc = result[0].records;
 					callback({
@@ -707,7 +699,7 @@ function activateAccount(code,callback){
 			//AN INDEX must be there for the below query
 			//CREATE INDEX `wk_activationCode` ON `records`(`activationCode`) WHERE (`activationCode` is not missing) USING GSI
 			var  qryString = " SELECT `records`  FROM records WHERE `activationCode`='"+code+"'";
-			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
+			CouchBaseUtil.executeViewInContentBucket(qryString,{parameters:[]},function(result){
 				if(result.length){
 					//User found using activation code
 					//look for org domain
@@ -730,14 +722,14 @@ function activateAccount(code,callback){
 									"WHERE ANY domain IN `orgDomain` SATISFIES domain='"+(orgDomain)+"'  END  "+
 									" AND (docType='Provider' OR docType='Manufacturer' OR docType='Developer' OR docType='Supplier' OR docType='ServiceProvider' OR docType='Organization')"
 					//check for org page with the found org domain
-					CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString1),function(result){
+					CouchBaseUtil.executeViewInContentBucket(qryString1,{parameters:[]},function(result){
 						if(result && result.length){//org found
 							//Org exists, so create a user role
 							orgDoc = result[0].records;
 							var orgType=orgDoc.docType;
 							//check for user role existance if not create new
 							qryString = " SELECT `records`  FROM records WHERE `docType`='UserRole' AND `User`='"+(userDoc.recordId)+"'  AND `org`='"+(orgDoc.recordId)+"'";
-							CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
+							CouchBaseUtil.executeViewInContentBucket(qryString,{parameters:[]},function(result){
 								if(result && result.length==0){
 									//Roles not found, create a role
 									CouchBaseUtil.getDocumentByIdFromDefinitionBucket("RoleMappings",function(roles){
@@ -850,7 +842,7 @@ function joinPage(code,callback){
 			//AN INDEX must be there for the below query
 			//CREATE INDEX `wk_activationCode` ON `records`(`activationCode`) WHERE (`activationCode` is not missing) USING GSI
 			var  qryString = " SELECT `records`  FROM records WHERE `activationCode`='"+code+"'";
-			CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
+			CouchBaseUtil.executeViewInContentBucket(qryString,{parameters:[]},function(result){
 				if(result.length){
 					console.log("User found using activation code");
 					userDoc = result[0].records;
@@ -871,7 +863,7 @@ function joinPage(code,callback){
 									"FROM records "+
 									"WHERE ANY domain IN `orgDomain` SATISFIES domain='"+(orgDomain)+"'  END  "+
 									" AND (docType='Provider' OR docType='Manufacturer' OR docType='Developer' OR docType='Supplier' OR docType='ServiceProvider' OR docType='Organization')"
-					CouchBaseUtil.executeViewInContentBucket(N1qlQuery.fromString(qryString),function(result){
+					CouchBaseUtil.executeViewInContentBucket(qryString,{parameters:[]},function(result){
 						if(result && result.length){
 							console.log("Org exists");
 							orgDoc = result[0].records;

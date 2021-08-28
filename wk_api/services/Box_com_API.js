@@ -1,7 +1,6 @@
 var urlParser=require('../controllers/URLParser');
 var CouchBaseUtil=require('../controllers/CouchBaseUtil');
 var couchbase = require('couchbase');
-var ViewQuery = couchbase.ViewQuery;
 var global=require('../utils/global.js');
 var Client = require('node-rest-client').Client;
 

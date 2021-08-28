@@ -7,11 +7,11 @@
  * 
  */
 
-var couchbase = require('couchbase');
-var cluster = new couchbase.Cluster("couchbase://35.154.234.150");// 52.77.86.146");//52.76.7.57");
-var ViewQuery = couchbase.ViewQuery;
-var N1qlQuery = couchbase.N1qlQuery;
+ var reactConfig=require('../../config/ReactConfig');
+ config=reactConfig.init;
 
+var couchbase = require('couchbase');
+var cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword}); 
 var records = "records";
 var schemas = "schemas";
 
@@ -2932,7 +2932,7 @@ function checkForRecord(scrappedRec, callback){
 	var mfrProductNo=scrappedRec.mfrProductNo;
 	mfrProductNo = mfrProductNo?mfrProductNo.trim():mfrProductNo;
 
-	cbContentBucket.query(N1qlQuery.fromString("SELECT * FROM records WHERE `Manufacturer`='Manufacturere2b399ea-ad89-0ecf-5206-5c564f589bf7' AND `mfrProductNo`='"+mfrProductNo+"'"), function(err, res){
+	executeN1QL("SELECT * FROM records WHERE `Manufacturer`='Manufacturere2b399ea-ad89-0ecf-5206-5c564f589bf7' AND `mfrProductNo`='"+mfrProductNo+"'",{}, function(err, res){
 	if(err){
 	console.log(err);
 	callback(err);
@@ -2989,7 +2989,7 @@ function checkList(listInd){
 
 function checkForRecord(mfrProductNo, callback){
 	
-	cbContentBucket.query(N1qlQuery.fromString("SELECT * FROM records WHERE `Manufacturer`='Manufacturere2b399ea-ad89-0ecf-5206-5c564f589bf7' AND `mfrProductNo`='"+mfrProductNo+"'"), function(err, res){
+	executeN1QL("SELECT * FROM records WHERE `Manufacturer`='Manufacturere2b399ea-ad89-0ecf-5206-5c564f589bf7' AND `mfrProductNo`='"+mfrProductNo+"'",{} function(err, res){
 	if(err){
 	console.log(err);
 	callback(err);
@@ -3020,4 +3020,19 @@ function checkForRecord(mfrProductNo, callback){
 
 
 */
-///cbContentBucket.query(N1qlQuery.fromString("SELECT * FROM records WHERE `Manufacturer`='Manufacturere2b399ea-ad89-0ecf-5206-5c564f589bf7' AND `mfrProductNo` IN  "+mfrNos+" "), function(err, res){
+///cbContentBucket.query("SELECT * FROM records WHERE `Manufacturer`='Manufacturere2b399ea-ad89-0ecf-5206-5c564f589bf7' AND `mfrProductNo` IN  "+mfrNos+" ",{parameters:[]} function(err, res){
+async function executeN1QL(query,params,callback){
+	console.log(query);
+	console.log(params);
+	await cluster.query(query, (params && params.parameters)?params.parameters:[],function(err, results) {
+		if(err){
+			logger.error({type:"N1QLQueryError",error:err});
+			if(typeof callback=="function")
+			callback({"error":err,"query":query,"params":params});
+			return;
+		}
+		if(typeof callback=="function")
+			callback(results.rows);
+	});
+}
+exports.executeN1QL=executeN1QL;
