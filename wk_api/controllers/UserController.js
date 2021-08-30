@@ -61,6 +61,7 @@ exports.service = function(request,response){
 				request.session.userData=jsonObject;
 				updateLastLoggedIn({userId:jsonObject.recordId});
 				GenericServer.getNavigationLinks({"userId":jsonObject.recordId,"hostname":hostname},function(navlinks){
+					console.log("UC:getUserDocByUserName:aftergetNavigationLinks");
 					if(request && request.session){
 						request.session.navLinks=navlinks.navigation;
 					}

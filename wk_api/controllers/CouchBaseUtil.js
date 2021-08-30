@@ -761,8 +761,8 @@ async function executeN1QLInContentBucket(query,params,callback){
 exports.executeN1QLInContentBucket=executeN1QLInContentBucket;
 
 async function executeN1QL(query,params,callback){
-	console.log(query);
-	console.log(params);
+	//console.log(query);
+	//console.log(params);
 	await cluster.query(query, (params && params.parameters)?params.parameters:[],function(err, results) {
 		if(err){
 			logger.error({type:"N1QLQueryError",error:err});

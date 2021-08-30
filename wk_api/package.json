@@ -15,7 +15,6 @@
     "cheerio": "~0.22.0",
     "cloudinary": "~1.4.6",
     "compression": "^1.6.2",
-    "connect-couchbase": "^0.2.10",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.4",
     "couchbase": "^3.2.0",

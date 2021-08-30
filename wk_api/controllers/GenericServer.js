@@ -45,7 +45,7 @@ function getNavigationLinks(data,callback){
 			logger.error({type:"GS:getNavLinks:getNavDef",error:navresp});
 			callback({"error":"No navigation document found. Please contact administrator"});return;
 		}
-
+		console.log("GS:getNavLinks:getNavDef");
 		var RootNavigation=navresp.value;
 		var navLinks=Immutable.List();
 		// Getting the orgs list the user has access to
@@ -96,6 +96,7 @@ function getNavigationLinks(data,callback){
 						callback({"error":"Error while getting public roles"});
 						return;
 					}
+					console.log("GS:getNavLinks:getSchemasAndMethodsByRole");
 					  for(var ri=0;ri<roles.length;ri++){
 						  toSessionRoles.public[roles[ri].schema]=roles[ri];
 					  }
@@ -122,7 +123,7 @@ function getNavigationLinks(data,callback){
 							callback({"error":"Error while getting orgs list"});
 							return;
 						}
-
+						console.log("GS:getNavLinks:getOrgDocs");
 						if(orgsList.indexOf("public")==-1){
 							navLinks=navLinks.push({
 								org:"public",
@@ -567,7 +568,6 @@ function getUserSiblingOrgs(cloudPointHostId,userId,callback){
 		userId="CommonUser";
 	}
 	CouchBaseUtil.executeViewInContentBucket("UserRole", "UserRoles",{key:[cloudPointHostId,userId],stale:ViewScanConsistency.RequestPlus},function(response){
-		console.log(response)
 		if(response.error){
 			callback(response);
 			return;
@@ -577,7 +577,6 @@ function getUserSiblingOrgs(cloudPointHostId,userId,callback){
 			rowData.push(response[i].value);
 		}
 		callback(rowData);
-
 	});
 }
 exports.getUserSiblingOrgs=getUserSiblingOrgs;

@@ -8,7 +8,6 @@
 var reactConfig=require('../../config/ReactConfig');
 var config=reactConfig.init;
 var couchbase = require('couchbase');
-//var cluster = new couchbase.Cluster("couchbase://35.154.234.150");//52.77.86.146");//52.76.7.57");
 var cluster = new couchbase.Cluster("couchbase://"+config.cbAddress,{username:config.cbUsername,password:config.cbPassword});  //config.cbAddress+":"+config.cbPort
 
 async function executeN1QL(query,params,callback){

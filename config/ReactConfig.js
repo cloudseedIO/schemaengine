@@ -66,6 +66,7 @@ configuration.cbKeywordBucket="keywords";
 configuration.cbAuditBucket="audit";
 configuration.cbSitemapsBucket="sitemaps";
 configuration.cbMessagesBucket="messages";
+configuration.sessionsBucket="sessions";
 configuration.cbPort=8091;
 configuration.cbViewPort=8092;
 
