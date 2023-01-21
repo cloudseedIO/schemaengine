@@ -1,0 +1,3 @@
+Enterpriese account to create users (managed/app), has to change the Application Access param (configuration) to Enterprise;
+Then re-authorise from Enterprise Account->Apps
+	

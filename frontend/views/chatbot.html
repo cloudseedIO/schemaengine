@@ -1,0 +1,68 @@
+<!--<!DOCTYPE html>
+<html>
+  <body>
+    <div id="webchat"></div>
+    <script src="https://cdn.botframework.com/botframework-webchat/preview/botchat.js"></script>
+    <script>
+      window.WebChat.renderWebChat({
+        directLine: window.WebChat.createDirectLine({ secret: '2M_Sutw65r8.cwA.DN4.UdfO1IBmhVbYe8OTchY4oLSQLdU-WPkddW4bQRTNhVs' })
+      }, document.getElementById('webchat'));
+      document.querySelector('#webchat > *').focus();
+    </script>
+  </body>
+</html>-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <link href="https://cdn.botframework.com/botframework-webchat/latest/botchat.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:300,400,500,600,700,800,900" rel="stylesheet"/> 
+    <style>
+    	label.wc-upload{ display:none;}
+    	.wc-console.has-upload-button .wc-textbox{left:10px;}
+    	*{
+    		font-family:'Montserrat',Arial !important;
+    	}
+    </style>
+  </head>
+  <body>
+    <div id="bot"/>
+    <script src="https://cdn.botframework.com/botframework-webchat/latest/botchat.js"></script>
+    <script>
+     /* BotChat.App({
+        directLine: { secret: "2M_Sutw65r8.cwA.DN4.UdfO1IBmhVbYe8OTchY4oLSQLdU-WPkddW4bQRTNhVs" },
+        user: { id: 'you' },
+        bot: { id: 'botid' },
+        resize: 'detect'
+      }, document.getElementById("bot"));*/
+      
+              var user = {
+            id: 'user-id',
+            name: 'you'
+        };
+        var botConnection = new BotChat.DirectLine({
+            token: '2M_Sutw65r8.cwA.DN4.UdfO1IBmhVbYe8OTchY4oLSQLdU-WPkddW4bQRTNhVs',
+            user: user
+        });
+        BotChat.App({
+            user: user,
+            botConnection: botConnection,
+            bot: { id: 'bot-id', name: 'bot name' },
+            resize: 'detect'
+        }, document.getElementById("bot"));
+        botConnection
+            .postActivity({
+                from: user,
+                name: 'requestWelcomeDialog',
+                type: 'event',
+                value: ''
+            })
+            .subscribe(function (id) {
+                console.log('"trigger requestWelcomeDialog" sent');
+            });
+      
+      
+      document.querySelector('#bot > *').focus();
+    </script>
+  </body>
+</html>

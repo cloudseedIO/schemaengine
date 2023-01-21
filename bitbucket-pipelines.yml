@@ -1,0 +1,41 @@
+pipelines:
+   default:
+   - step:
+      name: default step
+      deployment: test
+      image: node:4.2.6
+      script:
+         - echo "DEFAULT PIPELINE CODE"
+   branches:
+    master:
+     - step:
+        name: Deploy to AWS
+        deployment: production
+        image: atlassian/pipelines-awscli
+        script:
+         - aws deploy push --application-name cloudseed --s3-location s3://wkappcode/wkmaster.zip --ignore-hidden-files 
+         - aws deploy create-deployment --application-name cloudseed --s3-location bucket=wkappcode,key=wkmaster.zip,bundleType=zip --deployment-group-name wkprod
+    dev:
+     - step:
+        name: Deploy to AWS
+        deployment: test
+        image: atlassian/pipelines-awscli
+        script:
+         - aws deploy push --application-name cloudseed --s3-location s3://wkappcode/wk.zip --ignore-hidden-files 
+         - aws deploy create-deployment --application-name cloudseed --s3-location bucket=wkappcode,key=wk.zip,bundleType=zip --deployment-group-name wkdev
+    ui:
+     - step:
+        name: Deploy to AWS
+        deployment: test
+        image: atlassian/pipelines-awscli
+        script:
+         - aws deploy push --application-name cloudseed --s3-location s3://wkappcode/wk.zip --ignore-hidden-files 
+         - aws deploy create-deployment --application-name cloudseed --s3-location bucket=wkappcode,key=wk.zip,bundleType=zip --deployment-group-name wkdev
+    api-server-seperation:
+     - step:
+        name: Deploy to AWS
+        deployment: test
+        image: atlassian/pipelines-awscli
+        script:
+         - aws deploy push --application-name cloudseed --s3-location s3://wkappcode/wk.zip --ignore-hidden-files 
+         - aws deploy create-deployment --application-name cloudseed --s3-location bucket=wkappcode,key=wk.zip,bundleType=zip --deployment-group-name wkdev

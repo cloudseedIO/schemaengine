@@ -1,0 +1,544 @@
+
+
+
+
+1) Create Customers -> Create SalesOrder/invoice -> Payment
+2) Create Suppliers/Vendors -> Create PurchaseOrder -> Create Bill -> BillPayment
+3) 
+4) TaxService TaxAgency
+5) To create TaxCode use TaxService
+6) To create TaxRate use TaxService
+7) 
+
+TaxCode has TaxRate, TaxRate has TaxAgency.So user has to create TaxCodes it internally 
+connects to TaxRate and TaxRate connects to TaxAgency.
+
+
+Refer below link to understand Taxes for Non-US
+https://developer.intuit.com/docs/0100_accounting/0300_developer_guides/global_tax_model/non-us_sales_tax_integrations
+
+
+1) An additional tax code:
+If the rate for an existing tax changes, it is better to add an additional tax code than to change the existing one.
+ invoke create
+ 
+
+
+
+
+Enabling MultiCurrency Through API:
+https://developer.intuit.com/docs/0100_accounting/0300_developer_guides/currency
+
+
+
+Querying Bill Payments which are Paid by Check:
+-> qbo.findBillPayments("where BankAccountRef='35'")
+
+Querying Options:
+-----------------
+https://developer.intuit.com/docs/0100_accounting/0300_developer_guides/querying_data
+
+
+
+Supplier/Vendor Schema:
+-----------------------
+{
+ "Title"			:"Title of the person.",
+ "GivenName"		:"Given name or first name of a person.",
+ "MiddleName"		:"Middle name of the person. The person can have zero or more middle names.",
+ "FamilyName"		:"Family name or the last name of the person.",
+ "Suffix"			:"Suffix of the name. For example, Jr.",
+ "CompanyName"		:"The name of the company associated with the person or organization.",
+ "DisplayName"		:"The name of the person or organization as displayed.Constraints:Must be unique,Cannot be removed with sparse update",
+ "PrintOnCheckName"	:"Name of the person or organization as printed on a check. If not provided, this is populated from DisplayName.",
+ "PrimaryPhone"		:{FreeFormNumber: Specifies the telephone number in free form.},
+ "AlternatePhone"	:"",
+ "Mobile"			:"",
+ "Fax"				:"",
+ "PrimaryEmailAddr"	:{Address:'An email address. The address format must follow the RFC 822 standard.'},
+ "WebAddr"			:{URI":"string"},
+ "BillAddr"			:"",
+ "OtherContactInfo"	:"",
+ "TaxIdentifier"	:"The tax ID of the Person or Organization.",
+ "TermRef"			:{"value":"Id of the Term"},
+ "Balance"			:"Specifies the open balance amount or the amount unpaid by the customer. For the create operation, this represents the opening balance for the customer. When returned in response to the query request it represents the current open balance (unpaid amount) for that customer.",
+ "AcctNum"			:"Name or number of the account associated with this vendor.",
+ "Vendor1099"		:"Boolean",
+ "CurrencyRef"		:{"value":"A three letter string representing the ISO 4217 code for the currency"},
+ "TaxReportingBasis":"Optional",
+ "APAccountRef"		:"Optional"
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{ oauth_token_secret: 'B2Dd6VrtsFakmZZCASLSRKXAqYyrbkwYvhNhzOpc',
+  oauth_token: 'qyprdJNhw8DrkjCxFHNtxdaWkxJBou1nXxhlJAIz8DVgQXti' }
+  realmId:123145656791732
+  
+/*
+ * 
+ * 
+ * 
+ * */
+var consumerKey="qyprdLC9TJZkDYzSZe36DIev3Ed4dl";
+var consumerSecret="FgWcOXNzUw9flBuusEWdPq0sNDoOjxCbjEGC6eNH",
+qs = require('querystring'),request = require('request');
+
+
+var QuickBooks=require('node-quickbooks');
+
+/****
+ * This is for connecting user from our application
+ * Refer -> https://developer.intuit.com/docs/0100_accounting/0060_authentication_and_authorization/connect_from_within_your_app
+ * 
+ */
+
+
+app.get('/requestToken', function(req, res) {
+	  var postBody = {
+	    url: QuickBooks.REQUEST_TOKEN_URL,
+	    oauth: {
+	      callback:        'https://localhost/callback/',
+	      consumer_key:    consumerKey,
+	      consumer_secret: consumerSecret
+	    }
+	  }
+	  request.post(postBody, function (e, r, data) {
+	    var requestToken = qs.parse(data)
+	    req.session.oauth_token_secret = requestToken.oauth_token_secret
+	    console.log("request token: ");
+	    console.log(requestToken);
+	    console.log("redirect: "+(QuickBooks.APP_CENTER_URL + requestToken.oauth_token));
+	    res.redirect(QuickBooks.APP_CENTER_URL + requestToken.oauth_token)
+	  })
+	});
+
+	app.get('/callback', function(req, res) {
+	  var postBody = {
+	    url: QuickBooks.ACCESS_TOKEN_URL,
+	    oauth: {
+	      consumer_key:    consumerKey,
+	      consumer_secret: consumerSecret,
+	      token:           req.query.oauth_token,
+	      token_secret:    req.session.oauth_token_secret,
+	      verifier:        req.query.oauth_verifier,
+	      realmId:         req.query.realmId
+	    }
+	  }
+	  request.post(postBody, function (e, r, data) {
+	    var accessToken = qs.parse(data)
+	    console.log("In callback, access token: "+accessToken)
+	    console.log(accessToken);
+	    console.log("In callback, realmId: "+postBody.oauth.realmId)
+
+	    // save the access token somewhere on behalf of the logged in user
+	    qbo = new QuickBooks(consumerKey,
+	                         consumerSecret,
+	                         accessToken.oauth_token,
+	                         accessToken.oauth_token_secret,
+	                         postBody.oauth.realmId,
+	                         true, // use the Sandbox
+	                         true); // turn debugging on
+
+	    // test out account access
+	    qbo.findAccounts(function(_, accounts) {
+	      accounts.QueryResponse.Account.forEach(function(account) {
+	        console.log(account.Name)
+	      })
+	    })
+	  });
+	  res.send('<!DOCTYPE html><html lang="en"><head></head><body><script>window.opener.location.reload(); window.close();</script></body></html>')
+	});
+	
+
+	
+
+
+The account object:
+{
+    "Account":
+    {
+        "Name": "MyJobs",
+        "SubAccount": false,
+        "FullyQualifiedName": "MyJobs",
+        "Active": true,
+        "Classification": "Asset",
+        "AccountType": "Accounts Receivable",
+        "AccountSubType": "AccountsReceivable",
+        "CurrentBalance": 0,
+        "CurrentBalanceWithSubAccounts": 0,
+        "CurrencyRef":
+        {
+            "value": "USD",
+            "name": "United States Dollar"
+        },
+        "domain": "QBO",
+        "sparse": false,
+        "Id": "94",
+        "SyncToken": "0",
+        "MetaData":
+        {
+            "CreateTime": "2014-12-31T09:29:05-08:00",
+            "LastUpdatedTime": "2014-12-31T09:29:05-08:00"
+        }
+    },
+    "time": "2014-12-31T09:29:05.717-08:00"
+}
+
+
+
+
+
+
+Sridhar Created QuickBooks API Tokens:
+test
+{ oauth_token_secret: 'vKGsZk6YLfMeXZv03ACjnvIfIIV9GxZ3qBRcpTDd',
+  oauth_token: 'lvprd3uIvWSm78IknGIGsz4ykwfzOnBIWq3HYCpCby7QjF9A' }
+In callback, realmId: 123145657880057
+
+{ oauth_token_secret: 's0Czn2Sli1C1pBezecJcSKWcqDXdIigMCDhuPx7c',
+  oauth_token: 'lvprd2rbc0UJRdNo3fQnTTdu0X3aou5ReEu8RrKbYfEfbgTy' }
+In callback, realmId: 123145657880057
+
+Use these
+{ oauth_token_secret: '7z5ruaHUG1tqsivhJJx7YgCE2jdtxFSl6yNS3Rwv',
+  oauth_token: 'lvprdUy0dwalCmRDgR40GYsSZO31YdX1ne5leI8NuK41PZ5C' }
+In callback, realmId: 123145657880057
+
+var consumerKey="qyprdG95rI9H3ZzEkWOTXKyoeRNsxX";
+var consumerSecret="GSPCa7MQ3vZ8TMzsWA3x2CfAny1CO00dnj5wSCNG",
+qs = require('querystring'),request = require('request');
+
+var QuickBooks=require('node-quickbooks');
+
+var qbo = new QuickBooks(consumerKey, consumerSecret, 'lvprdUy0dwalCmRDgR40GYsSZO31YdX1ne5leI8NuK41PZ5C', '7z5ruaHUG1tqsivhJJx7YgCE2jdtxFSl6yNS3Rwv', 123145657880057, true, true); 
+Account Creation JSON:
+----------------------
+
+{ Account:
+   { Name: 'My Jobs1',
+     SubAccount: false,
+     FullyQualifiedName: 'My Jobs',
+     Active: true,
+     Classification: 'Asset',
+     AccountType: 'Accounts Receivable',
+     AccountSubType: 'AccountsReceivable',
+     CurrentBalance: 100,
+     CurrentBalanceWithSubAccounts: 0,
+     CurrencyRef: { value: 'INR', name: 'Indian Rupees' },
+     domain: 'QBO',
+     sparse: false,
+     SyncToken: '0',
+  time: '2015-12-21T23:05:10.849-08:00' }
+  
+  
+  
+  
+
+var QuickBooks = require('node-quickbooks');
+var consumerKey="qyprdG95rI9H3ZzEkWOTXKyoeRNsxX";
+var consumerSecret="GSPCa7MQ3vZ8TMzsWA3x2CfAny1CO00dnj5wSCNG";
+var qbo = new QuickBooks(consumerKey, consumerSecret, 'lvprdUy0dwalCmRDgR40GYsSZO31YdX1ne5leI8NuK41PZ5C', '7z5ruaHUG1tqsivhJJx7YgCE2jdtxFSl6yNS3Rwv', 123145657880057, true, true);
+
+Account:
+-------
+
+	Id				: required for Update,
+	SyncToken		: String, read-only,
+	MetaData		: ModificationMetaData, children CreateTime:UTC, LastUpdatedTime:UTC
+	Name*			: String, Max 100 chars, must not contain double quotes(") or colon(:)
+	SubAccount		: Boolean
+	ParentRef		: ReferenceType
+	Description		: String, Max 100 chars
+	FullyQualifiedName: String, default is Name+ParentRef
+	Active			: Boolean, default is true
+	Classification	: String, derived from AccountType and AccountSubtype, valid: Asset, Equity, Expense, Liability, Revenue
+	AccountType*	: AccountTypeEnum, 
+	AccountSubType*	: String, 
+	AcctNum			: String, req for France locales
+	CurrentBalance	: Decimal, Valid for Balance Sheet Accounts
+	CurrentBalanceWithSubAccounts: Decimal
+	CurrencyRef		: CurrencyRef, {value*:string[USD,AUD,EUR], name:string}
+	AccountAlias	: String, default is Account Name
+	TxnLocationType	: WithFrance
+
+Vendor(Supplier):
+-----------------
+@source: https://developer.intuit.com/docs/api/accounting/Vendor
+
+The Vendor represents the seller from whom your company purchases any service or product. 
+	Id		: IdType(optional)
+	SyncToken	: String (req for updation)
+	Title		: String
+	GivenName	: String (Max 25 chars)
+	MiddleName	: String (Max 25 chars)
+	FamilyName	: String (Max 25 chars)
+	Suffix		: String (Max 10 chars)
+	CompanyName	: String, maximum of 50 chars, filterable, sortable, default is null, The name of the company associated with the person or organization.
+	DisplayName*	: String, Max 100 chars, The name of the person or organization as displayed.Must be unique 
+	PrintOnCheckName: String, maximum of 100 chars, filterable, sortable
+	Active		: Boolean
+	PrimaryPhone	: TelephoneNumber, child {FreeFormNumber:"345345"}
+	AlternatePhone	: TelephoneNumber, "  	"
+	Mobile		: TelephoneNumber,
+	Fax		: TelephoneNumber,
+	PrimaryEmailAddr: EmailAddress, child {Address:""}
+	WebAddr		: WebSiteAddress, child {URI:""}
+	BillAddr	: PhysicalAddress, child {Id:"", Line1:""- Line5:"", City:"" etc..}
+	OtherContactInfo: child
+	TaxIdentifier	: String, The tax ID of the Person or Organization.
+	
+	
+Item (Product and Services):
+----------------------------
+@source: https://developer.intuit.com/docs/api/accounting/Item
+
+
+
+
+{"Name":"Garden Supplies","IncomeAccountRef":{"value":"79","name":"Sales of Product Income"},"ExpenseAccountRef":{"value":"80","name":"Cost of Goods Sold"},"AssetAccountRef":{"value":"81","name":"Inventory Asset"},"Type": "Inventory","TrackQtyOnHand":true,"QtyOnHand":10,"InvStartDate":"2015-01-01"}
+
+
+
+
+  
+qbo.__defineGetter__                 qbo.__defineSetter__
+qbo.__lookupGetter__                 qbo.__lookupSetter__
+qbo.constructor                      qbo.hasOwnProperty
+qbo.isPrototypeOf                    qbo.propertyIsEnumerable
+qbo.toLocaleString                   qbo.toString
+qbo.valueOf
+
+qbo.batch                            qbo.capitalize
+qbo.changeDataCapture                qbo.createAccount
+
+qbo.createAttachable                 qbo.createBill
+qbo.createBillPayment                qbo.createClass
+
+qbo.createCreditMemo                 qbo.createCustomer
+qbo.createDepartment                 qbo.createEmployee
+
+qbo.createEstimate                   qbo.createInvoice
+qbo.createItem                       qbo.createJournalEntry
+
+qbo.createPayment                    qbo.createPaymentMethod
+qbo.createPurchase                   qbo.createPurchaseOrder
+
+qbo.createRefundReceipt              qbo.createSalesReceipt
+qbo.createTaxAgency                  qbo.createTaxService
+
+qbo.createTerm->createSalesTerms     qbo.createTimeActivity
+qbo.createVendor                     qbo.createVendorCredit
+
+qbo.deleteAttachable                 qbo.deleteBill
+qbo.deleteBillPayment                qbo.deleteCreditMemo
+
+qbo.deleteEstimate                   qbo.deleteInvoice
+qbo.deleteJournalEntry               qbo.deletePayment
+
+qbo.deletePurchase                   qbo.deletePurchaseOrder
+qbo.deleteRefundReceipt              qbo.deleteSalesReceipt
+
+qbo.deleteTimeActivity               qbo.deleteVendorCredit
+
+qbo.findAccounts                     qbo.findAttachables
+qbo.findBillPayments                 qbo.findBills
+
+qbo.findBudgets                      qbo.findClasses
+qbo.findCompanyInfos                 qbo.findCreditMemos
+
+qbo.findCustomers                    qbo.findDepartments
+qbo.findEmployees                    qbo.findEstimates
+
+qbo.findInvoices                     qbo.findItems
+qbo.findJournalEntries               qbo.findPaymentMethods
+
+qbo.findPayments                     qbo.findPreferenceses
+qbo.findPurchaseOrders               qbo.findPurchases
+
+qbo.findRefundReceipts               qbo.findSalesReceipts
+qbo.findTaxAgencies                  qbo.findTaxCodes
+
+qbo.findTaxRates                     qbo.findTerms
+qbo.findTimeActivities               qbo.findVendorCredits
+
+qbo.findVendors                      qbo.getAccount
+qbo.getAttachable                    qbo.getBill
+
+qbo.getBillPayment                   qbo.getClass
+qbo.getCompanyInfo                   qbo.getCreditMemo
+
+qbo.getCustomer                      qbo.getDepartment
+qbo.getEmployee                      qbo.getEstimate
+
+qbo.getInvoice                       qbo.getInvoicePdf
+qbo.getItem                          qbo.getJournalEntry
+
+qbo.getPayment                       qbo.getPaymentMethod
+qbo.getPreferences                   qbo.getPurchase
+
+qbo.getPurchaseOrder                 qbo.getRefundReceipt
+qbo.getReports                       qbo.getSalesReceipt
+
+qbo.getSalesReceiptPdf               qbo.getTaxAgency
+qbo.getTaxCode                       qbo.getTaxRate
+
+qbo.getTerm                          qbo.getTimeActivity
+qbo.getVendor                        qbo.getVendorCredit
+
+qbo.pluralize                        qbo.reconnect
+qbo.reportAccountListDetail          qbo.reportAgedPayableDetail
+
+qbo.reportAgedPayables               qbo.reportAgedReceivableDetail
+qbo.reportAgedReceivables            qbo.reportBalanceSheet
+
+qbo.reportCashFlow                   qbo.reportClassSales
+qbo.reportCustomerBalance            qbo.reportCustomerBalanceDetail
+
+qbo.reportCustomerIncome             qbo.reportCustomerSales
+qbo.reportDepartmentSales            qbo.reportGeneralLedgerDetail
+
+qbo.reportInventoryValuationSummary  qbo.reportItemSales
+qbo.reportProfitAndLoss              qbo.reportProfitAndLossDetail
+
+qbo.reportTaxSummary                 qbo.reportTransactionList
+qbo.reportTrialBalance               qbo.reportVendorBalance
+
+qbo.reportVendorBalanceDetail        qbo.reportVendorExpenses
+qbo.sendEstimatePdf                  qbo.sendInvoicePdf
+
+qbo.sendSalesReceiptPdf              qbo.updateAccount
+qbo.updateAttachable                 qbo.updateBill
+
+qbo.updateBillPayment                qbo.updateClass
+qbo.updateCompanyInfo                qbo.updateCreditMemo
+
+qbo.updateCustomer                   qbo.updateDepartment
+qbo.updateEmployee                   qbo.updateEstimate
+
+qbo.updateInvoice                    qbo.updateItem
+qbo.updateJournalEntry               qbo.updatePayment
+
+qbo.updatePaymentMethod              qbo.updatePreferences
+qbo.updatePurchase                   qbo.updatePurchaseOrder
+
+qbo.updateRefundReceipt              qbo.updateSalesReceipt
+qbo.updateTaxAgency                  qbo.updateTaxCode
+
+qbo.updateTaxRate                    qbo.updateTerm
+qbo.updateTimeActivity               qbo.updateVendor
+
+qbo.updateVendorCredit
+
+qbo.consumerKey                      qbo.consumerSecret
+qbo.debug                            qbo.endpoint
+qbo.paymentEndpoint                  qbo.realmId
+qbo.token                            qbo.tokenSecret
+qbo.useSandbox
+
+847866527740
+24717608
+
+Implemented Services:
+Exotel, Mailgun, MixPanel, QuickBooks, Citrus, Sift Science
+
+/*
+ * Following Information is about Quick Books API with SEW API Dev In APP
+ *
+ *{ oauth_token_secret: '917XXeXYTou2DZoWmDmh77KbIP2qk47zSWXIpu7z',
+ * 	oauth_token: 'qyprdY1oMqY64WZ8PTKUjeIvED1EbeVnjhQmpKDj8ON2zxdT' }
+ * In callback, realmId: 123145657880057
+ *
+ *
+ *
+ *
+ *
+ */
+
+//Instead of delete, we've to call update for following schemas.
+Account, Customer, Department, Employee, Item, PaymentMethod, TaxAgency, TaxCode, TaxRate, Term, Vendor
+[ 'updateAccount',
+  'updateClass',
+  'updateCompanyInfo',
+  'updateCustomer',
+  'updateDepartment',
+  'updateEmployee',
+  'updateItem',
+  'updatePaymentMethod',
+  'updatePreferences',
+  'updateTaxAgency',
+  'updateTaxCode',
+  'updateTaxRate',
+  'updateTerm',
+  'updateVendor' ]
+  
+  
+  To find the version of an installed node.js/npm package, below depth will displays inner folders
+  npm list -g --depth=1      This will display all the installed packages
+  npm -v <package-name>
+  
+  /596233228040

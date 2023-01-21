@@ -1,0 +1,671 @@
+/*
+ * Icon Font schemaengine
+ * Made with love by Icons8 [ https://icons8.com/ ] using FontCustom [ https://github.com/FontCustom/fontcustom ]
+ *
+ * Contacts:
+ *    [ https://icons8.com/contact ]
+ *
+ * Follow Icon8 on
+ *    Twitter [ https://twitter.com/icons_8 ]
+ *    Facebook [ https://www.facebook.com/Icons8 ]
+ *    Google+ [ https://plus.google.com/+Icons8 ]
+ *    GitHub [ https://github.com/icons8 ]
+ */
+
+
+@font-face {
+  font-family: "schemaengine";
+  src: url("../fonts/schemaengine.eot");
+  src: url("../fonts/schemaengine.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/schemaengine.woff2") format("woff2"),
+       url("../fonts/schemaengine.woff") format("woff"),
+       url("../fonts/schemaengine.ttf") format("truetype"),
+       url("../fonts/schemaengine.svg#schemaengine") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "schemaengine";
+    src: url("../fonts/schemaengine.svg#schemaengine") format("svg");
+  }
+}
+
+[data-icons8]:before { content: attr(data-icons8); }
+
+.icons8, [data-icons8]:before,
+.icons8-activity-history:before,
+.icons8-add:before,
+.icons8-add-2:before,
+.icons8-add-3:before,
+.icons8-add-administrator:before,
+.icons8-add-administrator-2:before,
+.icons8-add-column:before,
+.icons8-add-file:before,
+.icons8-add-file-2:before,
+.icons8-add-folder:before,
+.icons8-add-folder-2:before,
+.icons8-add-key:before,
+.icons8-add-key-2:before,
+.icons8-add-link:before,
+.icons8-add-list:before,
+.icons8-add-new:before,
+.icons8-add-new-2:before,
+.icons8-add-node:before,
+.icons8-add-node-2:before,
+.icons8-add-row:before,
+.icons8-add-shopping-cart:before,
+.icons8-add-tag:before,
+.icons8-add-text:before,
+.icons8-add-text-2:before,
+.icons8-add-user-group-man-man:before,
+.icons8-add-user-group-man-man-2:before,
+.icons8-add-user-male:before,
+.icons8-add-user-male-2:before,
+.icons8-align-justify:before,
+.icons8-align-text-bottom:before,
+.icons8-align-text-left:before,
+.icons8-analyze:before,
+.icons8-analyze-2:before,
+.icons8-approval:before,
+.icons8-archive-folder:before,
+.icons8-ascending-sorting:before,
+.icons8-attachment-pin:before,
+.icons8-attachment-pin-2:before,
+.icons8-automation:before,
+.icons8-automation-2:before,
+.icons8-bad-decision:before,
+.icons8-bookmark-ribbon:before,
+.icons8-bookmark-ribbon-filled:before,
+.icons8-browser-history:before,
+.icons8-browser-history-2:before,
+.icons8-browser-history-3:before,
+.icons8-business-building:before,
+.icons8-businessman:before,
+.icons8-cancel:before,
+.icons8-change:before,
+.icons8-chat-message:before,
+.icons8-circled-female-user:before,
+.icons8-clear-search:before,
+.icons8-client-management:before,
+.icons8-close-program:before,
+.icons8-close-program-2:before,
+.icons8-cloud-computing:before,
+.icons8-collaboration:before,
+.icons8-columns:before,
+.icons8-comments:before,
+.icons8-comments-2:before,
+.icons8-contact:before,
+.icons8-contacts:before,
+.icons8-contacts-2:before,
+.icons8-contacts-3:before,
+.icons8-conversation-bubble:before,
+.icons8-conversation-bubble-2:before,
+.icons8-copy-file:before,
+.icons8-copy-file-2:before,
+.icons8-course:before,
+.icons8-course-2:before,
+.icons8-customer-support:before,
+.icons8-data-encryption:before,
+.icons8-database-import:before,
+.icons8-delete:before,
+.icons8-delete-2:before,
+.icons8-delete-archive:before,
+.icons8-delete-archive-2:before,
+.icons8-delete-column:before,
+.icons8-delete-database:before,
+.icons8-delete-database-2:before,
+.icons8-delete-document:before,
+.icons8-delete-document-2:before,
+.icons8-delete-file:before,
+.icons8-delete-file-2:before,
+.icons8-delete-folder:before,
+.icons8-delete-folder-2:before,
+.icons8-delete-forever:before,
+.icons8-delete-forever-2:before,
+.icons8-delete-row:before,
+.icons8-delete-subnode:before,
+.icons8-deleted-message:before,
+.icons8-deleted-message-2:before,
+.icons8-depot:before,
+.icons8-desktop-download:before,
+.icons8-desktop-download-2:before,
+.icons8-details:before,
+.icons8-diff-files:before,
+.icons8-discussion-forum:before,
+.icons8-document:before,
+.icons8-document-header:before,
+.icons8-document-header-2:before,
+.icons8-download:before,
+.icons8-download-2:before,
+.icons8-download-3:before,
+.icons8-download-from-the-cloud:before,
+.icons8-download-from-the-cloud-2:before,
+.icons8-downloads-folder:before,
+.icons8-downloads-folder-2:before,
+.icons8-dropbox:before,
+.icons8-dropbox-2:before,
+.icons8-easel:before,
+.icons8-easel-2:before,
+.icons8-edit:before,
+.icons8-edit-file:before,
+.icons8-edit-file-2:before,
+.icons8-edit-filled:before,
+.icons8-edit-node:before,
+.icons8-edit-node-2:before,
+.icons8-email-document:before,
+.icons8-email-envelope:before,
+.icons8-email-envelope-2:before,
+.icons8-email-envelope-3:before,
+.icons8-empty-document:before,
+.icons8-entering-geo-fence:before,
+.icons8-error:before,
+.icons8-expand-arrow:before,
+.icons8-export-pdf:before,
+.icons8-export-pdf-2:before,
+.icons8-eye:before,
+.icons8-eye-filled:before,
+.icons8-file:before,
+.icons8-file-submodule:before,
+.icons8-filter:before,
+.icons8-filter-2:before,
+.icons8-filter-3:before,
+.icons8-filter-4:before,
+.icons8-filter-and-sort:before,
+.icons8-filter-and-sort-2:before,
+.icons8-folder:before,
+.icons8-folder-invoices:before,
+.icons8-forward-message:before,
+.icons8-gps:before,
+.icons8-grid:before,
+.icons8-group:before,
+.icons8-group-2:before,
+.icons8-group-3:before,
+.icons8-group-message:before,
+.icons8-group-of-projects:before,
+.icons8-height:before,
+.icons8-height-2:before,
+.icons8-here:before,
+.icons8-horizontal-line:before,
+.icons8-horizontal-line-2:before,
+.icons8-id-card:before,
+.icons8-id-not-verified:before,
+.icons8-id-not-verified-2:before,
+.icons8-id-not-verified-filled:before,
+.icons8-identification-documents:before,
+.icons8-import-csv:before,
+.icons8-incoming-data:before,
+.icons8-info:before,
+.icons8-info-2:before,
+.icons8-insert:before,
+.icons8-insert-table:before,
+.icons8-instagram-comment:before,
+.icons8-instagram-comment-2:before,
+.icons8-instagram-comment-3:before,
+.icons8-journal:before,
+.icons8-key-2:before,
+.icons8-left-2:before,
+.icons8-left-arrow:before,
+.icons8-left-arrow-2:before,
+.icons8-left-arrow-3:before,
+.icons8-line:before,
+.icons8-link:before,
+.icons8-list:before,
+.icons8-login-as-user:before,
+.icons8-mail-filter:before,
+.icons8-mail-filter-2:before,
+.icons8-many-to-many:before,
+.icons8-map-editing:before,
+.icons8-marker-off:before,
+.icons8-menu-2:before,
+.icons8-menu-2-2:before,
+.icons8-menu-2-filled:before,
+.icons8-message:before,
+.icons8-message-2:before,
+.icons8-microsoft-excel:before,
+.icons8-move:before,
+.icons8-multiply:before,
+.icons8-name:before,
+.icons8-near-me:before,
+.icons8-new-copy:before,
+.icons8-new-copy-2:before,
+.icons8-new-file:before,
+.icons8-new-file-2:before,
+.icons8-new-message:before,
+.icons8-new-message-2:before,
+.icons8-new-message-3:before,
+.icons8-notification:before,
+.icons8-notification-filled:before,
+.icons8-ok:before,
+.icons8-ok-2:before,
+.icons8-ok-3:before,
+.icons8-open-document:before,
+.icons8-open-file-under-cursor:before,
+.icons8-open-file-under-cursor-filled:before,
+.icons8-outline-of-a-face:before,
+.icons8-overview:before,
+.icons8-padlock:before,
+.icons8-page-overview-4:before,
+.icons8-paper-plane:before,
+.icons8-paper-plane-2:before,
+.icons8-paper-with-arrow-right:before,
+.icons8-paper-with-arrow-right-2:before,
+.icons8-pdf:before,
+.icons8-pdf-2:before,
+.icons8-pdf-3:before,
+.icons8-pdf-4:before,
+.icons8-pdf-5:before,
+.icons8-pdf-6:before,
+.icons8-pin:before,
+.icons8-pin-3:before,
+.icons8-play:before,
+.icons8-play-2:before,
+.icons8-play-button-circled:before,
+.icons8-playlist:before,
+.icons8-plus:before,
+.icons8-plus-math:before,
+.icons8-powerpoint:before,
+.icons8-ppt:before,
+.icons8-price-tag:before,
+.icons8-profile-picture-placeholder:before,
+.icons8-purchase-order:before,
+.icons8-remove-administrator:before,
+.icons8-remove-administrator-2:before,
+.icons8-remove-key:before,
+.icons8-remove-tag:before,
+.icons8-remove-user-male:before,
+.icons8-reply-all-arrow:before,
+.icons8-reply-all-arrow-2:before,
+.icons8-reply-arrow:before,
+.icons8-reply-arrow-2:before,
+.icons8-reseller:before,
+.icons8-restore:before,
+.icons8-reuse:before,
+.icons8-reuse-2:before,
+.icons8-right-pointing-arrow:before,
+.icons8-right-pointing-arrow-2:before,
+.icons8-rotate:before,
+.icons8-save-close:before,
+.icons8-screenshot:before,
+.icons8-search:before,
+.icons8-search-filled:before,
+.icons8-select-all:before,
+.icons8-send:before,
+.icons8-send-2:before,
+.icons8-send-email:before,
+.icons8-services:before,
+.icons8-services-2:before,
+.icons8-set-as-resume:before,
+.icons8-settings:before,
+.icons8-share:before,
+.icons8-share-2:before,
+.icons8-share-3:before,
+.icons8-share-arrow:before,
+.icons8-share-arrow-2:before,
+.icons8-shopping-cart:before,
+.icons8-sidebar-menu:before,
+.icons8-smart-card:before,
+.icons8-sort:before,
+.icons8-sort-by-recently-viewed:before,
+.icons8-sort-down:before,
+.icons8-sort-down-filled:before,
+.icons8-sort-filled:before,
+.icons8-sort-up:before,
+.icons8-sort-up-filled:before,
+.icons8-sorting-options:before,
+.icons8-speech-bubble:before,
+.icons8-summary-list:before,
+.icons8-summary-list-2:before,
+.icons8-synchronize:before,
+.icons8-table-properties:before,
+.icons8-template:before,
+.icons8-template-2:before,
+.icons8-three-dots-symbol:before,
+.icons8-three-dots-symbol-2:before,
+.icons8-todo-list:before,
+.icons8-transaction-list:before,
+.icons8-trash:before,
+.icons8-trash-2:before,
+.icons8-trash-can:before,
+.icons8-upload-to-cloud:before,
+.icons8-upload-to-the-cloud:before,
+.icons8-upload-to-the-cloud-2:before,
+.icons8-user:before,
+.icons8-user-filled:before,
+.icons8-versions:before,
+.icons8-view:before,
+.icons8-view-column:before,
+.icons8-view-module-filled:before,
+.icons8-visit:before,
+.icons8-whatsapp:before,
+.icons8-whatsapp-2:before,
+.icons8-xlarge-icons:before,
+.icons8-xlarge-icons-filled:before,
+.icons8-xls:before,
+.icons8-xls-2:before,
+.icons8-zoom-in:before {
+  display: inline-block;
+  font-family: "schemaengine";
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  line-height: 1;
+  text-decoration: inherit;
+  text-rendering: optimizeLegibility;
+  text-transform: none;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-smoothing: antialiased;
+}
+
+.icons8-activity-history:before { content: "\f100"; }
+.icons8-add:before { content: "\f101"; }
+.icons8-add-2:before { content: "\f102"; }
+.icons8-add-3:before { content: "\f103"; }
+.icons8-add-administrator:before { content: "\f104"; }
+.icons8-add-administrator-2:before { content: "\f105"; }
+.icons8-add-column:before { content: "\f106"; }
+.icons8-add-file:before { content: "\f107"; }
+.icons8-add-file-2:before { content: "\f108"; }
+.icons8-add-folder:before { content: "\f109"; }
+.icons8-add-folder-2:before { content: "\f10a"; }
+.icons8-add-key:before { content: "\f10b"; }
+.icons8-add-key-2:before { content: "\f10c"; }
+.icons8-add-link:before { content: "\f10d"; }
+.icons8-add-list:before { content: "\f10e"; }
+.icons8-add-new:before { content: "\f10f"; }
+.icons8-add-new-2:before { content: "\f110"; }
+.icons8-add-node:before { content: "\f111"; }
+.icons8-add-node-2:before { content: "\f112"; }
+.icons8-add-row:before { content: "\f113"; }
+.icons8-add-shopping-cart:before { content: "\f114"; }
+.icons8-add-tag:before { content: "\f115"; }
+.icons8-add-text:before { content: "\f116"; }
+.icons8-add-text-2:before { content: "\f117"; }
+.icons8-add-user-group-man-man:before { content: "\f118"; }
+.icons8-add-user-group-man-man-2:before { content: "\f119"; }
+.icons8-add-user-male:before { content: "\f11a"; }
+.icons8-add-user-male-2:before { content: "\f11b"; }
+.icons8-align-justify:before { content: "\f11c"; }
+.icons8-align-text-bottom:before { content: "\f11d"; }
+.icons8-align-text-left:before { content: "\f11e"; }
+.icons8-analyze:before { content: "\f11f"; }
+.icons8-analyze-2:before { content: "\f120"; }
+.icons8-approval:before { content: "\f121"; }
+.icons8-archive-folder:before { content: "\f122"; }
+.icons8-ascending-sorting:before { content: "\f123"; }
+.icons8-attachment-pin:before { content: "\f124"; }
+.icons8-attachment-pin-2:before { content: "\f125"; }
+.icons8-automation:before { content: "\f126"; }
+.icons8-automation-2:before { content: "\f127"; }
+.icons8-bad-decision:before { content: "\f128"; }
+.icons8-bookmark-ribbon:before { content: "\f129"; }
+.icons8-bookmark-ribbon-filled:before { content: "\f12a"; }
+.icons8-browser-history:before { content: "\f12b"; }
+.icons8-browser-history-2:before { content: "\f12c"; }
+.icons8-browser-history-3:before { content: "\f12d"; }
+.icons8-business-building:before { content: "\f12e"; }
+.icons8-businessman:before { content: "\f12f"; }
+.icons8-cancel:before { content: "\f130"; }
+.icons8-change:before { content: "\f131"; }
+.icons8-chat-message:before { content: "\f132"; }
+.icons8-circled-female-user:before { content: "\f133"; }
+.icons8-clear-search:before { content: "\f134"; }
+.icons8-client-management:before { content: "\f135"; }
+.icons8-close-program:before { content: "\f136"; }
+.icons8-close-program-2:before { content: "\f137"; }
+.icons8-cloud-computing:before { content: "\f138"; }
+.icons8-collaboration:before { content: "\f139"; }
+.icons8-columns:before { content: "\f13a"; }
+.icons8-comments:before { content: "\f13b"; }
+.icons8-comments-2:before { content: "\f13c"; }
+.icons8-contact:before { content: "\f13d"; }
+.icons8-contacts:before { content: "\f13e"; }
+.icons8-contacts-2:before { content: "\f13f"; }
+.icons8-contacts-3:before { content: "\f140"; }
+.icons8-conversation-bubble:before { content: "\f141"; }
+.icons8-conversation-bubble-2:before { content: "\f142"; }
+.icons8-copy-file:before { content: "\f143"; }
+.icons8-copy-file-2:before { content: "\f144"; }
+.icons8-course:before { content: "\f145"; }
+.icons8-course-2:before { content: "\f146"; }
+.icons8-customer-support:before { content: "\f147"; }
+.icons8-data-encryption:before { content: "\f148"; }
+.icons8-database-import:before { content: "\f149"; }
+.icons8-delete:before { content: "\f14a"; }
+.icons8-delete-2:before { content: "\f14b"; }
+.icons8-delete-archive:before { content: "\f14c"; }
+.icons8-delete-archive-2:before { content: "\f14d"; }
+.icons8-delete-column:before { content: "\f14e"; }
+.icons8-delete-database:before { content: "\f14f"; }
+.icons8-delete-database-2:before { content: "\f150"; }
+.icons8-delete-document:before { content: "\f151"; }
+.icons8-delete-document-2:before { content: "\f152"; }
+.icons8-delete-file:before { content: "\f153"; }
+.icons8-delete-file-2:before { content: "\f154"; }
+.icons8-delete-folder:before { content: "\f155"; }
+.icons8-delete-folder-2:before { content: "\f156"; }
+.icons8-delete-forever:before { content: "\f157"; }
+.icons8-delete-forever-2:before { content: "\f158"; }
+.icons8-delete-row:before { content: "\f159"; }
+.icons8-delete-subnode:before { content: "\f15a"; }
+.icons8-deleted-message:before { content: "\f15b"; }
+.icons8-deleted-message-2:before { content: "\f15c"; }
+.icons8-depot:before { content: "\f15d"; }
+.icons8-desktop-download:before { content: "\f15e"; }
+.icons8-desktop-download-2:before { content: "\f15f"; }
+.icons8-details:before { content: "\f160"; }
+.icons8-diff-files:before { content: "\f161"; }
+.icons8-discussion-forum:before { content: "\f162"; }
+.icons8-document:before { content: "\f163"; }
+.icons8-document-header:before { content: "\f164"; }
+.icons8-document-header-2:before { content: "\f165"; }
+.icons8-download:before { content: "\f166"; }
+.icons8-download-2:before { content: "\f167"; }
+.icons8-download-3:before { content: "\f168"; }
+.icons8-download-from-the-cloud:before { content: "\f169"; }
+.icons8-download-from-the-cloud-2:before { content: "\f16a"; }
+.icons8-downloads-folder:before { content: "\f16b"; }
+.icons8-downloads-folder-2:before { content: "\f16c"; }
+.icons8-dropbox:before { content: "\f16d"; }
+.icons8-dropbox-2:before { content: "\f16e"; }
+.icons8-easel:before { content: "\f16f"; }
+.icons8-easel-2:before { content: "\f170"; }
+.icons8-edit:before { content: "\f171"; }
+.icons8-edit-file:before { content: "\f172"; }
+.icons8-edit-file-2:before { content: "\f173"; }
+.icons8-edit-filled:before { content: "\f174"; }
+.icons8-edit-node:before { content: "\f175"; }
+.icons8-edit-node-2:before { content: "\f176"; }
+.icons8-email-document:before { content: "\f177"; }
+.icons8-email-envelope:before { content: "\f178"; }
+.icons8-email-envelope-2:before { content: "\f179"; }
+.icons8-email-envelope-3:before { content: "\f17a"; }
+.icons8-empty-document:before { content: "\f17b"; }
+.icons8-entering-geo-fence:before { content: "\f17c"; }
+.icons8-error:before { content: "\f17d"; }
+.icons8-expand-arrow:before { content: "\f17e"; }
+.icons8-export-pdf:before { content: "\f17f"; }
+.icons8-export-pdf-2:before { content: "\f180"; }
+.icons8-eye:before { content: "\f181"; }
+.icons8-eye-filled:before { content: "\f182"; }
+.icons8-file:before { content: "\f183"; }
+.icons8-file-submodule:before { content: "\f184"; }
+.icons8-filter:before { content: "\f185"; }
+.icons8-filter-2:before { content: "\f186"; }
+.icons8-filter-3:before { content: "\f187"; }
+.icons8-filter-4:before { content: "\f188"; }
+.icons8-filter-and-sort:before { content: "\f189"; }
+.icons8-filter-and-sort-2:before { content: "\f18a"; }
+.icons8-folder:before { content: "\f18b"; }
+.icons8-folder-invoices:before { content: "\f18c"; }
+.icons8-forward-message:before { content: "\f18d"; }
+.icons8-gps:before { content: "\f18e"; }
+.icons8-grid:before { content: "\f18f"; }
+.icons8-group:before { content: "\f190"; }
+.icons8-group-2:before { content: "\f191"; }
+.icons8-group-3:before { content: "\f192"; }
+.icons8-group-message:before { content: "\f193"; }
+.icons8-group-of-projects:before { content: "\f194"; }
+.icons8-height:before { content: "\f195"; }
+.icons8-height-2:before { content: "\f196"; }
+.icons8-here:before { content: "\f197"; }
+.icons8-horizontal-line:before { content: "\f198"; }
+.icons8-horizontal-line-2:before { content: "\f199"; }
+.icons8-id-card:before { content: "\f19a"; }
+.icons8-id-not-verified:before { content: "\f19b"; }
+.icons8-id-not-verified-2:before { content: "\f19c"; }
+.icons8-id-not-verified-filled:before { content: "\f19d"; }
+.icons8-identification-documents:before { content: "\f19e"; }
+.icons8-import-csv:before { content: "\f19f"; }
+.icons8-incoming-data:before { content: "\f1a0"; }
+.icons8-info:before { content: "\f1a1"; }
+.icons8-info-2:before { content: "\f1a2"; }
+.icons8-insert:before { content: "\f1a3"; }
+.icons8-insert-table:before { content: "\f1a4"; }
+.icons8-instagram-comment:before { content: "\f1a5"; }
+.icons8-instagram-comment-2:before { content: "\f1a6"; }
+.icons8-instagram-comment-3:before { content: "\f1a7"; }
+.icons8-journal:before { content: "\f1a8"; }
+.icons8-key-2:before { content: "\f1a9"; }
+.icons8-left-2:before { content: "\f1aa"; }
+.icons8-left-arrow:before { content: "\f1ab"; }
+.icons8-left-arrow-2:before { content: "\f1ac"; }
+.icons8-left-arrow-3:before { content: "\f1ad"; }
+.icons8-line:before { content: "\f1ae"; }
+.icons8-link:before { content: "\f1af"; }
+.icons8-list:before { content: "\f1b0"; }
+.icons8-login-as-user:before { content: "\f1b1"; }
+.icons8-mail-filter:before { content: "\f1b2"; }
+.icons8-mail-filter-2:before { content: "\f1b3"; }
+.icons8-many-to-many:before { content: "\f1b4"; }
+.icons8-map-editing:before { content: "\f1b5"; }
+.icons8-marker-off:before { content: "\f1b6"; }
+.icons8-menu-2:before { content: "\f1b7"; }
+.icons8-menu-2-2:before { content: "\f1b8"; }
+.icons8-menu-2-filled:before { content: "\f1b9"; }
+.icons8-message:before { content: "\f1ba"; }
+.icons8-message-2:before { content: "\f1bb"; }
+.icons8-microsoft-excel:before { content: "\f1bc"; }
+.icons8-move:before { content: "\f1bd"; }
+.icons8-multiply:before { content: "\f1be"; }
+.icons8-name:before { content: "\f1bf"; }
+.icons8-near-me:before { content: "\f1c0"; }
+.icons8-new-copy:before { content: "\f1c1"; }
+.icons8-new-copy-2:before { content: "\f1c2"; }
+.icons8-new-file:before { content: "\f1c3"; }
+.icons8-new-file-2:before { content: "\f1c4"; }
+.icons8-new-message:before { content: "\f1c5"; }
+.icons8-new-message-2:before { content: "\f1c6"; }
+.icons8-new-message-3:before { content: "\f1c7"; }
+.icons8-notification:before { content: "\f1c8"; }
+.icons8-notification-filled:before { content: "\f1c9"; }
+.icons8-ok:before { content: "\f1ca"; }
+.icons8-ok-2:before { content: "\f1cb"; }
+.icons8-ok-3:before { content: "\f1cc"; }
+.icons8-open-document:before { content: "\f1cd"; }
+.icons8-open-file-under-cursor:before { content: "\f1ce"; }
+.icons8-open-file-under-cursor-filled:before { content: "\f1cf"; }
+.icons8-outline-of-a-face:before { content: "\f1d0"; }
+.icons8-overview:before { content: "\f1d1"; }
+.icons8-padlock:before { content: "\f1d2"; }
+.icons8-page-overview-4:before { content: "\f1d3"; }
+.icons8-paper-plane:before { content: "\f1d4"; }
+.icons8-paper-plane-2:before { content: "\f1d5"; }
+.icons8-paper-with-arrow-right:before { content: "\f1d6"; }
+.icons8-paper-with-arrow-right-2:before { content: "\f1d7"; }
+.icons8-pdf:before { content: "\f1d8"; }
+.icons8-pdf-2:before { content: "\f1d9"; }
+.icons8-pdf-3:before { content: "\f1da"; }
+.icons8-pdf-4:before { content: "\f1db"; }
+.icons8-pdf-5:before { content: "\f1dc"; }
+.icons8-pdf-6:before { content: "\f1dd"; }
+.icons8-pin:before { content: "\f1de"; }
+.icons8-pin-3:before { content: "\f1df"; }
+.icons8-play:before { content: "\f1e0"; }
+.icons8-play-2:before { content: "\f1e1"; }
+.icons8-play-button-circled:before { content: "\f1e2"; }
+.icons8-playlist:before { content: "\f1e3"; }
+.icons8-plus:before { content: "\f1e4"; }
+.icons8-plus-math:before { content: "\f1e5"; }
+.icons8-powerpoint:before { content: "\f1e6"; }
+.icons8-ppt:before { content: "\f1e7"; }
+.icons8-price-tag:before { content: "\f1e8"; }
+.icons8-profile-picture-placeholder:before { content: "\f1e9"; }
+.icons8-purchase-order:before { content: "\f1ea"; }
+.icons8-remove-administrator:before { content: "\f1eb"; }
+.icons8-remove-administrator-2:before { content: "\f1ec"; }
+.icons8-remove-key:before { content: "\f1ed"; }
+.icons8-remove-tag:before { content: "\f1ee"; }
+.icons8-remove-user-male:before { content: "\f1ef"; }
+.icons8-reply-all-arrow:before { content: "\f1f0"; }
+.icons8-reply-all-arrow-2:before { content: "\f1f1"; }
+.icons8-reply-arrow:before { content: "\f1f2"; }
+.icons8-reply-arrow-2:before { content: "\f1f3"; }
+.icons8-reseller:before { content: "\f1f4"; }
+.icons8-restore:before { content: "\f1f5"; }
+.icons8-reuse:before { content: "\f1f6"; }
+.icons8-reuse-2:before { content: "\f1f7"; }
+.icons8-right-pointing-arrow:before { content: "\f1f8"; }
+.icons8-right-pointing-arrow-2:before { content: "\f1f9"; }
+.icons8-rotate:before { content: "\f1fa"; }
+.icons8-save-close:before { content: "\f1fb"; }
+.icons8-screenshot:before { content: "\f1fc"; }
+.icons8-search:before { content: "\f1fd"; }
+.icons8-search-filled:before { content: "\f1fe"; }
+.icons8-select-all:before { content: "\f1ff"; }
+.icons8-send:before { content: "\f200"; }
+.icons8-send-2:before { content: "\f201"; }
+.icons8-send-email:before { content: "\f202"; }
+.icons8-services:before { content: "\f203"; }
+.icons8-services-2:before { content: "\f204"; }
+.icons8-set-as-resume:before { content: "\f205"; }
+.icons8-settings:before { content: "\f206"; }
+.icons8-share:before { content: "\f207"; }
+.icons8-share-2:before { content: "\f208"; }
+.icons8-share-3:before { content: "\f209"; }
+.icons8-share-arrow:before { content: "\f20a"; }
+.icons8-share-arrow-2:before { content: "\f20b"; }
+.icons8-shopping-cart:before { content: "\f20c"; }
+.icons8-sidebar-menu:before { content: "\f20d"; }
+.icons8-smart-card:before { content: "\f20e"; }
+.icons8-sort:before { content: "\f20f"; }
+.icons8-sort-by-recently-viewed:before { content: "\f210"; }
+.icons8-sort-down:before { content: "\f211"; }
+.icons8-sort-down-filled:before { content: "\f212"; }
+.icons8-sort-filled:before { content: "\f213"; }
+.icons8-sort-up:before { content: "\f214"; }
+.icons8-sort-up-filled:before { content: "\f215"; }
+.icons8-sorting-options:before { content: "\f216"; }
+.icons8-speech-bubble:before { content: "\f217"; }
+.icons8-summary-list:before { content: "\f218"; }
+.icons8-summary-list-2:before { content: "\f219"; }
+.icons8-synchronize:before { content: "\f21a"; }
+.icons8-table-properties:before { content: "\f21b"; }
+.icons8-template:before { content: "\f21c"; }
+.icons8-template-2:before { content: "\f21d"; }
+.icons8-three-dots-symbol:before { content: "\f21e"; }
+.icons8-three-dots-symbol-2:before { content: "\f21f"; }
+.icons8-todo-list:before { content: "\f220"; }
+.icons8-transaction-list:before { content: "\f221"; }
+.icons8-trash:before { content: "\f222"; }
+.icons8-trash-2:before { content: "\f223"; }
+.icons8-trash-can:before { content: "\f224"; }
+.icons8-upload-to-cloud:before { content: "\f225"; }
+.icons8-upload-to-the-cloud:before { content: "\f226"; }
+.icons8-upload-to-the-cloud-2:before { content: "\f227"; }
+.icons8-user:before { content: "\f228"; }
+.icons8-user-filled:before { content: "\f229"; }
+.icons8-versions:before { content: "\f22a"; }
+.icons8-view:before { content: "\f22b"; }
+.icons8-view-column:before { content: "\f22c"; }
+.icons8-view-module-filled:before { content: "\f22d"; }
+.icons8-visit:before { content: "\f22e"; }
+.icons8-whatsapp:before { content: "\f22f"; }
+.icons8-whatsapp-2:before { content: "\f230"; }
+.icons8-xlarge-icons:before { content: "\f231"; }
+.icons8-xlarge-icons-filled:before { content: "\f232"; }
+.icons8-xls:before { content: "\f233"; }
+.icons8-xls-2:before { content: "\f234"; }
+.icons8-zoom-in:before { content: "\f235"; }

@@ -1,0 +1,24 @@
+@media print {
+
+ #mainNavigation,#bottomNav,.footer,.action-button,.relation-button,#sideFilterNavigation,.upload-btn{
+	 display:none;
+ }
+ a[href]:after {
+	 content: none !important;
+ }
+
+ *{
+	 background-color:white!important;
+	 -webkit-print-color-adjust: exact;
+	 color:black;
+ }
+
+ .hidden,.hhidden{display:none;visibility:hidden}
+
+ *{transition:none!important}
+
+
+
+
+
+}

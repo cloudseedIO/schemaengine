@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Payment Check out</title>
+<style>
+.nav > a > span {
+	font-size: 20px;
+	margin : 10px;
+	-moz-appearance: tabpanels;
+}
+.nav {
+	margin: 15px;
+}
+.section {
+	background-color: burlywood;
+    margin: 15px;
+    width: 450px;
+}
+.pMode > span {
+	cursor: pointer;
+    color: burlywood;
+}
+.pMode.highlight > span {
+	box-shadow: 0 10px 0 10px burlywood;
+    color: black;
+}
+.errorMessage {
+    color: red;
+    font-weight: bold;
+}
+
+#citrusNumber {
+	background-position: right center;
+    background-repeat: no-repeat;
+    font-size: 20px;
+    width: 250px;
+}
+input{
+	font-size: 20px;
+	-moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background: #fff none repeat scroll 0 0 padding-box;
+    border-color: rgba(0, 0, 0, 0.15);
+    border-image: none;
+    border-style: solid;
+    border-width: 1px 0 1px 1px;
+    box-sizing: border-box;
+    height: 30px;
+}
+input:hover {
+	 -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #a0a0a0 #b9b9b9 #b9b9b9;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+}
+.pg > div {
+	margin-left: 10px;
+}
+</style>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://icp.citruspay.com/js/citrus.js"> </script>
+<script src="https://icp.citruspay.com/js/jquery.payment.min.js"> </script>
+</head>
+<body>
+	<!-- for data maintenance -->
+	<input type="hidden" id="citrusMerchantTxnId" 		value="{{merchantTxnId}}">
+	<input type="hidden" id="citrusAmount"    			value="{{amount}}">
+	<input type="hidden" id="citrusMobile"    			value="{{phoneNumber}}">
+	<input type="hidden" id="citrusFirstName"     		value="{{firstName}}">
+	<input type="hidden" id="citrusLastName"     		value="{{lastName}}">
+	<input type="hidden" id="citrusStreet1"    			value="{{street1}}">
+	<input type="hidden" id="citrusStreet2"    			value="{{street2}}">
+	<input type="hidden" id="citrusCity"    			value="{{city}}">
+	<input type="hidden" id="citrusState"    			value="{{state}}">
+	<input type="hidden" id="citrusCountry"    			value="{{country}}">
+	<input type="hidden" id="citrusZip"    				value="{{zipcode}}">
+	<input type="hidden" id="citrusSignature"    		value="{{txnSignature}}">
+	<input type="hidden" id="citrusReturnUrl"  			value="https://localhost:80/get/paymentResult"  >
+	<input type="hidden" id="citrusNotifyUrl" 			value="https://localhost:80/get/paymentResult" >
+	<input type="hidden" id="citrusCustomParamCount" 	value="0">
+	<input type="hidden" id="citrusCustomParamsName1" 	value="">
+	<input type="hidden" id="citrusCustomParamsValue1" 	value="">
+	<input type="hidden" id="citrusCustomParamsName2" 	value="">
+	<input type="hidden" id="citrusCustomParamsValue2" 	value="">
+	<!-- http://citruspay.com/DevelopersGuide/index.html#/citrusjs refer Transaction Response Parameters and It's Description -->
+<!-- for data maintenance close-->
+
+	<div class="nav">
+		<a class="pMode highlight" onclick="selectedPG('SavedPaymentMode', this)" id="walletTab" style='display: none;'>
+			 <span>Citrus Wallet</span>
+		</a>
+		<a class="pMode highlight" onclick="selectedPG('CDPaymentMode', this)">
+			<span>Credit/Debit Card</span>
+		</a>
+		<a class="pMode" onclick="selectedPG('NetBankingPaymentMode', this)">
+			<span>Net Banking</span>
+		</a>
+		<a class="pMode" onclick="selectedPG('CitrusBankPaymentMode', this)" style='display: none;'>
+			<span>Citrus Bank</span>
+		</a>
+	</div>
+	
+	
+	<div class="section">
+<!-- ================================================= saved Account ================================================ -->
+		<div id="SavedPaymentMode" class="pg" style='display: none;'>
+			<!--<form id="loginForm">-->
+			<div id="Members_section" class="CreditDebitCard">
+				<h3 id="loginErrorMessage" class="failedError" style="margin: 4px; color: #810E03; display: none">
+					Please	verify the user name and password.</h3>
+				<div>
+					<p class="loginLabel">User name/Email</p>
+					<input id="citrusEmail" type="text" value="{{emailId}}" />
+					<main id="errorIncorrectEmail" class="Citrus_Members_Errors"
+						style="display:none">The email you entered is Incorrect</main>
+				</div>
+				<div style="margin: 14px 0px;">
+					<p class="loginLabel">Password</p>
+					<input id="citrusPassword" type="password" />
+					<main id="errorIncorrectEmailPassword"
+						class="Citrus_Members_Errors" style="display:none">The
+					password you entered is Incorrect</main>
+				</div>
+				<h1 class="btn">
+					<button id="citrusLoginButton">Login</button>
+				</h1>
+			</div>
+			<!-- </form> -->
+			<div id="Wallet_section">
+				<div class="savedAccounts">
+					<ul id="walletData">
+
+					</ul>
+				</div>
+				<div style="margin: 20px 0; text-align: center;"
+					class="walletButtonDiv">
+					<button class="walletBtn" id="">
+						<span>Pay Using Wallet</span>
+					</button>
+				</div>
+			</div>
+
+		</div>
+		<!-- ================================================= Credit/Debit Card ============================================ -->
+				<div id="CDPaymentMode" class="pg">
+					<div class="CreditDebitCard">
+						<div class="SelectBox">
+							<select id="citrusCardType" style="width:100px" class="half-section sm-txt">
+								<option value="credit">Credit</option>
+								<option value="debit">Debit</option>
+								<!-- <option value="prepaid">Prepaid</option> -->
+							</select>
+							<!-- <select id="citrusScheme" style="width:100px" class="half-section sm-txt">
+								
+                            </select> -->
+							<input type="hidden" id="citrusScheme">
+						</div>
+						<input id="citrusNumber" type="text" placeholder="Card Number">
+						<div class="ExpCvv">
+							<input id="citrusExpiry" type="text" placeholder="mm/yyyy" style="width:115px; margin-right:25px; display:inline-block;">
+							<input id="citrusCvv" type="password" placeholder="CVV" style="width:115px; display:inline-block;">
+						</div>
+						<input id="citrusCardHolder" type="text" placeholder="Name On Card">
+						
+						<div style="margin:20px 0;">
+							<button id="citrusCardPayButton" value="Pay Now">
+								<span>Pay</span>
+							</button>
+						</div>
+					</div>
+				</div>
+<!-- ================================================= Net Banking ================================================== -->
+				<div id="NetBankingPaymentMode" class="pg" style="display:none;">
+					<div class="SelectBox">
+						<label style="color:blue;font-size:15px;font-style:normal;" id="pgHealthResponse">  </label> <br/>
+						<select id="citrusAvailableOptions" style="margin-top: 85px;">
+							<option>Select Bank</option>								
+						</select>
+						<div style="margin:20px 0;">
+							<button id="citrusNetbankingButton">
+								<span>Pay</span>
+							</button>
+						</div>
+					</div>
+				</div>
+<!-- ================================================= Citrus Bank ================================================== -->
+		<div id="CitrusBankPaymentMode" class="pg" style="display: none;">
+			<div class="CreditDebitCard">
+				<input id="citrusPrepaidCardHolder" type="text"
+					placeholder="Prepaid Card Holder Name">
+				<div style="margin: 20px 0;">
+					<button id="citrusCashPayButton" value="Pay Now">
+						<span>Pay</span>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div style="background: white; padding: 10px;">
+		<center>
+			<label id="citrusErrorMessage" class="errorMessage"> </label>
+		</center>
+	</div>
+	<div style="background: white; padding: 10px;">
+		<center>
+			<div id="citrusServerError"></div>
+		</center>
+	</div>
+
+</body>
+
+
+<script>
+function selectedPG(mode, curr){
+	$("#citrusErrorMessage").html("");
+	$(".pMode").removeClass("highlight");
+	$(curr).addClass("highlight");
+	$(".pg").hide(200);
+	$("#"+mode).show(500);
+}
+var cards={};
+
+CitrusPay.Merchant['Config']={};
+CitrusPay.Merchant['Config']['Merchant'] = { accessKey: '84M66OU6QCKAM92GDBMO',  vanityUrl : "9ismcsgy0b" };
+
+fetchPaymentOptions();
+getPGhealth();
+function handleCitrusPaymentOptions(citrusPaymentOptions){
+	$(".spinnerDiv").css("display","none");
+	$("#citrusErrorMessage").html("");
+	console.log(citrusPaymentOptions);
+	var optionString = "<option selected disabled>Select bank</option>";
+	var netbankingOptions = citrusPaymentOptions.netBanking;
+	for ( var key in netbankingOptions) {
+		var obj = netbankingOptions[key];
+		optionString += '<option value ="' + obj.issuerCode + '">'+ obj.bankName + '</option>';
+	}
+	jQuery('#citrusAvailableOptions').html(optionString);
+	cards['credit'] = [];
+	citrusPaymentOptions.creditCard.forEach(function(card){
+		cards['credit'].push(card.toLowerCase().replace(" ",""));
+	});
+	cards['debit'] = [];
+	citrusPaymentOptions.debitCard.forEach(function(card){
+		cards['debit'].push(card.toLowerCase().replace(" ",""));
+	});
+	/*
+	This is to setup card type
+	var citrusScheme = citrusPaymentOptions.debitCard;
+	optionString = "<option selected disabled>Select Type</option>";
+	for(var key in citrusScheme){
+		var obj = citrusScheme[key];
+		optionString += '<option value ="' + obj + '">'+ obj + '</option>';
+	}
+	$("#citrusScheme").html(optionString); */
+}
+
+/* Payment Using Card */
+$("#citrusCardPayButton").on("click", function(){
+	
+	try {
+		var data = {};
+		data['amount']=1;
+		$("#citrusAmount").val(data.amount);
+		
+		if($("#citrusCardType").val()==""){
+			$("#citrusCardType").focus();
+		}else if($("#citrusScheme").val()==""){
+			$("#citrusScheme").focus();
+		}else if($("#citrusNumber").val()==""){
+			$("#citrusNumber").focus();
+		}else if($("#citrusCardHolder")==""){
+			$("#citrusCardHolder").focus();
+		}else if($("#citrusExpiry")==""){
+			$("#citrusExpiry").focus();
+		}else if($("#citrusCvv")==""){
+			$("#citrusCvv").focus();
+		}
+		
+		invokePayment({}, "card");
+		
+	}catch(e){
+		console.log(e);
+	}
+});
+
+/* Payment Using Net Banking */
+$("#citrusNetbankingButton").on("click", function(){
+	try {
+		var data = {};
+		data['amount']=1;
+		$("#citrusAmount").val(data.amount);
+		
+		if($("#citrusAvailableOptions").val()!=""){
+			invokePayment({}, "netbanking");
+		}
+		
+		
+	}catch(e){
+		console.log(e);
+	}
+});
+
+function citrusClientErrMsg(msg){
+	$("#citrusErrorMessage").text(msg);
+}
+function citrusServerErrorMsg(msg){
+	$("#citrusServerError").html(msg);
+}
+function handlePGhealthResponse(resp){				
+	var pgHealthString = "";		
+	$.each( resp, function( key, value ) {
+		if(value<50)
+		{
+			switch(key)
+			{
+				case "CID002" : pgHealthString += " Axis Bank";
+								break;
+				case "CID005" : pgHealthString += " SBI Bank";
+								break;
+				case "CID012" : pgHealthString += " SBH Bank";
+								break;
+				case "CID001" : pgHealthString += " ICICI Bank";
+								break;
+				case "CID010" : pgHealthString += " HDFC Bank";
+								break;
+				case "CID033" : pgHealthString += " Kotak Mahindra Bank";
+								break;
+				case "CID027" : pgHealthString += " Indian Overseas Bank";
+								break;
+				case "CID008" : pgHealthString += " Indian Bank";
+								break;												
+			}	
+		}				  				
+	});		
+		$("#pgHealthResponse").html(pgHealthString + " seems to be down for a while.");		
+}
+//UI validations
+jQuery(document).ready(function() {
+	jQuery.support.cors = true; 
+	
+	// setup card inputs;	 	
+	jQuery('#citrusExpiry').payment('formatCardExpiry');
+	jQuery('#citrusCvv').payment('formatCardCVC');
+	jQuery('#citrusNumber').keyup(function() {
+		var cardNum = jQuery('#citrusNumber').val().replace(/\s+/g, '');
+		var type = jQuery.payment.cardType(cardNum);
+		if(cards[$("#citrusCardType").val()].indexOf(type) == -1){
+			//console.log(type);
+			if(cardNum.length>=12)
+			alert(type?"This type of card is not available with the Merchant\nKindly Use Other type card":"Invalid Card");
+			jQuery("#citrusNumber").css("background-image", "");
+			return;
+		}else{
+			jQuery("#citrusNumber").css("background-image", "url(../resource/images/payment/" + type + ".png)");						
+			if(type!='amex')
+            jQuery("#citrusCvv").attr("maxlength","3");
+            else
+            jQuery("#citrusCvv").attr("maxlength","4");						
+			jQuery('#citrusNumber').payment('formatCardNumber');											
+			jQuery("#citrusScheme").val(type);
+		}
+		
+	});
+	
+});
+
+
+function invokePayment(data, type){
+if($("#citrusEmail").val()=="" || $("#citrusMobile").val()==""){
+	alert("Check your email id and mobile number");
+	return;
+}else{
+	$.get("/getSign", data, function(result){
+		$("#citrusMerchantTxnId").val(result.txn_id);
+		$("#citrusSignature").val(result.sign);
+		try{
+			makePayment(type);
+		}catch(e){
+			alert(JSON.stringify(e));
+			console.log(e);
+		}
+			
+	});
+}
+	
+}
+
+</script>
+
+</html>
+
+<!--
+
+<form id="returnForm" name="returnForm" method="POST" action="https://localhost:80/get/paymentResult">
+
+<input id="TxStatus" name="TxStatus" value="SUCCESS" type="hidden"><input id="TxId" name="TxId" value="CLSCTRS38d20812-e721-c73a-4f22-d2aecb630041" type="hidden"><input id="TxRefNo" name="TxRefNo" value="CTX1603040509266791355" type="hidden"><input id="pgTxnNo" name="pgTxnNo" value="9631490361060641" type="hidden"><input id="pgRespCode" name="pgRespCode" value="0" type="hidden"><input id="TxMsg" name="TxMsg" value="Transaction Successful" type="hidden"><input id="amount" name="amount" value="1.00" type="hidden"><input id="authIdCode" name="authIdCode" value="999999" type="hidden"><input id="issuerRefNo" name="issuerRefNo" value="606485385950" type="hidden"><input id="signature" name="signature" value="938749fc78c7caf3ed1d254d40e89cc645e8f5d4" type="hidden"><input id="transactionId" name="transactionId" value="625054" type="hidden"><input id="paymentMode" name="paymentMode" value="DEBIT_CARD" type="hidden"><input id="TxGateway" name="TxGateway" value="HDFC PG (Citrus Plus)" type="hidden"><input id="currency" name="currency" value="" type="hidden"><input id="maskedCardNumber" name="maskedCardNumber" value="532702XXXXXX1518" type="hidden"><input id="cardType" name="cardType" value="MCRD" type="hidden"><input id="encryptedCardNumber" name="encryptedCardNumber" value="" type="hidden"><input id="expiryMonth" name="expiryMonth" value="" type="hidden"><input id="expiryYear" name="expiryYear" value="" type="hidden"><input id="cardHolderName" name="cardHolderName" value="saikiran vadlakonda" type="hidden"><input id="txn3DSecure" name="txn3DSecure" value="" type="hidden"><input id="eci" name="eci" value="" type="hidden"><input id="cardCode" name="cardCode" value="" type="hidden"><input id="txnType" name="txnType" value="SALE" type="hidden"><input id="requestedCurrency" name="requestedCurrency" value="" type="hidden"><input id="requestedAmount" name="requestedAmount" value="" type="hidden"><input id="dccCurrency" name="dccCurrency" value="" type="hidden"><input id="dccAmount" name="dccAmount" value="" type="hidden"><input id="exchangeRate" name="exchangeRate" value="" type="hidden"><input id="dccOfferId" name="dccOfferId" value="" type="hidden"><input id="mcpCurrency" name="mcpCurrency" value="" type="hidden"><input id="mcpAmount" name="mcpAmount" value="" type="hidden"><input id="offerExchangeRate" name="offerExchangeRate" value="" type="hidden"><input id="firstName" name="firstName" value="Vikram" type="hidden"><input id="lastName" name="lastName" value="Jakkampudi" type="hidden"><input id="email" name="email" value="vikramjakkampudi@gmail.com" type="hidden"><input id="addressStreet1" name="addressStreet1" value="NA" type="hidden"><input id="addressStreet2" name="addressStreet2" value="" type="hidden"><input id="addressCity" name="addressCity" value="Hyderabad" type="hidden"><input id="addressState" name="addressState" value="Telangana" type="hidden"><input id="addressCountry" name="addressCountry" value="India" type="hidden"><input id="addressZip" name="addressZip" value="NA" type="hidden"><input id="phoneNo" name="mobileNo" value="9700188138" type="hidden"><input id="isCOD" name="isCOD" value="false" type="hidden"><input id="txnDateTime" name="txnDateTime" value="2016-03-04 10:39:26" type="hidden"><input id="impsMmid" name="impsMmid" value="" type="hidden"><input id="impsMobileNumber" name="impsMobileNumber" value="" type="hidden"><input value="load manual" type="submit">
+-->

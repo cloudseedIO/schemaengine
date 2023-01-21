@@ -1,0 +1,836 @@
+<html>
+	<head>
+	<link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom styles for this template -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/uitl.js"></script>
+     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=es6,Intl"></script>
+
+	<style>
+
+	</style>
+
+	</head>
+
+	<body>
+	<div id="wrapper" class="toggled">
+          <!--label class="switch">
+            <input name="enableSB" id="enableSB" type="checkbox">
+            <span class="slider round"></span>
+          </label-->
+    <input type="text" name="userToken" id="userToken" class="form-control"  placeholder="override sandbox with usertoken" style="position: fixed;
+    width: 50%;
+    left: 30%; z-index:1000"/>
+       <div class="as-user form-group inline">
+                 <input type="text" name="asuser" class="form-control" style="display:none" placeholder="user email"/>
+                <button type="button" class="asusr-btn btn btn-primary btn-sm" title="impersonate user for calls.">
+                <span class="glyphicon glyphicon-user"></span> As-User
+              </button>
+      </div>
+
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper" >
+            <ul class="sidebar-nav">
+                <li class="sidebar-brand">
+                    <a href="#">
+                        Box.com API Sandbox
+                    </a>
+                </li>
+                <li>
+                    <a href="#auth" data-toggle="tab">Authentication</a>
+                </li>
+                <li>
+                    <a href="#files" data-toggle="tab">Files</a>
+                </li>
+                <li>
+                    <a href="#folders" data-toggle="tab">Folders</a>
+                </li>
+                <li>
+                    <a href="#groups" data-toggle="tab">Groups</a>
+                </li>
+                <li>
+                    <a href="#collabs" data-toggle="tab">Collaborations</a>
+                </li>
+              <li>
+                    <a href="#users" data-toggle="tab">Users</a>
+                </li>
+              <li>
+                    <a href="#comments" data-toggle="tab">Comments</a>
+                </li>
+              <li>
+                    <a href="#ui-elements" data-toggle="tab">UI Elements</a>
+                </li>
+
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+          <p><a href="#" class="btn btn-secondary" id="menu-toggle"><></a></p>
+          <section class="tab-content">
+            <article class="container-fluid" id="intro">
+                  <h1>Intro</h1>
+                  <p>
+                    Sample API calls are provided to quickly test asynchronous request & responses.
+                    All you need to do is input your specific parameters to check relative responses.
+                    Both request body data and response data are formatted as JSON.
+              </p>
+            </article>
+
+             <article class="container-fluid" id="auth">
+                  <h1>Intro</h1>
+                  <p>
+                    Box REST connector (BRC) uses the standard JWT authentication process, which proceeds as follows:
+                    <ul>
+                        <li>The application sends login request along with user's unique ID (userId) to BRC for further authentication.</li>
+                      <li>After a successful login, the authentication service returns an access token in response.</li>
+                        <li>The application can then use the access token with API requests to gain access to the user's resources by including the token in an authorization header named <strong>x-access-token</strong>.</li>
+                    </ul>
+                    </p>
+
+               <h2>Get Access Token</h2>
+                  <div id="access-token">
+                       <script>
+                         renderForm('#access-token', {
+                           url: 'login/vikram@cloudseed.io',
+                           method: 'get',
+                            placeholder:'login/{userEmail}'
+                        });
+                       </script>
+                  </div>
+
+            </article>
+
+            <article class="container-fluid" id="files">
+                  <h1>File Managment</h1>
+                  <p>
+                    File objects represent individual files in Box. They can be used to download a file's contents, upload new versions, and perform other common file operations (move, copy, delete, etc.).
+                  </p>
+                  <h2>File upload </h2>
+                  <div id="file-upload">
+                       <script>
+                         renderForm('#file-upload', {
+                           url: 'file/upload/0',
+                           method: 'post',
+                           enctype: true,
+                           placeholder:'file/upload/{parentFolderId}',
+                           elements: [
+                             {label:'file', name:'file', type:'file', isRequired:'required'},
+                             //{label:'asVersion', name:'asVersion', type:'text', placeholder:'true/false, add as version'}
+                           ]
+                        });
+                       </script>
+                     </div>
+                  <h2>Get File DownloadURL </h2>
+                  <div id="file-downloadURL">
+                       <script>
+                         renderForm('#file-downloadURL', {
+                           url: 'file/downloadUrl/0',
+                           method: 'get',
+                            placeholder:'file/downloadUrl/{fileId}'
+                        });
+                       </script>
+                  </div>
+
+              <h2>Get File Information </h2>
+                  <div id="file-Information">
+                       <script>
+                         renderForm('#file-Information', {
+                           url: 'file/get/0/null',
+                           method: 'get',
+                           placeholder:'file/get/{fileId}/{fields}'
+                        });
+                       </script>
+                  </div>
+
+              <h2>Update file </h2>
+                  <div id="file-update">
+                       <script>
+                         renderForm('#file-update', {
+                           url: 'file/update/0',
+                           method: 'post',
+                           placeholder:'file/update/{fileId}',
+                            payloadType: 'json',
+                           elements: [
+                             {label:'name', name:'name', type:'text'},
+                            {label:'description', name:'description', type:'text'},
+                              {label:'parent.id', name:'parent.id', type:'text', placeholder:'The ID of the parent folder'},
+                              {label:'shared_link.access', name:'shared_link.access', type:'text', placeholder:'open (People with the link), company (People in your company), or collaborators (People in this folder). If you omit this field then the access level will be set to the default '},
+                              {label:'shared_link.password', name:'shared_link.password', type:'text',placeholder:'The password required to access the shared link. Set to null to remove the password.'},
+                             {label:'shared_link.permissions.can_download', name:'shared_link.permissions.can_download', type:'text',placeholder:'true/false, Whether the shared link allows downloads. Can only be set with access levels open and company (not collaborators).'}
+                           ]
+                        });
+                       </script>
+                  </div>
+
+              <h2>Delete file </h2>
+                  <div id="file-delete">
+                       <script>
+                         renderForm('#file-delete', {
+                           url: 'file/delete/0',
+                           method: 'post',
+                            payloadType: 'json',
+                           placeholder:'file/delete/{fileId}',
+                           elements: [
+                             {label:'isPermanent', name:'isPermanent', type:'text', placeholder:'true/false'},
+                           ]
+                        });
+                       </script>
+                  </div>
+
+              <h2>Copy file </h2>
+                  <div id="file-copy">
+                       <script>
+                         renderForm('#file-copy', {
+                           url: 'file/copy/1234/4567',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'file/copy/{fileId}/{newFolderId}'
+                        });
+                       </script>
+                  </div>
+
+              <h2>Lock file </h2>
+                  <div id="file-lock">
+                       <script>
+                         renderForm('#file-lock', {
+                           url: 'file/lock/1234',
+                           method: 'post',
+                           placeholder:'file/lock/{fileId}',
+                            payloadType: 'json',
+                           elements: [
+                             //{label:'lock.type', name:'lock.type', type:'text', placeholder:'lock', value:'lock'},
+                             {label:'expires_at', name:'expires_at', type:'text', placeholder:'RFC 3339 timestamp: 2018-12-12T10:55:30-08:00'},
+                             {label:'is_download_prevented', name:'is_download_prevented', type:'text', placeholder:'true/false,  prevent other users from downloading the file'}
+                           ]
+                        });
+                       </script>
+                  </div>
+
+              <h2>Unlock file </h2>
+                  <div id="file-unlock">
+                       <script>
+                         renderForm('#file-unlock', {
+                           url: 'file/unLock/1234',
+                           method: 'get',
+                           placeholder:'file/unLock/{fileId}'
+                        });
+                       </script>
+                  </div>
+
+              <h2>Get file versions </h2>
+                  <div id="file-versions">
+                       <script>
+                         renderForm('#file-versions', {
+                           url: 'file/versions/1234/null',
+                           method: 'get',
+                           placeholder:'file/versions/{fileId}/{fields}'
+                        });
+                       </script>
+                  </div>
+            </article>
+             <article class="container-fluid" id="folders">
+                  <h1>Folder Managment</h1>
+                   <p>Folder items can be retrieved by calling the below endpoint. Use the `fileds` body parameter to specify the desired fields and control the result set paging(limit, offset). Requesting information for only the fields you need can improve performance and reduce the size of the network request.</p>
+                  <h2>Get Folder Information</h2>
+                   <div id="folder-get">
+                   <script>
+                     renderForm('#folder-get', {
+                       url: 'folder/get/0/null',
+                       method: 'get',
+                       placeholder:'folder/get/{folderId}/{fields}'
+                    });
+                   </script>
+                 </div>
+              <h2>Get Folder Items</h2>
+                  <div id="folder-items">
+                       <script>
+                         renderForm('#folder-items', {
+                           url: 'folder/items/0',
+                           method: 'post',
+                            payloadType: 'json',
+                           placeholder:'folder/items/{folderId}',
+                            elements: [
+                             {label:'fields', name:'fields', type:'text', placeholder:'name,shared_link,permissions, sync_state'},
+                               {label:'offset', name:'offset', type:'text', placeholder:'current page', value:'0'},
+                               {label:'limit', name:'limit', type:'text', placeholder:'results pet request', value:'2'},
+                           ]
+                        });
+                       </script>
+                  </div>
+                  <h2>Create folder </h2>
+                  <div id="folder-create">
+                       <script>
+                         renderForm('#folder-create', {
+                           url: 'folder/create/0/new folder',
+                           method: 'get',
+                           placeholder:'folder/create/{parentFolderId}/{newFolderName}'
+                        });
+                       </script>
+                  </div>
+
+              <h2>Update Folder </h2>
+                  <div id="folder-update">
+                       <script>
+                         renderForm('#folder-update', {
+                           url: 'folder/update/0',
+                           method: 'post',
+                            payloadType: 'json',
+                           placeholder:'folder/update/{fileId}',
+                           elements: [
+                             {label:'name', name:'name', type:'text'},
+                             {label:'description', name:'description', type:'text'},
+                             {label:'parent.id', name:'parent.id', type:'text', placeholder:'The ID of the parent folder'},
+                              {label:'shared_link.access', name:'shared_link.access', type:'text', placeholder:'open (People with the link), company (People in your company), or collaborators (People in this folder). If you omit this field then the access level will be set to the default '},
+                              {label:'shared_link.password', name:'shared_link.password', type:'text',placeholder:'The password required to access the shared link. Set to null to remove the password.'},
+                             {label:'shared_link.permissions.can_download', name:'shared_link.permissions.can_download', type:'text',placeholder:'true/false, Whether the shared link allows downloads. Can only be set with access levels open and company (not collaborators).'},
+                              {label:'sync_state', name:'sync_state', type:'text',placeholder:'Whether Box Sync clients will sync this folder. Values of `synced` or `not_synced` can be sent'}
+                           ]
+                        });
+                       </script>
+                  </div>
+
+               <h2>Copy Folder </h2>
+                  <div id="folder-copy">
+                       <script>
+                         renderForm('#folder-copy', {
+                           url: 'folder/copy/1234/0',
+                           method: 'post',
+                            payloadType: 'json',
+                           placeholder:'folder/copy/{folderId}/{destinationFolderId}',
+                           elements: [
+                             {label:'name', name:'name', type:'text', placeholder:'rename original folder'},
+                           ]
+                        });
+                       </script>
+                  </div>
+
+              <h2>Delete Folder </h2>
+                  <div id="folder-delete">
+                       <script>
+                         renderForm('#folder-delete', {
+                           url: 'folder/delete/0',
+                           method: 'post',
+                            payloadType: 'json',
+                           placeholder:'folder/delete/{fileId}',
+                           elements: [
+                             {label:'recursive', name:'recursive', type:'text', placeholder:'true/false'},
+                           ]
+                        });
+                       </script>
+                  </div>
+            </article>
+            <!-- END OF FOLDER -->
+
+              <!--GROUPS BEGIN -->
+            <article class="container-fluid" id="groups">
+                  <h1>Manage Groups</h1>
+                  <p>Groups contain a set of users, and can be used in place of individual users in some operations, such as collaborations.</p>
+                 <h2>Get Group Information</h2>
+                  <div id="group-info">
+                       <script>
+                         renderForm('#group-info', {
+                           url: 'group/get/626522406/null',
+                           method: 'get',
+                           placeholder:'group/get/{groupId}/{fields}'
+                        });
+                       </script>
+                  </div>
+
+                <h2>Create Group</h2>
+                  <div id="group-create">
+                       <script>
+                         renderForm('#group-create', {
+                           url: 'group/create/new group',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'group/create/{groupName}',
+                           elements: [
+                             {label:'description', name:'description', type:'text', placeholder:'group description'}
+                           ]
+                        });
+                       </script>
+                  </div>
+
+               <h2>Update Group</h2>
+                  <div id="group-update">
+                       <script>
+                         renderForm('#group-update', {
+                           url: 'group/update/626522406',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'group/update/{groupId}',
+                           elements: [
+                             {label:'name', name:'name', type:'text', placeholder:'group name'},
+                             {label:'description', name:'description', type:'text', placeholder:'group description'},
+                           ]
+                        });
+                       </script>
+                  </div>
+
+              <h2>Delete Group</h2>
+                  <div id="group-delete">
+                       <script>
+                         renderForm('#group-delete', {
+                           url: 'group/delete/626522406',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'group/delete/{groupId}'
+                        });
+                       </script>
+                  </div>
+
+               <h2>Get Enterprise Groups</h2>
+                  <div id="enterprise-groups">
+                       <script>
+                         renderForm('#enterprise-groups', {
+                           url: 'group/getEnterpriseGroups/null/null',
+                           method: 'get',
+                           placeholder:'group/getEnterpriseGroups/{fields}/{like}'
+                        });
+                       </script>
+                  </div>
+
+
+              <h2>Add Member to Group</h2>
+                  <div id="group-member-add">
+                       <script>
+                         renderForm('#group-member-add', {
+                           url: 'group/addMember/626522406/2814013628',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'group/addMember/{groupId}/{userId}',
+                           elements: [
+                             {label:'role', name:'role', type:'text', placeholder:'member/admin'}
+                           ]
+                        });
+                       </script>
+                  </div>
+
+              <h2>Update Group Membership</h2>
+                  <div id="group-member-update">
+                       <script>
+                         renderForm('#group-member-update', {
+                           url: 'group/updateMembership/626522406',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'group/updateMembership/{membershipId}',
+                           elements: [
+                             {label:'role', name:'role', type:'text', placeholder:'member/admin'}
+                           ]
+                        });
+                       </script>
+                  </div>
+                  <h2>Get Group Membership Info</h2>
+                  <div id="group-membership-get">
+                       <script>
+                         renderForm('#group-membership-get', {
+                           url: 'group/getMembership/626522406/null',
+                           method: 'get',
+                           placeholder:'group/getMembership/{membershipId}/{fields}'
+                        });
+                       </script>
+                  </div>
+
+               <h2>Get Group Memberships</h2>
+                  <div id="group-memberships-get">
+                       <script>
+                         renderForm('#group-memberships-get', {
+                           url: 'group/getMemberships/626522406/null',
+                           method: 'get',
+                           placeholder:'group/getMemberships/{limit}'
+                        });
+                       </script>
+                  </div>
+
+              <h2>Remove Group Membership</h2>
+                  <div id="group-membership-remove">
+                       <script>
+                         renderForm('#group-membership-remove', {
+                           url: 'group/getMembership/626522406',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'group/getMembership/{membershipId}'
+                        });
+                       </script>
+                  </div>
+
+               </article>
+
+               <article class="container-fluid" id="collabs">
+                  <h1>Collaborations Managment</h1>
+                 <p>Collaborations are used to share folders between users or groups. They also define what permissions a user has for a folder.</p>
+                 <h2>Create Collaboration</h2>
+                  <div id="collab-create">
+                       <script>
+                         renderForm('#collab-create', {
+                           url: 'collaboration/create',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'collaboration/create',
+                           elements: [
+                             {label:'Item.type', name:'item.type', type:'text', placeholder:'folder/file'},
+                             {label:'Item.id', name:'item.id', type:'text', placeholder:'ID of file or folder'},
+                             {label:'accessible_by.type', name:'accessible_by.type', type:'text', placeholder:'user/group'},
+                             {label:'accessible_by.id', name:'accessible_by.id', type:'text', placeholder:'ID of user or group'},
+                             {label:'accessible_by.login', name:'accessible_by.login', type:'text', placeholder:'The email address of the person to grant access to. Use instead of id to invite new users'},
+                             {label:'role', name:'role', type:'text', placeholder:'editor/viewer/previewer/uploader etc.'}
+                           ]
+                        });
+                       </script>
+                  </div>
+
+                 <h2>Update Collaboration</h2>
+                  <div id="collab-update">
+                       <script>
+                         renderForm('#collab-update', {
+                           url: 'collaboration/update/1234456',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'collaboration/update/{collaborationId}',
+                           elements: [
+                             {label:'Item.type', name:'item.type', type:'text', placeholder:'folder/file'},
+                             {label:'Item.id', name:'item.id', type:'text', placeholder:'ID of file or folder'},
+                             {label:'accessible_by.type', name:'accessible_by.type', type:'text', placeholder:'user/group'},
+                             {label:'accessible_by.id', name:'accessible_by.id', type:'text', placeholder:'ID of user or group'},
+                             {label:'accessible_by.login', name:'accessible_by.login', type:'text', placeholder:'The email address of the person to grant access to. Use instead of id to invite new users'},
+                             {label:'role', name:'role', type:'text', placeholder:'editor/viewer/previewer/uploader etc.'}
+                           ]
+                        });
+                       </script>
+                  </div>
+
+                 <h2>Delete Collaboration</h2>
+                  <div id="collab-delete">
+                       <script>
+                         renderForm('#collab-delete', {
+                           url: 'collaboration/delete/1234456',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'collaboration/delete/{collaborationId}'
+                        });
+                       </script>
+                  </div>
+
+                 <h2>Get Collaboration information</h2>
+                  <div id="collab-get-info">
+                       <script>
+                         renderForm('#collab-get-info', {
+                           url: 'collaboration/get/1244455/null',
+                           method: 'get',
+                           placeholder:'collaboration/get/{collaborationId}/{fields}'
+                        });
+                       </script>
+                  </div>
+
+                 <h2>Get the Collaborations on a File/Folder</h2>
+                  <div id="collab-get">
+                       <script>
+                         renderForm('#collab-get', {
+                           url: 'collaborations/get/42135212264/folder',
+                           method: 'get',
+                           placeholder:'collaborations/get/{itemId}/{type:file|folder}'
+                        });
+                       </script>
+                  </div>
+              </article>
+
+            <article class="container-fluid" id="users">
+                  <h1>User Managment</h1>
+                  <p>Users represent an individual's account on Box platform.</p>
+                  <h2>Create User</h2>
+                  <div id="user-create">
+                       <script>
+                         renderForm('#user-create', {
+                           url: 'user/create',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'user/create',
+                            elements: [
+                             {label:'login', name:'login', type:'text', placeholder:'The email address the user uses to login'},
+                              {label:'name', name:'name', type:'text', placeholder:'The name of the user'},
+                              {label:'role', name:'role', type:'text', placeholder:' coadmin | user, the user’s enterprise role.'},
+                              //{label:'Platform access only', name:'is_platform_access_only', type:'text', placeholder:'true/false'}
+                              {label:'is_sync_enabled', name:'is_sync_enabled', type:'text', placeholder:'true/false Whether the user can use Box Sync'},
+                              {label:'can_see_managed_users', name:'can_see_managed_users', type:'text', placeholder:'true/false'},
+                               {label:'space_amount', name:'space_amount', type:'text', placeholder:'The user’s total available space amount in bytes '},
+                              {label:'is_exempt_from_login_verification', name:'is_exempt_from_login_verification', type:'text', placeholder:'true/false Whether the user must use two-factor authentication '},
+                              {label:'status', name:'status', type:'text', placeholder:'active, inactive, cannot_delete_edit, or cannot_delete_edit_upload '},
+                           ]
+                        });
+                       </script>
+                  </div>
+
+               <h2>Get User Information</h2>
+                  <div id="user-get">
+                       <script>
+                         renderForm('#user-get', {
+                           url: 'user/get/2814013628/null',
+                           method: 'get',
+                           placeholder:'user/get/{userId}/{fields}',
+                        });
+                       </script>
+                  </div>
+
+              <h2>Get All Enterprise Users</h2>
+                  <div id="user-enter-users">
+                       <script>
+                         renderForm('#user-enter-users', {
+                           url: 'user/getEnterpriseUsers/all',
+                           method: 'get',
+                           placeholder:'user/getEnterpriseUsers/{userType:all|external|managed}',
+                        });
+                       </script>
+                  </div>
+
+              <h2>Update User</h2>
+                  <div id="user-update">
+                       <script>
+                         renderForm('#user-update', {
+                           url: 'user/update/2896477761',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'user/update/{userId}',
+                            elements: [
+                             {label:'notify', name:'notify', type:'text', placeholder:'true/false, Whether the user should receive an email when they are rolled out of an enterprise'},
+                              {label:'name', name:'name', type:'text', placeholder:'The name of the user'},
+                              {label:'role', name:'role', type:'text', placeholder:' coadmin | user, the user’s enterprise role.'},
+                              //{label:'Platform access only', name:'is_platform_access_only', type:'text', placeholder:'true/false'}
+                              {label:'is_sync_enabled', name:'is_sync_enabled', type:'text', placeholder:'true/false Whether the user can use Box Sync'},
+                              {label:'can_see_managed_users', name:'can_see_managed_users', type:'text', placeholder:'true/false'},
+                               {label:'space_amount', name:'space_amount', type:'text', placeholder:'The user’s total available space amount in bytes '},
+                              {label:'is_exempt_from_login_verification', name:'is_exempt_from_login_verification', type:'text', placeholder:'true/false Whether the user must use two-factor authentication '},
+                              {label:'status', name:'status', type:'text', placeholder:'active, inactive, cannot_delete_edit, or cannot_delete_edit_upload '},
+                           ]
+                        });
+                       </script>
+                  </div>
+
+                  <h2>Delete User</h2>
+                  <div id="user-delete">
+                       <script>
+                         renderForm('#user-delete', {
+                           url: 'user/delete/2814013628',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'user/delete/{userId}',
+                            elements: [
+                             {label:'force', name:'force', type:'text', placeholder:'true/false'}
+                           ]
+                        });
+                       </script>
+                  </div>
+                 <h2>Invite User</h2>
+                  <div id="user-invite">
+                       <script>
+                         renderForm('#user-invite', {
+                           url: 'user/invite',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'user/invite',
+                            elements: [
+                             {label:'enterprise.id', name:'enterprise.id', type:'text', placeholder:'The ID of the enterprise the user will be invited to'},
+                             {label:'actionable_by.login', name:'actionable_by.login', type:'text', placeholder:'The login of the user that will receive the invitation'}
+                           ]
+                        });
+                       </script>
+                  </div>
+              </article>
+              <article class="container-fluid" id="comments">
+                  <h1>Comment Managment</h1>
+                  <p>Comment objects represent a user-created comment on a file. They can be added directly to a file.</p>
+                  <h2>Create Comment</h2>
+                  <div id="comment-create">
+                       <script>
+                         renderForm('#comment-create', {
+                           url: 'comment/create/0',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'comment/create/{fileId}',
+                            elements: [
+                             {label:'message', name:'message', type:'text', placeholder:'Comment text'},
+                            {label:'type', name:'type', type:'text', placeholder:'tagged | normal'},
+                            ]
+                        });
+                       </script>
+                  </div>
+
+                <h2>Get Comment Information</h2>
+                  <div id="comment-get">
+                       <script>
+                         renderForm('#comment-get', {
+                           url: 'comment/get/0/null',
+                           method: 'get',
+                           placeholder:'comment/get/{commentId}/{fileds}'
+                        });
+                       </script>
+                  </div>
+
+                <h2>Get All Comments On FIle</h2>
+                  <div id="comments-get">
+                       <script>
+                         renderForm('#comments-get', {
+                           url: 'comments/get/0',
+                           method: 'get',
+                           placeholder:'comments/get/{fileId}',
+                           elements:[
+                                {label:'fields', name:'fields', type:'text', placeholder:'message,type .etc.'},
+                               {label:'offset', name:'offset', type:'text', placeholder:'current page', value:'0'},
+                               {label:'limit', name:'limit', type:'text', placeholder:'results pet request', value:'2'},
+                           ]
+                        });
+                       </script>
+                  </div>
+
+                <h2>Update Comment</h2>
+                  <div id="comment-update">
+                       <script>
+                         renderForm('#comment-update', {
+                           url: 'comment/update/0',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'comment/update/{commentId}',
+                            elements: [
+                             {label:'message', name:'message', type:'text', placeholder:'Comment text'},
+                            {label:'type', name:'type', type:'text', placeholder:'tagged | normal'},
+                            ]
+                        });
+                       </script>
+                  </div>
+
+                <h2>Delete Comment</h2>
+                  <div id="comment-delete">
+                       <script>
+                         renderForm('#comment-delete', {
+                           url: 'comment/delete/0',
+                           method: 'post',
+                           payloadType: 'json',
+                           placeholder:'comment/delete/{commentId}'
+                        });
+                       </script>
+                  </div>
+
+            </article>
+            <!-- UI elements -->
+            <article class="container-fluid" id="ui-elements">
+                  <ul class="nav nav-pills">
+                    <li class="active"><a href="#ce" data-toggle="tab">Content Explorer</a></li>
+                    <li><a href="#cu" data-toggle="tab">Content Uploader</a></li>
+                    <li><a href="#cpw" data-toggle="tab">Content Previewer</a></li>
+                    <li><a href="#cpi" data-toggle="tab">Content Picker</a></li>
+                  </ul>
+
+                  <div class="tab-content clearfix">
+                <div class="tab-pane active" id="ce" style="display:block !important">
+                  <h3>Content Explorer</h3>
+                  <link rel="stylesheet" href="https://cdn01.boxcdn.net/platform/elements/1.6.0/en-US/explorer.css" />
+                  <div class="container" style="height:600px"></div>
+                  <script src="https://cdn01.boxcdn.net/platform/elements/1.6.0/en-US/explorer.js"></script>
+                  <script>
+                      var folderId = '0';
+                      var accessToken = 'ODt7HmVmS95ts8AbplUV942vMNiBACz4';
+                      var contentExplorer = new Box.ContentExplorer();
+                      contentExplorer.show(folderId, accessToken, {
+                          container: '#ce .container',
+                          logoUrl: 'https://www.cloudseed.com/branding/wklogonopad.svg'
+                      });
+                  </script>
+                </div>
+                <div class="tab-pane" id="cu">
+                   <link rel="stylesheet" href="https://cdn01.boxcdn.net/platform/elements/1.6.1/en-US/uploader.css" />
+                  <h3>Content Uploader</h3>
+                  <div class="container" style="height:600px"></div>
+                  <!-- Latest version of the uploader js for your locale -->
+                  <script src="https://cdn01.boxcdn.net/platform/elements/1.6.1/en-US/uploader.js"></script>
+                  <script>
+                      var uploader = new Box.ContentUploader();
+                      uploader.show(folderId, accessToken, {
+                          container: '#cu .container'
+                      });
+                  </script>
+                </div>
+                <div class="tab-pane" id="cpw">
+                  <h3>Content Previewer</h3>
+                  <script src="https://cdn01.boxcdn.net/platform/preview/1.20.1/en-US/preview.js"></script>
+                  <link rel="stylesheet" href="https://cdn01.boxcdn.net/platform/preview/1.20.1/en-US/preview.css" />
+                  <div class="preview-container" style="height:400px; width:100%;"></div>
+                  <script>
+                      var preview = new Box.Preview();
+                      preview.show('252153736468', accessToken, {
+                          container: '.preview-container',
+                          showDownload: true
+                      });
+                  </script>
+                </div>
+                  <div class="tab-pane" id="cpi">
+                    <link rel="stylesheet" href="https://cdn01.boxcdn.net/platform/elements/1.6.0/en-US/picker.css" />
+                  <h3>Content Picker</h3>
+                    <div class="container" style="height:600px"></div>
+                    <!-- Latest version of the picker js for your locale -->
+                    <script src="https://cdn01.boxcdn.net/platform/elements/1.6.0/en-US/picker.js"></script>
+                    <script>
+                        var filePicker = new Box.FilePicker();
+                        filePicker.show(folderId, accessToken, {
+                            container: '#cpi .container',
+                            logoUrl: 'https://www.cloudseed.com/branding/wklogonopad.svg'
+                        });
+                    </script>
+                </div>
+            </div>
+          </article>
+          </section>
+        </div>
+        <!-- /#page-content-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- Bootstrap core JavaScript -->
+
+    <script src="vendor/popper/popper.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Menu Toggle Script -->
+    <script>
+      $(document).ready(function(){
+
+        $(".as-user button.btn").click(function(){
+              $(".as-user input[name=asuser]").toggle(500);
+          });
+        attachAjaxActionForms($('form'));
+
+        $('.tab-content>div').hide();
+        $('.tab-content #intro').show();
+
+        $('.sidebar-nav a').click(function(){
+            $('.tab-content>article').hide();
+           $('.tab-content '+$(this).attr('href')).slideDown(100);
+            //console.log('.tab-content '+$(this).attr('href'));
+        });
+      });
+
+    $("#menu-toggle").click(function(e) {
+        e.preventDefault();
+        $("#wrapper").toggleClass("toggled");
+    });
+
+
+
+  var clientId="rt80u53n2vbqv20vxhlihjkftu2xhwye", clientSecret="GZPOwodgdjl9Ho1kwwRMyn2lQeVEsnLk",
+  grantType= "authorization_code", code="ODt7HmVmS95ts8AbplUV942vMNiBACz4";
+  fetch('https://api.box.com/oauth2/token', {
+  method: 'POST',
+  body: "grant_type="+grantType+"&code="+accessToken+"&client_id="+clientId+"&client_secret="+clientSecret,
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+  }
+}).then(function (data) {
+    console.log('Request succeeded with JSON response', data);
+  });
+    </script>
+	</body>
+
+</html>

@@ -1,0 +1,2926 @@
+{
+  "AccessControlSystem": [
+    "Access Control System",
+    "Access Control Systems",
+    "Control System",
+    "Control Systems",
+    "Access Control",
+    " Access System",
+    "Access Systems",
+    "Control",
+    "System"
+  ],
+  "Accessories": [
+    "Accessories",
+    "Accessory"
+  ],
+  "AdvertisingTotem": [
+    "Advertising Totem",
+    "Advertising Totems",
+    "Advertising",
+    "Totems",
+    "Totem"
+  ],
+  "AirConditioner": [
+    "AC",
+    "AC's",
+    "A/C",
+    "Air Conditioner",
+    "Air Conditioners",
+    "Conditioner",
+    "Conditioners"
+  ],
+  "AngleValve": [
+    "Angle Valve",
+    "Angle Cock",
+    "Angle Valves",
+    "Valve",
+    "Valves"
+  ],
+  "Appliances": [
+    "Appliances",
+    "Appliance"
+  ],
+  "ArchitecturalGlass": [
+    "Architectural Glasses",
+    "Glasses",
+    "Architectural Glass",
+    "Glass",
+    "Architectural"
+  ],
+  "ArmChair": [
+    "Arm Chair",
+    "Arm Chairs",
+    "Arm",
+    "Chair",
+    "Chairs"
+  ],
+  "AuditoriumSeat": [
+    "Auditorium Seat",
+    "Auditorium Seats",
+    "Auditoriums",
+    "Auditorium",
+    "Seats",
+    "Seat"
+  ],
+  "Awning": [
+    "Awnings"
+  ],
+  "BakingMold": [
+    "Baking Mold",
+    "Baking Molds",
+    "Mold",
+    "Molds",
+    "Baking"
+  ],
+  "BakingTray": [
+    "Baking Trays",
+    "Baking Tray",
+    "Tray",
+    "Trays",
+    "Baking"
+  ],
+  "BarCabinet": [
+    "Bar Cabinet",
+    "Bar Cabinets",
+    "Cabinet",
+    "Cabinets",
+    "Bar"
+  ],
+  "BarCounter": [
+    "Bar Counter",
+    "Bar Counters",
+    "Counter",
+    "Counters",
+    "Bar"
+  ],
+  "BarStool": [
+    "Bar Stools",
+    "Bar Stool",
+    "Stool",
+    "Stools",
+    "Bar"
+  ],
+  "Baskets": [
+    "Basket",
+    "Baskets"
+  ],
+  "BathCabinet": [
+    "Bath Cabinet",
+    "Bath Cabinets",
+    "Cabinet",
+    "Cabinets",
+    "Bathroom Cabinet",
+    "Bathroom Cabinets",
+    "Bathroom",
+    "Bath room Cabinet",
+    "Bath room Cabinets",
+    "Bath room"
+  ],
+  "BathCeilingLight": [
+    "Bath Ceiling Light",
+    "Bath Ceiling Lights",
+    "Ceiling",
+    "Light",
+    "Ceiling Light",
+    "Ceiling Lights",
+    "Lights",
+    "Bathroom",
+    "Bath room",
+    "Bathroom Light",
+    "Bathroom Lights",
+    "Bath room Light",
+    "Bath room Lights"
+  ],
+  "BathFaucet": [
+    "Bath Faucet",
+    "Bath Faucets",
+    "Bath taps",
+    "Bath tap",
+    "Bathroom Faucet",
+    "Bathroom Faucets",
+    "Bathroom taps",
+    "Bathroom tap",
+    "Bathroom",
+    "Tap",
+    "Taps",
+    "Bath room Faucet",
+    "Bath room Faucets",
+    "Bath room taps",
+    "Bath room tap",
+    "Bath room"
+  ],
+  "BathFloorTile": [
+    "Bath Floor Tile",
+    "Bath Floor Tiles",
+    "Bathroom",
+    "Bathroom Tile",
+    "Bathroom Tiles",
+    "Bath room",
+    "Bath room Tile",
+    "Bath room Tiles",
+    "Floor Tile",
+    "Floor Tiles",
+    "Tile",
+    "Tiles"
+  ],
+  "BathLinen": [
+    "Bath Linen",
+    "Bath Linens",
+    "Bathroom Linen",
+    "Bathroom Linens",
+    "Bathroom",
+    "Bath room Linen",
+    "Bath room Linens",
+    "Bath room",
+    "Linen",
+    "Linens"
+  ],
+  "BathMirrorLamp": [
+    "Bath Mirror Lamp",
+    "Bath Mirror Lamps",
+    "Bathroom Mirror Lamp",
+    "Bathroom Mirror Lamps",
+    "Bathroom",
+    "Bath room Mirror Lamp",
+    "Bath room Mirror Lamps",
+    "Bath room",
+    "Mirror",
+    "Lamp",
+    "Mirror Lamp",
+    "Mirror Lamps",
+    "Bathroom Lamp",
+    "Bathroom Lamps",
+    "Bath room Lamp",
+    "Bath room Lamps"
+  ],
+  "BathStool": [
+    "Bath Stool",
+    "Bath Stools",
+    "Bathroom Stool",
+    "Bathroom Stools",
+    "Stool",
+    "Stools",
+    "Bathroom",
+    "Bath room",
+    "Bath room Stool",
+    "Bath room Stools"
+  ],
+  "BathWallLamp": [
+    "Bath Wall Lamp",
+    "Bath Wall Lamps",
+    "Bathroom Wall Lamp",
+    "Bathroom Wall Lamps",
+    "Bath room Wall Lamp",
+    "Bath room Wall Lamps",
+    "Wall Lamp",
+    "Wall Lamps",
+    "Lamp",
+    "Lamps",
+    "Bathroom Lamp",
+    "Bathroom Lamps",
+    "Bath room Lamp",
+    "Bath room Lamps"
+  ],
+  "BathWallTile": [
+    "Bath Wall Tile",
+    "Bath Wall Tiles",
+    "Bathroom Wall Tile",
+    "Bathroom Wall Tiles",
+    "Bath room Wall Tile",
+    "Bath room Wall Tiles",
+    "Wall Tile",
+    "Wall Tiles",
+    "Tile",
+    "Tiles",
+    "Bathroom Tile",
+    "Bathroom Tiles",
+    "Bath room Tile",
+    "Bath room Tiles"
+  ],
+  "BathroomAccessories": [
+    "Bathroom Accessory",
+    "Bathroom Accessories",
+    "Accessories",
+    "Accessory",
+    "Bathroom",
+    "Bath room",
+    "Bath room Accessory",
+    "Bath room Accessories"
+  ],
+  "BathroomWallShelf": [
+    "Bathroom Wall Shelf",
+    "Bathroom Wall Shelfs",
+    "Bath room Wall Shelf",
+    "Bath room Wall Shelfs",
+    "Wall Shelves",
+    "Wallshelves",
+    "Wall Shelve",
+    "Wallshelve",
+    "Bathroom Shelves",
+    "Bathroom wallShelves",
+    "Bath room Shelves",
+    "Bath room wallShelves"
+  ],
+  "BathtubFaucet": [
+    "Bath tub Faucet",
+    "Bath tub Faucets",
+    "Bath tub taps",
+    "Bath tub tap",
+    "Tap",
+    "Taps",
+    "Bathroom Tub Faucet",
+    "Bathroom Tub Faucets",
+    "Bathroom tub Tap",
+    "Bathroom tub Taps",
+    "Faucet",
+    "Faucets",
+    "Tub Faucets",
+    "Tub Faucet",
+    "Tub Tap",
+    "Tub Taps",
+    "Bathroom",
+    "Bath room",
+    "Bath room Tub Faucet",
+    "Bath room Tub Faucets",
+    "Bath room tub Tap",
+    "Bath room tub Taps"
+  ],
+  "BeamSeating": [
+    "Beam Seating",
+    "Seating",
+    "Seatings",
+    "Beam",
+    "Beams",
+    "Beam Seatings"
+  ],
+  "Bed": [
+    "Bed",
+    "Beds"
+  ],
+  "BedBase": [
+    "Bed Base",
+    "Bed Bases",
+    "Base",
+    "Bases"
+  ],
+  "BedroomSet": [
+    "Bedroom Set",
+    "Bedroom Sets",
+    "Bed room",
+    "Bedroom"
+  ],
+  "BedsideTable": [
+    "Bedside Table",
+    "Bedside Tables",
+    "Table",
+    "Tables",
+    "Bed",
+    "Bed side",
+    "Bedside"
+  ],
+  "Bench": [
+    "Bench",
+    "Benches"
+  ],
+  "BicycleRack": [
+    "BicycleRack",
+    "BicycleRacks",
+    "Bicycle Rack",
+    "Bicycle Racks",
+    "Cycle",
+    "Bicycle",
+    "Rack",
+    "Cycles",
+    "Racks",
+    "Bicycles"
+  ],
+  "Bidet": [
+    "Bidet",
+    "Bidets"
+  ],
+  "BidetFaucet": [
+    "BidetFaucet",
+    "BidetFaucets",
+    "Bidet taps",
+    "Bidet Tap",
+    "Tap",
+    "Bidet"
+  ],
+  "Blind": [
+    "Blind",
+    "Blinds"
+  ],
+  "Block": [
+    "Block",
+    "Blocks"
+  ],
+  "BlockBoard": [
+    "Block Board",
+    "Block Boards",
+    "Board"
+  ],
+  "BodyJet": [
+    "Body Jet",
+    "Body Jets",
+    "Body",
+    "Jet",
+    "Jets"
+  ],
+  "BoilersAndBurners": [
+    "Boiler",
+    "Boilers",
+    "Burner",
+    "Burners",
+    "Boilers and Burners",
+    "Boiler and burner"
+  ],
+  "BookCase": [
+    "Book Case",
+    "Book Cases",
+    "Case",
+    "Cases",
+    "Book",
+    "books",
+    "Books Cases"
+  ],
+  "BottleRack": [
+    "Bottle Rack",
+    "Bottle Racks",
+    "Bottle",
+    "Bottles",
+    "Racks",
+    "Rack",
+    "Bottles Racks"
+  ],
+  "BottleStopper": [
+    "Bottle Stopper",
+    "Bottle Stoppers",
+    "Bottle",
+    "Bottles",
+    "Stopper",
+    "Stoppers"
+  ],
+  "BottleTrap": [
+    "Bottle Trap",
+    "Bottle Traps",
+    "Bottle",
+    "Bottles",
+    "Trap",
+    "Traps"
+  ],
+  "Bowl": [
+    "Bowl",
+    "Bowls"
+  ],
+  "BreadBasket": [
+    "Bread Basket",
+    "Bread Baskets",
+    "Bread",
+    "Breads",
+    "Baskets",
+    "Basket"
+  ],
+  "Brick": [
+    "Brick",
+    "Bricks"
+  ],
+  "BrushHolder": [
+    "Brush Holder",
+    "Brush Holders",
+    "Holder",
+    "Holders",
+    "Brush"
+  ],
+  "Bulb": [
+    "Bulb",
+    "Bulbs"
+  ],
+  "BunkBed": [
+    "Bunk Bed",
+    "Bunk Beds",
+    "Bed",
+    "Beds",
+    "Bunk"
+  ],
+  "ButterDish": [
+    "Butter Dish",
+    "Butter Dishes",
+    "Dish",
+    "Dishes",
+    "Butter"
+  ],
+  "CCTVSystem": [
+    "CCTV System",
+    "CCTV Systems",
+    "CCTV",
+    "Systems"
+  ],
+  "Cakepan": [
+    "Cakepan",
+    "Cakepans",
+    "Pan",
+    "Pans"
+  ],
+  "Carpet": [
+    "Carpet",
+    "Carpets"
+  ],
+  "CeilingLamp": [
+    "Ceiling Lamp",
+    "Ceiling Lamps",
+    "Lamp",
+    "Lamps",
+    "Ceiling"
+  ],
+  "Cement": [
+    "Cement",
+    "Cements"
+  ],
+  "Chair": [
+    "Chair",
+    "Chairs"
+  ],
+  "ChandelierLight": [
+    "Chandelier Light",
+    "Chandelier Lights",
+    "Light",
+    "Lights",
+    "Chandelier"
+  ],
+  "ChemicalCoating": [
+    "Chemical Coating",
+    "Chemical Coatings",
+    "Chemical",
+    "Coating",
+    "Coatings"
+  ],
+  "ChestsOfDrawer": [
+    "Chests Of Drawer",
+    "Chests Of Drawers",
+    "Chests",
+    "Drawer",
+    "Drawers"
+  ],
+  "Chimney": [
+    "Chimney",
+    "Chimneys"
+  ],
+  "CircuitBreaker": [
+    "Circuit Breaker",
+    "Circuit Breakers",
+    "Circuit",
+    "Breaker",
+    "Breakers"
+  ],
+  "Coaster": [
+    "Coaster",
+    "Coasters"
+  ],
+  "CocktailShaker": [
+    "Cocktail Shaker",
+    "Cocktail Shakers",
+    "Shaker",
+    "Shakers",
+    "Cocktail"
+  ],
+  "CoffeeMachine": [
+    "Coffee Machine",
+    "Coffee Machines",
+    "Coffee",
+    "Machine",
+    "Machines"
+  ],
+  "CoffeeMaker": [
+    "Coffee Maker",
+    "Coffee Makers",
+    "Maker",
+    "Makers",
+    "Coffee"
+  ],
+  "CoffeeTable": [
+    "Coffee Table",
+    "Coffee Tables",
+    "Table",
+    "Tables",
+    "Coffee"
+  ],
+  "CoffeeTeaPot": [
+    "Coffee Tea Pot",
+    "Coffee Tea Pots",
+    "Coffee",
+    "Tea",
+    "Pot",
+    "Pots",
+    "Coffee Pot",
+    "Tea Pot",
+    "Coffee Pots",
+    "Tea Pots",
+    "Coffee Tea",
+    "Tea Coffee"
+  ],
+  "ColorAndGlossEnhancers": [
+    "Color And Gloss Enhancers",
+    "Color And Gloss Enhancer",
+    "Color Enhancer",
+    "Gloss Enhancer",
+    "Color Gloss Enhancer"
+  ],
+  "ComputerCabinet": [
+    "Computer Cabinet",
+    "Computer Cabinets",
+    "Computer",
+    "Cabinet",
+    "Cabinets",
+    "Computers"
+  ],
+  "CookieJar": [
+    "Cookie Jar",
+    "Cookie Jars",
+    "Cookie",
+    "Jar",
+    "Jars"
+  ],
+  "CookingRange": [
+    "Cooking Range",
+    "Cooking Ranges",
+    "Cooking",
+    "Range",
+    "Ranges"
+  ],
+  "CrowdControlBarrier": [
+    "Crowd Control Barrier",
+    "Crowd Control Barriers",
+    "Crowd Control",
+    "Crowd Controls",
+    "Control Barriers",
+    "Control Barrier",
+    "Control",
+    "Controls",
+    "Crowd",
+    "Crowds",
+    "Barrier",
+    "Barriers"
+  ],
+  "Cushion": [
+    "Cushion",
+    "Cushions"
+  ],
+  "CutlerySet": [
+    "Cutlery Set",
+    "Cutlery Sets",
+    "Set",
+    "Cutlery",
+    "Sets"
+  ],
+  "CuttingBoard": [
+    "Cutting Board",
+    "Cutting Boards",
+    "Board",
+    "Boards",
+    "Cutting"
+  ],
+  "DayBed": [
+    "Day Bed",
+    "Day Beds",
+    "Day",
+    "Bed"
+  ],
+  "Decanter": [
+    "Decanter",
+    "Decanters"
+  ],
+  "DiningChair": [
+    "Dining Chair",
+    "Dining Chairs",
+    "Dinning",
+    "Chair",
+    "Chairs"
+  ],
+  "DiningTable": [
+    "Dining Table",
+    "Dining Tables",
+    "Dining",
+    "Table",
+    "Tables"
+  ],
+  "DishWasher": [
+    "Dish Washer",
+    "Dish Washers",
+    "Dish",
+    "Washers",
+    "Dishes",
+    "Dishes Washer",
+    "Dishes Washers"
+  ],
+  "DisplayCabinet": [
+    "Display Cabinet",
+    "Display Cabinets",
+    "Display",
+    "Cabinet",
+    "Cabinets"
+  ],
+  "Diverter": [
+    "Diverter",
+    "Diverters"
+  ],
+  "Door": [
+    "Door",
+    "Doors"
+  ],
+  "DoorAccessories": [
+    "Door Accessory",
+    "Door Accessories",
+    "Door",
+    "Doors",
+    "Accessories"
+  ],
+  "DoorHandle": [
+    "Door Handle",
+    "Door Handles",
+    "Door",
+    "Doors",
+    "Doors Handle",
+    "Doors Handles",
+    "Handle",
+    "Handles"
+  ],
+  "DoorHinge": [
+    "Door Hinge",
+    "Door Hinges",
+    "Door",
+    "Doors",
+    "Doors Hinge",
+    "Doors Hinges",
+    "Hinge",
+    "Hinges"
+  ],
+  "DoorSystem": [
+    "Door System",
+    "Door Systems",
+    "Door",
+    "Doors",
+    "Doors System",
+    "Doors Systems",
+    "System",
+    "Systems"
+  ],
+  "DoubleBed": [
+    "Double Bed",
+    "Double Beds",
+    "Double",
+    "Bed",
+    "Beds"
+  ],
+  "Drawer": [
+    "Drawer",
+    "Drawers"
+  ],
+  "DrawerChannel": [
+    "Drawer Channel",
+    "Drawer Channels",
+    "Channel",
+    "Drawer",
+    "Channels"
+  ],
+  "Dresser": [
+    "Dresser",
+    "Dressers"
+  ],
+  "Dryers": [
+    "Dryers",
+    "Dryer"
+  ],
+  "EasyChair": [
+    "Easy Chair",
+    "Easy Chairs",
+    "Easy",
+    "Chair",
+    "Chairs"
+  ],
+  "EggCup": [
+    "Egg Cup",
+    "Egg Cups",
+    "Egg",
+    "Cup",
+    "Cups"
+  ],
+  "ElectricCooker": [
+    "Electric Cooker",
+    "Electric Cookers",
+    "Cooker",
+    "Cookers",
+    "Electric"
+  ],
+  "ElectricShower": [
+    "Electric Shower",
+    "Electric Showers",
+    "Electric",
+    "Shower",
+    "Showers"
+  ],
+  "Elevator": [
+    "Elevator",
+    "Elevators"
+  ],
+  "EmergencyLighting": [
+    "Emergency Lighting",
+    "Emergency Lightings",
+    "Emergency",
+    "Lighting",
+    "Lightings"
+  ],
+  "ExecutiveChair": [
+    "Executive Chair",
+    "Executive Chairs",
+    "Executive",
+    "Chair",
+    "Chairs"
+  ],
+  "Fabric": [
+    "Fabric",
+    "Fabrics"
+  ],
+  "FacadeCladding": [
+    "Facade Cladding",
+    "Facade Claddings",
+    "Facade",
+    "Claddings",
+    "Cladding"
+  ],
+  "Fan": [
+    "Fan",
+    "Fans"
+  ],
+  "Faucet": [
+    "Faucet",
+    "Faucets",
+    "Taps",
+    "Tap"
+  ],
+  "FaucetSpares": [
+    "Faucet Spares",
+    "Faucet Spare",
+    "Tap Spare",
+    "Tap Spares",
+    "Tap",
+    "Taps",
+    "Faucet",
+    "Faucets",
+    "Spare",
+    "Spares"
+  ],
+  "Fence": [
+    "Fences"
+  ],
+  "FiberOpticLighting" : [
+    "Fiber Optic Lighting",
+    "Fiber Optic Lightings",
+    "Optic Lighting",
+    "Optic Lightings",
+    "Lighting",
+    "Lightings"
+  ],
+  "FilingCabinet" : [
+    "Filing Cabinet",
+    "Filing Cabinets",
+    "Cabinet",
+    "Cabinets"
+  ],
+  "FireBasket": [
+    "fire",
+    "Fire Basket",
+    "Basket"
+  ],
+  "FireDoorAndClosure": [
+    "Fire Door And Closure",
+    "Fire",
+    "Door",
+    "Closure",
+    "Door Closure",
+    "Fire Door",
+    "Fire Closure"
+  ],
+  "FireEscapeAndSafetyStair": [
+    "Fire",
+    "Escape",
+    "Safety",
+    "Stair",
+    "Safety Stair",
+    "Escape Stair",
+    "Fire safety",
+    "Fire escape",
+    "fire stair",
+    "Fire stair and escape stair"
+  ],
+  "Fireplace": ["Fire","Fire Place"],
+  "FireproofWallAndCeiling": [
+    "Fire",
+    "Fire proof",
+    "Wall",
+    "Fire proof wall",
+    "Ceiling",
+    "Fire proof Ceiling"
+  ],
+  "Flask": [
+    "Flask",
+    "Flasks"
+  ],
+  "FloorAndWallHeater": [
+    "Floor",
+    "Wall",
+    "Heater",
+    "Heaters",
+    "Wall Heater",
+    "wall Heaters",
+    "Floor heaters",
+    "Floor Heater",
+    "Floor and wall heater",
+    "Floor wall heater"
+  ],
+  "FloorLamp": [
+    "Floor Lamp",
+    "Floor Lamps",
+    "Floor",
+    "Lamp",
+    "Lamps"
+  ],
+  "FloorTile": [
+    "Floor Tile",
+    "Floor Tiles",
+    "Floor",
+    "Tile",
+    "Tile"
+  ],
+  "Flooring": [
+    "Flooring",
+    "Floorings"
+  ],
+  "FlowerPot": [
+    "Flower Pot",
+    "Flower Pots",
+    "Flower",
+    "Flowers",
+    "Pot",
+    "Pots"
+  ],
+  "FlushPlate": [
+    "Flush Plate",
+    "Flush Plates",
+    "Flush",
+    "Plate",
+    "Plates"
+  ],
+  "FlushTank": [
+    "Flush Tank",
+    "Flush Tanks",
+    "Flush",
+    "Tank",
+    "Tanks"
+  ],
+  "FlushingSystems": [
+    "Flushing Systems",
+    "Flushing System",
+    "System",
+    "Flushing",
+    "Flush"
+  ],
+  "FoodStorage": [
+    "Food Storage",
+    "Food Storages",
+    "Food",
+    "Storages",
+    "Storage"
+  ],
+  "FootStool": [
+    "Foot Stool",
+    "Foot Stools",
+    "Stool",
+    "Stools",
+    "Foot"
+  ],
+  "Fountain": [
+    "Fountain",
+    "Fountains",
+    "Fountains and Accessories",
+    "Accessory",
+    "Accessories"
+  ],
+  "FruitBowl": [
+    "Fruit Bowl",
+    "Fruit Bowls",
+    "Fruit",
+    "Fruits",
+    "Bowl",
+    "Bowls",
+    "Fruits Bowls",
+    "Fruits Bowl"
+  ],
+  "FurnitureAccessories": [
+    "Furniture Accessories",
+    "Furniture Accessory",
+    "Furniture",
+    "Accessories",
+    "Accessory"
+  ],
+  "FurnitureHinge": [
+    "Furniture Hinge",
+    "Furniture Hinges",
+    "Furniture",
+    "Furnitures",
+    "hinge",
+    "Hinges"
+  ],
+  "FurnitureLighting": [
+    "Furniture Lighting",
+    "Furniture Lightings",
+    "Furniture",
+    "Furnitures",
+    "Lighting",
+    "Lightings"
+  ],
+  "GarabageDisposal": [
+    "Garabage Disposal",
+    "Garabage Disposals",
+    "Garbage",
+    "Disposal"
+  ],
+  "GardenArmchair" : [
+    "Garden Arm chair",
+    "Garden Arm chairs",
+    "Arm Chair",
+    "Arm Chairs",
+    "Chair",
+    "Chairs"
+  ],
+  "GardenBench":[
+    "Garden Bench",
+    "Garden Benches",
+    "Bench",
+    "Benches"
+  ],
+  "GardenChair": [
+    "Garden Chair",
+    "Garden Chairs",
+    "Chair",
+    "Chairs",
+    "Garden"
+  ],
+  "GardenDaybed":[
+    "Garden Daybed",
+    "Garden Daybeds",
+    "Garden Bed",
+    "Garden Beds",
+    "Bed",
+    "Beds"
+  ],
+  "GardenGazebo": [
+    "Garden Gazebo",
+    "Garden",
+    "Gazebo"
+  ],
+  "GardenPouf" : [
+    "Garden Pouf",
+    "Garden Poufs",
+    "Pouf",
+    "Poufs"
+  ],
+  "GardenSofa" : [
+    "Garden Sofa",
+    "Garden Sofas",
+    "Sofa",
+    "Sofas"
+  ],
+  "Gate": [
+    "Gates"
+  ],
+  "Glass": [
+    "Glass",
+    "Glasses"
+  ],
+  "GratedCheeseBowl": [
+    "Grated Cheese Bowl",
+    "Grated Cheese Bowls",
+    "Grated",
+    "Grated Cheese",
+    "Cheese Bowl",
+    "Cheese Bowls",
+    "Grated Bowl"
+  ],
+  "Grater": [
+    "Grater",
+    "Graters"
+  ],
+  "Greenhouse": [
+    "Green",
+    "House",
+    "Green House"
+  ],
+  "GrillPan": [
+    "Grill Pan",
+    "Grill Pans",
+    "Grill",
+    "Pan",
+    "GrillPans",
+    "Pans"
+  ],
+  "Grouts": [
+    "Grouts",
+    "Grout"
+  ],
+  "HairDryerHolder": [
+    "HairDryer Holder",
+    "HairDryer Holders",
+    "hair Dryer",
+    "Dryer",
+    "Hair",
+    "Dryer Holder",
+    "Holders",
+    "Holder"
+  ],
+  "Hammock" : [
+    "Hammock",
+    "Hammocks"
+  ],
+  "HandShower": [
+    "Hand Shower",
+    "Hand Showers",
+    "Hand",
+    "Shower",
+    "Showers"
+  ],
+  "HandShowerHolder": [
+    "HandShower Holder",
+    "HandShower Holders",
+    "Holder",
+    "Holders",
+    "Hand Shower",
+    "Hand Showers",
+    "Hand",
+    "Shower",
+    "Showers",
+    "Hand Shower holder",
+    "Hand Showers holder",
+    "Hand",
+    "Shower",
+    "Showers"
+  ],
+  "HangingChair":[
+    "Hanging Chair",
+    "Hanging Chairs",
+    "Chair",
+    "Chairs"
+  ],
+  "HealthFaucet": [
+    "Health Faucet",
+    "Health Faucets",
+    "Health Taps",
+    "Tap",
+    "Health"
+  ],
+  "Hinge": [
+    "Hinge",
+    "Hinges"
+  ],
+  "Hob": [
+    "Hob",
+    "Hobs"
+  ],
+  "HomeAutomationSystem" : [
+    "Home Automation System",
+    "Home Automation Systems",
+    "Automation System",
+    "Automation Systems"
+  ],
+  "HotelBed": [
+    "Hotel Bed",
+    "Hotel Beds",
+    "Hotel",
+    "Hotels",
+    "Bed",
+    "Beds"
+  ],
+  "HotelBedroom": [
+    "Hotel Bedroom",
+    "Hotel Bedrooms",
+    "Hotel",
+    "Hotels",
+    "Bedroom",
+    "Bedrooms",
+    "Room",
+    "Rooms"
+  ],
+  "HotelBedsideTable": [
+    "Hotel Bedside Table",
+    "Hotel Bedside Tables",
+    "Hotel",
+    "Hotels",
+    "Hotel Bedside",
+    "Hotel Bedsides",
+    "Bedside",
+    "Bedsides",
+    "Bedside Table",
+    "Bedside Tables",
+    "Bed",
+    "Beds",
+    "Table",
+    "Tables"
+  ],
+  "HotelDesk": [
+    "Hotel Desk",
+    "Hotel Desks",
+    "Hotel",
+    "Hotels",
+    "Desk",
+    "Desks"
+  ],
+  "HotelFurnishingAccessory": [
+    "Hotel Furnishing Accessories",
+    "Hotel Furnishing Accessory",
+    "Hotel",
+    "Hotels",
+    "Hotel Furnishing",
+    "Hotel Furnishing",
+    "Furnishing",
+    "Furnishing Accessories",
+    "Furnishing Accessory",
+    "Accessories",
+    "Accessory"
+  ],
+  "HotelSofa": [
+    "Hotel Sofa",
+    "Hotel Sofas",
+    "Hotel",
+    "Hotels",
+    "Sofa",
+    "Sofas"
+  ],
+  "HotelWardrobe": [
+    "Hotel Wardrobe",
+    "Hotel Wardrobes",
+    "Hotel",
+    "Hotels",
+    "Wardrobe",
+    "Wardrobes"
+  ],
+  "Hydralic": [
+    "Hydralic",
+    "Hydralics"
+  ],
+  "IceBucket": [
+    "IceBucket",
+    "IceBuckets",
+    "Bucket",
+    "Ice",
+    "Buckets"
+  ],
+  "IroningSystem": [
+    "Ironing System",
+    "Ironing Systems",
+    "Iron",
+    "Ironing",
+    "System",
+    "Systems",
+    "Iron System"
+  ],
+  "Jug": [
+    "Jug",
+    "Jugs"
+  ],
+  "KidsBedroomAccessories": [
+    "Kids Bedroom Accessories",
+    "Kids Bedroom Accessory",
+    "Kid",
+    "Kids",
+    "Bedroom",
+    "Bed room",
+    "Accessories",
+    "Accessory",
+    "Bedroom Accessory",
+    "Bed room Accessories",
+    "Bed room Accessory"
+  ],
+  "KidsBedroomSet": [
+    "Kids Bedroom Set",
+    "Kids Bedroom Sets",
+    "Kid",
+    "Kids",
+    "Bedroom",
+    "Bed room",
+    "Bed room set",
+    "Bed room sets",
+    "Bedroom set",
+    "Bedroom sets"
+  ],
+  "KidsChair": [
+    "Kids Chair",
+    "Kids Chairs",
+    "Kid",
+    "Kids",
+    "Chair",
+    "Chairs"
+  ],
+  "KidsLighting": [
+    "Kids Lighting",
+    "Kids Lightings",
+    "Kid",
+    "Kids",
+    "Lightings",
+    "Lighting"
+  ],
+  "KidsSofaAndArmChair": [
+    "Kids Sofa And Arm Chair",
+    "Kids Sofa And Arm Chairs",
+    "Kid",
+    "Kids",
+    "Sofa",
+    "Sofas",
+    "Arm",
+    "Chair",
+    "Chairs",
+    "Arm Chair",
+    "Arm Chairs",
+    "Kids Sofa",
+    "Kids Arm Chair",
+    "Sofa Arm Chair",
+    "Sofa and Arm Chair"
+  ],
+  "KidsTable": [
+    "Kids Table",
+    "Kids Tables",
+    "Kid",
+    "Kids",
+    "Table",
+    "Tables"
+  ],
+  "KidsTextile": [
+    "Kids Textile",
+    "Kids Textiles",
+    "Kid",
+    "Kids",
+    "Textile",
+    "Textiles"
+  ],
+  "KingAndQueenBed": [
+    "King And Queen Bed",
+    "King And Queen Beds",
+    "King",
+    "Queen",
+    "Bed",
+    "Beds",
+    "King Queen",
+    "King And Queen"
+  ],
+  "KitchenAccessories": [
+    "Kitchen Accessories",
+    "Kitchen Accessory",
+    "Kitchen",
+    "Accessory",
+    "Accessories"
+  ],
+  "KitchenApron": [
+    "Kitchen Apron",
+    "Kitchen Aprons",
+    "Kitchen",
+    "Apron",
+    "Aprons"
+  ],
+  "KitchenBasket": [
+    "Kitchen Basket",
+    "Kitchen Baskets",
+    "Kitchen",
+    "Basket",
+    "Baskets"
+  ],
+  "KitchenDrawer": [
+    "Kitchen Drawer",
+    "Kitchen Drawers",
+    "Kitchen",
+    "Drawer",
+    "Drawers"
+  ],
+  "KitchenFaucet": [
+    "Kitchen Faucet",
+    "Kitchen Faucets",
+    "Tap",
+    "Taps",
+    "Kitchen",
+    "Kitchen Tap",
+    "Kitchen Taps"
+  ],
+  "KitchenKnife": [
+    "Kitchen Knife",
+    "Kitchen Knifes",
+    "Kitchen",
+    "Knife",
+    "Knifes"
+  ],
+  "Kitchentong": [
+    "Kitchen tong",
+    "Kitchen tongs",
+    "Kitchen",
+    "tong",
+    "Tongs"
+  ],
+  "KnifeBlock": [
+    "Knife Block",
+    "Knife Blocks",
+    "Block",
+    "Knife",
+    "Knifes"
+  ],
+  "KnifeSet": [
+    "Knife Set",
+    "Knife Sets",
+    "Set",
+    "Sets",
+    "Knife",
+    "Knifes"
+  ],
+  "Knob": [
+    "Knob",
+    "Knobs"
+  ],
+  "LEDShower": [
+    "LED Shower",
+    "LED Showers",
+    "LED",
+    "Shower",
+    "Showers"
+  ],
+  "Ladle": [
+    "Ladle",
+    "Ladles"
+  ],
+  "Laminate": [
+    "Laminate",
+    "Laminates"
+  ],
+  "LaminateFlooring": [
+    "LaminateFlooring",
+    "LaminateFloorings",
+    "Laminate",
+    "Flooring",
+    "Floorings",
+    "Laminates"
+  ],
+  "Lamp": [
+    "Lamp",
+    "Lamps"
+  ],
+  "LampPost": [
+    "LampPost",
+    "LampPosts",
+    "Lamp",
+    "Post",
+    "Posts",
+    "Lamps"
+  ],
+  "LampShade": [
+    "LampShade",
+    "LampShades",
+    "Lamp",
+    "Shade",
+    "Shades",
+    "Lamps"
+  ],
+  "LandscapeEdging": [
+    "Land",
+    "LandScape",
+    "Edging",
+    "Landscape edging",
+    "Landscape edge"
+  ],
+  "LaundryBasket": [
+    "Laundry Basket",
+    "Laundry Baskets",
+    "Laundry",
+    "Basket",
+    "Baskets"
+  ],
+  "LaundryRoomCabinet": [
+    "Laundry Room Cabinet",
+    "Laundry Room Cabinets",
+    "Room",
+    "Laundry",
+    "Laundry Room",
+    "Cabinet",
+    "Cabinets",
+    "Room Cabinets"
+  ],
+  "Lid": [
+    "Lid",
+    "Lids"
+  ],
+  "Light": [
+    "Light",
+    "Lights"
+  ],
+  "LightLetter": [
+    "Light Letter",
+    "Light Letters",
+    "Light",
+    "Letter",
+    "Letters"
+  ],
+  "LinearLightingProfile": [
+    "Linear Lighting Profile",
+    "Linear Lighting Profiles",
+    "Linear",
+    "Linears",
+    "Lighting",
+    "Lightings",
+    "Profile",
+    "Profiles",
+    "Linear Lighting",
+    "Linear Lightings",
+    "Lighting Profile",
+    "Lighting Profiles"
+  ],
+  "LiquidSoapDispenser": [
+    "Liquid Soap Dispenser",
+    "Liquid Soap Dispensers",
+    "Liquid",
+    "Soap",
+    "Dispensers",
+    "Dispenser",
+    "Soap Dispenser",
+    "Soap Dispensers",
+    "Liquid",
+    "Liquid Soap"
+  ],
+  "LivingRoomAccessories": [
+    "Living Room Accessories",
+    "Living Room Accessory",
+    "Accessories",
+    "Accessory",
+    "Living",
+    "Room",
+    "Living Room"
+  ],
+  "Lock": [
+    "Lock",
+    "Locks"
+  ],
+  "LoungeChair": [
+    "Lounge Chair",
+    "Lounge Chairs",
+    "Lounge",
+    "chair",
+    "Chairs"
+  ],
+  "LoungeTable": [
+    "Lounge Table",
+    "Lounge Tables",
+    "Lounge",
+    "Table",
+    "Tables",
+    "Lounges"
+  ],
+  "MDFBoards": [
+    "MDF Boards",
+    "MDF Board",
+    "MDF",
+    "Board",
+    "Boards"
+  ],
+  "MassageChair": [
+    "Massage Chair",
+    "Massage Chairs",
+    "Massage",
+    "Chair",
+    "Chairs"
+  ],
+  "Matresses": [
+    "Matresses",
+    "Matress"
+  ],
+  "MeetingTable": [
+    "Meeting Table",
+    "Meeting Tables",
+    "Meeting",
+    "Tables"
+  ],
+  "MiniFridge": [
+    "Mini Fridge",
+    "Mini Fridges",
+    "Mini",
+    "Fridges"
+  ],
+  "Mirror": [
+    "Mirror",
+    "Mirrors"
+  ],
+  "ModularKitchen": [
+    "Modular Kitchen",
+    "Modular Kitchens",
+    "Modular",
+    "Kitchen"
+  ],
+  "MotionSensor": [
+    "MotionSensor",
+    "MotionSensors",
+    "Sensor",
+    "Sensors",
+    "Motion",
+    "Motion Sensor",
+    "Motion Sensors"
+  ],
+  "Napkin": [
+    "Napkin",
+    "Napkins"
+  ],
+  "NapkinHolder": [
+    "NapkinHolder",
+    "NapkinHolders",
+    "Napkin",
+    "Holder",
+    "Holders",
+    "Napkin Holder",
+    "Napkin Holders"
+  ],
+  "NaturalStone": [
+    "NaturalStone",
+    "NaturalStones",
+    "Natural",
+    "Stone",
+    "Stones",
+    "Natural Stone",
+    "Natural Stones"
+  ],
+  "NoticeBoard": [
+    "Notice Boards",
+    "Notice Board",
+    "Notice",
+    "Notices",
+    "Boards",
+    "Board"
+ ],
+  "OfficeAccessory" :[
+    "Office Accessory",
+    "Office Accessorys",
+    "Office Accessories",
+    "Accessory",
+    "Accessories",
+    "Office"
+  ],
+  "OfficeBooth" :[
+    "Office Booth",
+    "Office Booths",
+    "Booth",
+    "Booths",
+    "Office"
+  ],
+  "OfficeChair": [
+    "OfficeChair",
+    "OfficeChairs",
+    "Office",
+    "Chair",
+    "Chairs",
+    "Office Chair",
+    "Office Chairs"
+  ],
+  "OfficeDesk": [
+    "OfficeDesk",
+    "OfficeDesks",
+    "Office",
+    "Desk",
+    "Desks",
+    "Office Desk",
+    "Office Desks"
+  ],
+  "OfficePartition" :[
+    "Office Partition",
+    "Office Partitions",
+    "Partition",
+    "Partitions",
+    "Office"
+  ],
+  "OfficeStool" : [
+    "Office Stool",
+    "Office Stools",
+    "Stool",
+    "Stools"
+  ],
+  "OfficeStorageUnit" : [
+    "Office Storage Unit",
+    "Office Storage Units",
+    "Storage Unit",
+    "Storage Units"
+  ],
+  "OfficeWorkStation": [
+    "Office Work Station",
+    "Office Work Stations",
+    "Work",
+    "Station",
+    "Work Stations",
+    "Stations",
+    "Office",
+    "Office Work",
+    "Workstation",
+    "Workstations"
+  ],
+  "OilSet": [
+    "OilSet",
+    "OilSets",
+    "Set",
+    "Sets",
+    "Oil"
+  ],
+  "Ottoman": [
+    "Ottoman",
+    "Ottomans",
+    "Otto man",
+    "Otto"
+  ],
+  "OutdoorCeilingLamp": [
+    "Outdoor",
+    "Ceilings",
+    "Ceiling",
+    "Lamps",
+    "Lamp",
+    "Ceiling Lamp",
+    "Ceiling Lamps",
+    "Outdoor Ceiling Lamp",
+    "Outdoor Ceiling Lamps",
+    "Outdoor Ceilings"
+  ],
+  "OutdoorCushion" :[
+    "Outdoor Cushion",
+    "Outdoor Cushions",
+    "Cushion",
+    "Cushions"
+  ],
+  "OutdoorFireplace": [
+    "Outdoor",
+    "Fire",
+    "Fire plase"
+  ],
+  "OutdoorFloodlight": [
+    "Outdoor",
+    "Floods",
+    "Flood",
+    "Lights",
+    "Light",
+    "Floodlight",
+    "Floodlights",
+    "Outdoor Floodlight",
+    "Outdoor Floodlights",
+    "Outdoor Floods"
+  ],
+  "OutdoorFloorLamp": [
+    "Outdoor",
+    "Floors",
+    "Floor",
+    "Lamps",
+    "Lamp",
+    "Floor Lamp",
+    "Floor Lamps",
+    "Outdoor Floor Lamp",
+    "Outdoor Floor Lamps",
+    "Outdoor Floors"
+  ],
+  "OutdoorGreenwall": [
+    "Out door",
+    "Green wall",
+    "Wall",
+    "Green",
+    "Outdoor green wall"
+  ],
+  "OutdoorHeater": [
+    "Outdoor",
+    "Heater",
+    "Outdoor Heater"
+  ],
+  "OutdoorHotTub": [
+    "Outdoor",
+    "Hot",
+    "Tub",
+    "Hot tub",
+    "Outdoor Hot tub"
+  ],
+  "OutdoorLight": [
+    "OutdoorLight",
+    "OutdoorLights",
+    "Light",
+    "Lights"
+  ],
+  "OutdoorPendantLamp": [
+    "Outdoor",
+    "Pendants",
+    "Pendant",
+    "Lamps",
+    "Lamp",
+    "Pendant Lamp",
+    "Pendant Lamps",
+    "Outdoor Pendant Lamp",
+    "Outdoor Pendant Lamps",
+    "Outdoor Pendants"
+  ],
+  "OutdoorShower": [
+    "out door",
+    "Shower",
+    "Outdoor shower",
+    "outdoor"
+  ],
+  "OutdoorSpotLight": [
+    "Outdoor",
+    "Spot",
+    "Light",
+    "Spot Light",
+    "Outdoor Spot Light",
+    "Outdoor Spots",
+    "Spot Lights"
+  ],
+  "OutdoorWallLamp": [
+    "Outdoor",
+    "Walls",
+    "Wall",
+    "Lamps",
+    "Lamp",
+    "Wall Lamp",
+    "Wall Lamps",
+    "Outdoor Wall Lamp",
+    "Outdoor Wall Lamps",
+    "Outdoor Walls"
+  ],
+  "Oven": [
+    "Oven",
+    "Ovens"
+  ],
+  "OvenGlove": [
+    "OvenGlove",
+    "OvenGloves",
+    "Oven",
+    "Oven Glove",
+    "Oven Gloves",
+    "Glove",
+    "Gloves"
+  ],
+  "OverheadShower": [
+    "OverheadShower",
+    "OverheadShowers",
+    "OverHead",
+    "Over head",
+    "Shower",
+    "Showers",
+    "head Shower",
+    "Showers"
+  ],
+  "Paint": [
+    "Paint",
+    "Paints"
+  ],
+  "Pan": [
+    "Pan",
+    "Pans"
+  ],
+  "PastaStrainer": [
+    "PastaStrainer",
+    "PastaStrainers",
+    "Pasta",
+    "Strainer",
+    "Strainers",
+    "Pasta Strainer",
+    "Pasta Strainers"
+  ],
+  "PendantLamp": [
+    "PendantLamp",
+    "PendantLamps",
+    "Pendant",
+    "Lamp",
+    "Lamps",
+    "Pendant Lamp",
+    "Pendant Lamps"
+  ],
+  "Pergola": [
+    "Pergolas"
+  ],
+  "PipesAndFittings": [
+    "Pipes Fitting",
+    "Pipes Fittings",
+    "pipes",
+    "pipe",
+    "Fitting",
+    "Fittings",
+    "Pipes and Fittings",
+    "pipe and fitting"
+  ],
+  "PizzaCutter": [
+    "Pizza Cutter",
+    "Pizza Cutters",
+    "Pizza",
+    "Cutter",
+    "Cutters"
+  ],
+  "PlaceMat": [
+    "Place Mat",
+    "Place Mats",
+    "Placemat",
+    "Placemats"
+  ],
+  "Planter": [
+    "Planters"
+  ],
+  "Plate": [
+    "Plate",
+    "Plates"
+  ],
+  "Plywood": [
+    "Ply wood",
+    "Ply woods",
+    "Plywood",
+    "Plywoods"
+  ],
+  "PoolCover": [
+    "Pool",
+    "Cover",
+    "Pool Cover"
+  ],
+  "PoolEquipment": [
+    "pool",
+    "Equipment",
+    "Pool Equipment"
+  ],
+  "PoolLiner": [
+    "Pool Liner",
+    "Liner"
+  ],
+  "Porch": [
+    "Porches",
+    "Porch"
+  ],
+  "Pot": [
+    "Pot",
+    "Pots"
+  ],
+  "PotHolder": [
+    "Pot Holder",
+    "Pot Holders",
+    "Pot",
+    "Holder",
+    "Holders"
+  ],
+  "PressureCooker": [
+    "Pressure Cooker",
+    "Pressure Cookers",
+    "Pressure",
+    "Cooker",
+    "Cookers"
+  ],
+  "PublicAreaTable": [
+    "Public Area Table",
+    "Public Area Tables",
+    "Public Area",
+    "Public Areas",
+    "Area Tables",
+    "Area Tables",
+    "Area",
+    "Areas",
+    "Public",
+    "Publics",
+    "Table",
+    "Tables",
+    "Tables For Public Areas",
+    "For Public Areas",
+    "For Public Area",
+    "Table For Public Area"
+  ],
+  "PublicPlaceSign": [
+    "Public Place Sign",
+    "Public Place Signs",
+    "Public Place",
+    "Public Places",
+    "Place Signs",
+    "Place Sign",
+    "Place",
+    "Places",
+    "Public",
+    "Publics",
+    "Sign",
+    "Signs"
+  ],
+  "PullOuts": [
+    "PullOuts",
+    "PullOut",
+    "Pull",
+    "Pull out",
+    "Pull Outs"
+  ],
+  "Pump": [
+    "Pump",
+    "Pumps",
+    "Motor",
+    "Motors",
+    "Pump and Motor",
+    "Pumps and Motors",
+    "Pump and Motors",
+    "Pumps and Motor"
+  ],
+  "Radiator": ["Radiator"],
+  "Railing": ["Railing"],
+  "RainShower": [
+    "Rain Shower",
+    "Rain Showers",
+    "Rain",
+    "Shower",
+    "Showers"
+  ],
+  "Raising": [
+    "Raising",
+    "Raisings"
+  ],
+  "Reclining": [
+    "Reclining",
+    "Reclinings"
+  ],
+  "Refrigerator": [
+    "Refrigerator",
+    "Refrigerators",
+    "Fridge",
+    "Fridges"
+  ],
+  "RestaurantBooth": [
+    "Restaurant Booth",
+    "Restaurant Booths",
+    "Restaurant",
+    "Restaurants",
+    "Booths",
+    "Booth"
+  ],
+  "RestaurantChair": [
+    "Restaurant Chair",
+    "Restaurant Chairs",
+    "Restaurant",
+    "Restaurants",
+    "Chairs",
+    "Chair"
+  ],
+  "RestaurantTable": [
+    "Restaurant Table",
+    "Restaurant Tables",
+    "Restaurant",
+    "Restaurants",
+    "Tables",
+    "Table"
+  ],
+  "RetailDisplayCase": [
+    "Retail Display Case",
+    "Retail Display Cases",
+    "Retail Display",
+    "Retail Displays",
+    "Display Cases",
+    "Display Case",
+    "Retail",
+    "Retails",
+    "Display",
+    "Displays",
+    "Cases",
+    "Case"
+  ],
+  "RobeHook": [
+    "RobeHook",
+    "RobeHooks",
+    "Hook",
+    "Hooks",
+    "Robe Hook",
+    "Robe Hooks",
+    "Robe"
+  ],
+  "RoofPanel": [
+    "Roof",
+    "Roofs",
+    "Panel",
+    "Panels",
+    "Roof Panel",
+    "Roof Panels"
+  ],
+  "RoofShingle": [
+    "Roof",
+    "Roofs",
+    "Shingle",
+    "Shingles",
+    "Roof Shingle",
+    "Roof Shingles"
+  ],
+  "RoofSystem": [
+    "Roof",
+    "Roofs",
+    "Roof System",
+    "Roof Systems",
+    "System",
+    "Systems"
+  ],
+  "RoofTile": [
+    "Roof",
+    "Roofs",
+    "Tile",
+    "Tiles",
+    "Roof Tile",
+    "Roof Tiles"
+  ],
+  "Rug": [
+    "Rug",
+    "Rugs"
+  ],
+  "SOSS": [
+    "SOSS",
+    "SOSSs"
+  ],
+  "SafeDepositBox": [
+    "Safe Deposit Boxes",
+    "Safe Deposit Box",
+    "Safe",
+    "Deposit",
+    "Box",
+    "Boxes",
+    "Deposits",
+    "Deposit Boxes",
+    "Deposit Box",
+    "Safe Deposit"
+  ],
+  "SaltAndPepper": [
+    "Salt And Pepper",
+    "Salt And Peppers",
+    "Salt",
+    "Pepper",
+    "Peppers",
+    "Salt Pepper",
+    "Salt Peppers"
+  ],
+  "SaucePan": [
+    "SaucePan",
+    "SaucePans",
+    "Sauce",
+    "Pan",
+    "Pans"
+  ],
+  "Screeds": [
+    "Screed",
+    "Screeds"
+  ],
+  "SealersAndImpregnators": [
+    "Sealers And Impregnator",
+    "Sealers And Impregnators",
+    "Sealer",
+    "Sealers",
+    "Impregnator",
+    "Impregnators",
+    "Sealers Impregnator",
+    "Sealers Impregnators",
+    "Sealer Impregnator",
+    "Sealer Impregnators"
+  ],
+  "Sectional": [
+    "Sectional",
+    "Sectionals"
+  ],
+  "ServingBowl": [
+    "Serving Bowl",
+    "Serving Bowls",
+    "Bowl",
+    "Bowls",
+    "Serving"
+  ],
+  "SewageTank": [
+    "Sewage",
+    "Sewage Tanks",
+    "Sewage Tank",
+    "Tank",
+    "Tanks"
+  ],
+  "ShoeCabinet": [
+    "Shoe Cabinet",
+    "Shoe Cabinets",
+    "Shoe",
+    "Shoes",
+    "Cabinet",
+    "Cabinets"
+  ],
+  "ShowCabinet": [
+    "Show Cabinet",
+    "Show Cabinets",
+    "Shower",
+    "Cabinet",
+    "Cabinets"
+  ],
+  "Shower": [
+    "Shower",
+    "Showers"
+  ],
+  "ShowerAccessory": [
+    "Shower Accessory",
+    "Shower Accessories",
+    "Shower",
+    "Accessories",
+    "Accessory"
+  ],
+  "ShowerArm": [
+    "Shower Arm",
+    "Shower Arms",
+    "Shower",
+    "Arm",
+    "Arms"
+  ],
+  "ShowerCabins": [
+    "Shower Cabin",
+    "Shower Cabins",
+    "Shower",
+    "Cabin",
+    "Cabins"
+  ],
+  "ShowerCubicle": [
+    "Shower Cubicle",
+    "Shower Cubicles",
+    "Shower",
+    "Cubicles",
+    "Cubicle"
+  ],
+  "ShowerCurtain": [
+    "Shower Curtain",
+    "Shower Curtains",
+    "Shower",
+    "Curtain",
+    "Curtains"
+  ],
+  "ShowerFaucet": [
+    "Shower Faucet",
+    "Shower Faucets",
+    "Shower taps",
+    "Shower",
+    "Shower Tap",
+    "Faucet",
+    "Faucets",
+    "Tap",
+    "Taps"
+  ],
+  "ShowerHead": [
+    "ShowerHead",
+    "ShowerHeads",
+    "Shower",
+    "Head",
+    "Heads",
+    "Shower Head",
+    "Shower Heads"
+  ],
+  "ShowerPanel": [
+    "ShowerPanel",
+    "ShowerPanels",
+    "Shower Panel",
+    "Shower Panel",
+    "Shower Panels",
+    "Shower",
+    "Panel",
+    "Panels"
+  ],
+  "ShowerRail": [
+    "ShowerRail",
+    "ShowerRails",
+    "Shower",
+    "Showers",
+    "Rail",
+    "Rails",
+    "Shower Rail",
+    "Shower Rails"
+  ],
+  "ShowerTrays": [
+    "ShowerTrays",
+    "ShowerTray",
+    "Shower",
+    "Showers",
+    "Tray",
+    "Shower Trays",
+    "Shower Tray",
+    "Trays"
+  ],
+  "ShowerWallPanels": [
+    "Shower Wall Panels",
+    "Shower Wall Panel",
+    "Shower",
+    "Wall Pannels",
+    "Pannel",
+    "Pannels",
+    "Shower Pannel",
+    "Shower Pannels"
+  ],
+  "ShutterHinge": [
+    "Shutter Hinge",
+    "Shutter Hinges",
+    "Shutter",
+    "Hinge",
+    "Hinges"
+  ],
+  "SideBoard": [
+    "Side Board",
+    "Side Boards",
+    "Side",
+    "Board",
+    "Boards"
+  ],
+  "SingleBed": [
+    "Single Bed",
+    "Single Beds",
+    "Single",
+    "Bed",
+    "Beds"
+  ],
+  "Sink": [
+    "Sink",
+    "Sinks"
+  ],
+  "SmartLight": [
+    "Smart Light",
+    "Smart Lights",
+    "Smart",
+    "Light",
+    "Lights"
+  ],
+  "SoapDish": [
+    "Soap Dish",
+    "Soap Dishes",
+    "Dish",
+    "Dishes",
+    "Soap",
+    "Soaps"
+  ],
+  "Sofa": [
+    "Sofa",
+    "Sofas"
+  ],
+  "SolarLight": [
+    "Solar Light",
+    "Solar Lights",
+    "Solar",
+    "Lights",
+    "Light"
+  ],
+  "SolarWaterHeater": [
+    "Solar Water Heater",
+    "Solar Water Heaters",
+    "water",
+    "Heater",
+    "Heaters",
+    "Water Heater",
+    "Solar",
+    "Solar Heater",
+    "Solar Heaters"
+  ],
+   "SpotLight": [
+    "Spot Light",
+    "Spot Lights",
+    "Spot",
+    "Lights",
+    "Light",
+    "Spot"
+  ],
+ "Spout": [
+    "Spout",
+    "Spouts"
+  ],
+  "Steamer": [
+    "Steamer",
+    "Steamers"
+  ],
+  "Steel": [
+    "Steel",
+    "Steels"
+  ],
+  "Steplight": [
+    "Steplight",
+    "Steplights",
+    "Step",
+    "Lights",
+    "Light",
+    "Steps"
+  ],
+  "StewPan": [
+    "Stew Pan",
+    "Stew Pans",
+    "Stew",
+    "Pan",
+    "Pans"
+  ],
+  "StoneAdhesive": [
+    "Stone Adhesive",
+    "Stone Adhesives",
+    "Adhesive",
+    "Adhesives",
+    "Stone And Tile adhesives",
+    "Wall Adhesives",
+    "Wall Adhesive"
+  ],
+  "StoneSealer": [
+    "Stone Sealer",
+    "Stone Sealers",
+    "Stone",
+    "Sealer",
+    "Sealers"
+  ],
+  "StorageBed": [
+    "Storage Bed",
+    "Storage Beds",
+    "Storage",
+    "Bed",
+    "Beds"
+  ],
+  "StorageUnit": [
+    "Storage Unit",
+    "Storage Units",
+    "Storage",
+    "Unit",
+    "Units"
+  ],
+  "StorageWall": [
+    "Storage Wall",
+    "Storage Walls",
+    "Storage",
+    "Wall",
+    "Walls"
+  ],
+  "Stove": [
+    "stove",
+    "Stoves"
+  ],
+  "Strainer": [
+    "Strainer",
+    "Strainers"
+  ],
+  "StreetBench": [
+    "Street Bench",
+    "Street Benches",
+    "Street",
+    "Streets",
+    "Benches",
+    "Bench"
+  ],
+  "StreetClock": [
+    "Street Clock",
+    "Street Clocks",
+    "Street",
+    "Streets",
+    "Clocks",
+    "Clock"
+  ],
+  "StreetLamp": [
+    "Street Lamp",
+    "Street Lamps",
+    "Street",
+    "Streets",
+    "Lamps",
+    "Lamp"
+  ],
+  "StructureForStandAndFair": [
+    "Structure For Stand And Fair",
+    "Structure For Stand And Fairs",
+    "Stand And Fair",
+    "Stands And Fairs",
+    "Stands",
+    "Stand",
+    "Structure",
+    "Structures"
+  ],
+  "SugarBowl": [
+    "Sugar Bowl",
+    "Sugar Bowls",
+    "sugar",
+    "Bowl",
+    "Bowls"
+  ],
+  "SupportRail": [
+    "Support Rail",
+    "Support Rails",
+    "Support",
+    "Rail",
+    "Rails"
+  ],
+  "SuspendedCeiling": [
+    "Suspended Ceiling",
+    "Suspended Ceilings",
+    "Suspended",
+    "Ceiling",
+    "Ceilings"
+  ],
+  "SwimmingPool" : [
+    "Swimming Pool",
+    "Pool",
+    "Swimming"
+  ],
+  "SwimmingPoolHeating": [
+    "Swimming",
+    "Pool",
+    "Swimming pool",
+    "Heating",
+    "Pool Heating",
+    "Swimming pool heating"
+  ],
+  "Switch": [
+    "Switch",
+    "Switches"
+  ],
+  "SystemsAndExtinguishers": ["System","Extinguishers","System and Extinguisher"],
+  "Table": [
+    "Table",
+    "Tables"
+  ],
+  "TableCloth": [
+    "Table Cloth",
+    "Table Clothes",
+    "Table",
+    "Cloth",
+    "Cloths"
+  ],
+  "TableDecoration": [
+    "Table Decoration",
+    "Table Decorations",
+    "Table",
+    "Decoration",
+    "Decorations"
+  ],
+  "TableLamp": [
+    "Table Lamp",
+    "Table Lamps",
+    "Table",
+    "Lamps",
+    "Lamp"
+  ],
+  "TableRunner": [
+    "Table Runner",
+    "Table Runners",
+    "Table",
+    "Runner",
+    "Runners"
+  ],
+  "TeaInfuser": [
+    "Tea In fuser",
+    "Tea In fusers",
+    "Tea",
+    "Fuser",
+    "Fusers",
+    "Tea Fuser",
+    "Tea Fusers"
+  ],
+  "TeaSet": [
+    "Tea Set",
+    "Tea Sets",
+    "Set",
+    "Sets"
+  ],
+  "Tile": [
+    "Tile",
+    "Tiles"
+  ],
+  "TileAccessories": [
+    "Tile Accessories",
+    "Tile Accessory",
+    "Tile",
+    "Accessory",
+    "tiles",
+    "Accessories"
+  ],
+  "Timer": [
+    "Timer",
+    "Timers"
+  ],
+  "TissueDispenser": [
+    "Tissue Dispenser",
+    "Tissue Dispensers",
+    "Tissue",
+    "Dispensers",
+    "Dispenser"
+  ],
+  "ToiletBrush": [
+    "Toilet Brush",
+    "Toilet Brushes",
+    "Brush",
+    "Toilet",
+    "Brushes"
+  ],
+  "ToiletBrushHolder": [
+    "Toilet Brush Holder",
+    "Toilet Brush Holders",
+    "Toilte",
+    "Toilet",
+    "Toilet brush",
+    "Holder",
+    "Holders",
+    "Brush Holder",
+    "Brush Holders"
+  ],
+  "ToiletRollHolder": [
+    "Toilet Roll Holder",
+    "Toilet Roll Holders",
+    "Roll",
+    "Roll Holder",
+    "Roll Holders",
+    "Holder",
+    "Holders",
+    "Toilet",
+    "Toilets",
+    "Toilet Roll"
+  ],
+  "ToiletSeat": [
+    "Toilet Seat",
+    "Toilet Seats",
+    "Toilet",
+    "Toilets",
+    "Seat",
+    "Seats"
+  ],
+  "Toilets": [
+    "Toilets",
+    "Toilet"
+  ],
+  "ToiletsIndian": [
+    "Toilets Indian",
+    "Toilets Indians",
+    "Indian",
+    "Toilet",
+    "Toilets"
+  ],
+  "ToothbrushHolder": [
+    "Tooth brush Holder",
+    "Tooth brush Holders",
+    "Tooth",
+    "Tooth Brush",
+    "Brush",
+    "Brush Holder",
+    "Holder",
+    "Holders",
+    "brush Holders"
+  ],
+  "TouchScreen" : [
+    "Touch Screen",
+    "Touch Screens",
+    "Screen",
+    "Screens"
+  ],
+  "TowelHolder": [
+    "Towel Holder",
+    "Towel Holders",
+    "Towelholders",
+    "Towel",
+    "Holder",
+    "Holders"
+  ],
+  "TrackLight": [
+    "Track Light",
+    "Track Lights",
+    "Tracklights",
+    "Track",
+    "Tracks",
+    "Light",
+    "Lights"
+  ],
+  "Tray": [
+    "Tray",
+    "Trays"
+  ],
+  "TreeGrill": [
+    "Tree Grill",
+    "Tree Grills",
+    "Tree",
+    "Trees",
+    "Grills",
+    "Grill"
+  ],
+  "Tub": [
+    "Tub",
+    "Tubs"
+  ],
+  "TumbleDryer": [
+    "Tumble Dryer",
+    "Tumble Dryers",
+    "Tumble",
+    "Dryers",
+    "Dryer"
+  ],
+  "TumblerHolder": [
+    "Tumbler Holder",
+    "Tumbler Holders",
+    "Tumbler",
+    "Holder",
+    "Holders"
+  ],
+  "Turnstile": [
+    "Turnstile",
+    "Turnstiles",
+    "Turnstyles",
+    "Turnstyle",
+    "Baffle Gate",
+    "Gate",
+    "Gates",
+    "Baffle"
+  ],
+  "TvCabinet": [
+    "Tv Cabinet",
+    "Tv Cabinets",
+    "Cabinets",
+    "Cabinet",
+    "TV",
+    "Tvs"
+  ],
+  "UnderwaterLamp": [
+    "Under water Lamp",
+    "Under water Lamps",
+    "Under",
+    "Underwater",
+    "water",
+    "water Lamp",
+    "Lamp",
+    "Lamps",
+    "water Lamps"
+  ],
+  "Urinal": [
+    "Urinal",
+    "Urinals"
+  ],
+  "UtilitySink": [
+    "Utility Sink",
+    "Utility Sinks",
+    "Sink",
+    "Sinks",
+    "Utility"
+  ],
+  "VanityUnit": [
+    "Vanity Unit",
+    "Vanity Units",
+    "Vanity",
+    "Unit",
+    "Units"
+  ],
+  "Vase": [
+    "Vase",
+    "Vases",
+    "Vases For Public Areas",
+    "Vase For Public Area",
+    "Vases For Public",
+    "Vases For Publics",
+    "Public Areas",
+    "Public Area"
+  ],
+  "Veneer": [
+    "Veneer",
+    "Veneers"
+  ],
+  "Ventilation": [
+    "Ventilation",
+    "Ventilations"
+  ],
+  "VerticalGardeningTrellis": [
+    "Vertical Gardening",
+    "Trellis",
+    "Vertical Gardening Trellis",
+    "Gardening",
+    "Trellis",
+    "Vertical"
+  ],
+  "VisitorsChair" : [
+    "Visitors Chair",
+    "Visitors Chairs",
+    "Chair",
+    "chairs",
+    "Visitor Chair",
+    "Visitors Chairs"
+  ],
+  "WC": [
+    "WC",
+    "WC's",
+    "WCs"
+  ],
+  "WaitingRoomChair": [
+    "Waiting Room Chairs",
+    "Waiting Room Chair",
+    "Waiting",
+    "Room",
+    "Rooms",
+    "Chairs",
+    "Chair",
+    "Waiting Room",
+    "Waiting Rooms",
+    "Room Chairs",
+    "Room Chair"
+  ],
+  "WaitingRoomSofa": [
+    "Waiting Room Sofas",
+    "Waiting Room Sofa",
+    "Waiting",
+    "Room",
+    "Rooms",
+    "Sofas",
+    "Sofa",
+    "Waiting Room",
+    "Waiting Rooms",
+    "Room Sofas",
+    "Room Sofa"
+  ],
+  "WalkInWardrobe": [
+    "Walk In Wardrobe",
+    "Walk In Wardrobes",
+    "Wardrobe",
+    "Ward",
+    "Robe"
+  ],
+  "WallCabinet": [
+    "Wall Cabinet",
+    "Wall Cabinets",
+    "Cabinet"
+  ],
+  "WallLamp": [
+    "Wall Lamp",
+    "Wall Lamps",
+    "Walllamp",
+    "WallLamps",
+    "Lamps",
+    "Lamp",
+    "Walls",
+    "Wall"
+  ],
+  "WallTile": [
+    "Wall Tile",
+    "Wall Tiles",
+    "Walltile",
+    "Walltiles",
+    "Tile",
+    "Wall"
+  ],
+  "Wallpaper": [
+    "Wall paper",
+    "Wall papers",
+    "wallpaper",
+    "wallpapers"
+  ],
+  "Wardrobes": [
+    "Wardrobes",
+    "Wardrobe",
+    "ward robe",
+    "ward robes",
+    "Ward",
+    "Robe"
+  ],
+  "WarmingDrawer": [
+    "Warming Drawer",
+    "Warming Drawers",
+    "Warming",
+    "Drawer",
+    "Drawers"
+  ],
+  "Washbasin": [
+    "Wash basin",
+    "Wash basins",
+    "Wash",
+    "Basin",
+    "Basins"
+  ],
+  "WashbasinCounterTop": [
+    "Wash basin Counter Top",
+    "Wash basin counter Tops",
+    "Wash Basin Top",
+    "Wash Basin Tops",
+    "Wash",
+    "Basin",
+    "Top",
+    "Basin Top",
+    "Basin tops",
+    "Tops",
+    "Counter",
+    "Counter top",
+    "Counter tops"
+  ],
+  "WashbasinFaucet": [
+    "Wash basin Faucet",
+    "Wash basin Faucets",
+    "Wash basin Taps",
+    "Wash Basin Tap",
+    "Washbasin Tap",
+    "Washbasin Taps",
+    "Washbasin Faucets",
+    "Washbasin Faucet",
+    "Tap",
+    "Taps",
+    "Faucet",
+    "Faucets"
+  ],
+  "WashingMachine": [
+    "Washing Machine",
+    "Washing Machines",
+    "Washing",
+    "Machine",
+    "Machines"
+  ],
+  "WasteBin": [
+    "Waste Bin",
+    "Waste Bins",
+    "Waste",
+    "Bins",
+    "Bin"
+  ],
+  "WaterHeater": [
+    "Water Heater",
+    "Water Heaters",
+    "Heater",
+    "Heaters",
+    "Water"
+  ],
+  "WaterProofing": [
+    "Water Proofing",
+    "Water Proofings",
+    "Water Proof",
+    "Water Proofs",
+    "Water"
+  ],
+  "WaterPurifier": [
+    "Water Purifier",
+    "Water Purifiers",
+    "Purifiers",
+    "Purifier",
+    "Water"
+  ],
+  "WaterStorageTank": [
+    "Water Storage Tanks",
+    "Water Storage Tank",
+    "Water Storage",
+    "Water Storages",
+    "Waters",
+    "Storage Tanks",
+    "Storage Tank",
+    "Tanks",
+    "Tank",
+    "Water",
+    "Storage",
+    "Storages"
+  ],
+  "Window": [
+    "Window",
+    "Windows"
+  ],
+  "WineCooler": [
+    "Wine Cooler",
+    "Wine Coolers",
+    "Wine",
+    "cooler",
+    "Coolers"
+  ],
+  "WinterGarden": [
+    "Winter",
+    "Garden",
+    "Winter Garden"
+  ],
+  "Wire": [
+    "Wire",
+    "Wires"
+  ],
+  "WoodCoating": [
+    "Wood Coating",
+    "Wood Coatings",
+    "Coating",
+    "Coatings",
+    "Wood"
+  ],
+  "WritingDesk": [
+    "Writing Desk",
+    "Writing Desks",
+    "Writing",
+    "Desk",
+    "Desks"
+  ]
+}

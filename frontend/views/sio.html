@@ -1,0 +1,23 @@
+<html>
+<head>
+<script src="socket.io.js"></script>
+</head>
+<body>
+<div id="messages"></div>
+	<input type="text" id="newMessage"  /><input type="button" value="send" onClick="send()"/>
+	<script>
+  var socket = io.connect('/');
+  socket.on('message', function (data) {
+    document.getElementById("messages").innerHTML+="<div>"+data.message+"</div><br/>"
+  });
+  function send(){
+  	var msg=document.getElementById('newMessage').value;
+  	if(msg.trim()!="")  	
+  	socket.emit('message', { message: msg });
+  	document.getElementById('newMessage').value="";
+  }
+</script>
+
+
+</body>
+</html>

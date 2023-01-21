@@ -1,0 +1,71 @@
+{
+  "name": "schemaengine",
+  "version": "3.0.0",
+  "description": "Cloudsee app configurator",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodejs app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "schemaengine"
+  },
+  "keywords": [
+    "schemaengine",
+    "app",
+    "configurator"
+  ],
+  "author": "Vikram",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.3",
+    "draft-js": "^0.11.7",
+    "events": "^1.1.1",
+    "express": "^4.14.0",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.14.2",
+    "flux": "^3.1.0",
+    "immutable": "^3.8.1",
+    "mailgun-js": "^0.22.0",
+    "node-gyp": "^3.4.0",
+    "node-jsx": "^0.13.3",
+    "node-rest-client": "^3.1.0",
+    "object-assign": "^4.1.0",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "react-easy-swipe": "0.0.5",
+    "react-medium-editor": "^1.8.1",
+    "react-router": "^3.0.0",
+    "recon-js": "^0.3.11",
+    "socket.io": "^1.7.2",
+    "socket.io-client": "^1.7.2",
+    "winston": "^2.3.1",
+    "winston-loggly-bulk": "^2.0.3"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "browserify": "^10.2.4",
+    "minifier": "^0.6.2",
+    "reactify": "^1.1.1",
+    "uglify-js": "^2.4.23"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "browserify": {
+    "transform": [
+      "reactify"
+    ],
+    "client": {
+      "src": [
+        "components/**/*.js"
+      ],
+      "dest": "views/resource/js/client.js"
+    }
+  }
+}

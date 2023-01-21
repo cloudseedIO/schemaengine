@@ -1,0 +1,21 @@
+// Font paths
+// -------------------------
+
+@font-face {
+  font-family: "Downloaded";
+  src: url("../fonts/Downloaded.eot");
+  src: url("../fonts/Downloaded.eot?#iefix") format("embedded-opentype"),
+       url("../fonts/Downloaded.woff2") format("woff2"),
+       url("../fonts/Downloaded.woff") format("woff"),
+       url("../fonts/Downloaded.ttf") format("truetype"),
+       url("../fonts/Downloaded.svg#Downloaded") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Downloaded";
+    src: url("../fonts/Downloaded.svg#Downloaded") format("svg");
+  }
+}

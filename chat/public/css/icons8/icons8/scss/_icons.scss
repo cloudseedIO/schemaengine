@@ -1,0 +1,302 @@
+// Icons
+// -------------------------
+
+
+[data-icons8]:before,
+.icons8-activity-history-2:before,
+.icons8-add:before,
+.icons8-add-column:before,
+.icons8-add-file:before,
+.icons8-add-list:before,
+.icons8-add-new:before,
+.icons8-add-node:before,
+.icons8-add-row:before,
+.icons8-add-shopping-cart:before,
+.icons8-add-tag:before,
+.icons8-add-user-male:before,
+.icons8-alarm:before,
+.icons8-align-justify:before,
+.icons8-align-text-bottom:before,
+.icons8-align-text-left:before,
+.icons8-analyze:before,
+.icons8-approval:before,
+.icons8-ascending-sorting:before,
+.icons8-automation:before,
+.icons8-automation-2:before,
+.icons8-bookmark-ribbon:before,
+.icons8-bookmark-ribbon-filled:before,
+.icons8-business-building:before,
+.icons8-businessman:before,
+.icons8-cancel:before,
+.icons8-change:before,
+.icons8-checklist:before,
+.icons8-circled-female-user:before,
+.icons8-clear-search:before,
+.icons8-client-management:before,
+.icons8-close-program:before,
+.icons8-columns:before,
+.icons8-content:before,
+.icons8-course:before,
+.icons8-customer-support:before,
+.icons8-data-encryption:before,
+.icons8-database-import:before,
+.icons8-delete:before,
+.icons8-delete-archive:before,
+.icons8-delete-column:before,
+.icons8-delete-database:before,
+.icons8-delete-database-2:before,
+.icons8-delete-document:before,
+.icons8-delete-file:before,
+.icons8-delete-forever:before,
+.icons8-delete-row:before,
+.icons8-delete-subnode:before,
+.icons8-deleted-message:before,
+.icons8-depot:before,
+.icons8-descending-sorting:before,
+.icons8-details:before,
+.icons8-diff-files:before,
+.icons8-document-header:before,
+.icons8-downloads-folder:before,
+.icons8-easel:before,
+.icons8-edit:before,
+.icons8-edit-file:before,
+.icons8-edit-filled:before,
+.icons8-edit-node:before,
+.icons8-entering-geo-fence:before,
+.icons8-expand-arrow:before,
+.icons8-export-pdf:before,
+.icons8-eye:before,
+.icons8-eye-filled:before,
+.icons8-facebook-messenger:before,
+.icons8-file:before,
+.icons8-forward-message:before,
+.icons8-gps:before,
+.icons8-grid:before,
+.icons8-group-of-projects:before,
+.icons8-header-1:before,
+.icons8-header-2:before,
+.icons8-header-3:before,
+.icons8-here:before,
+.icons8-id-card:before,
+.icons8-import-csv:before,
+.icons8-incoming-data:before,
+.icons8-insert-table:before,
+.icons8-many-to-many:before,
+.icons8-map-editing:before,
+.icons8-marker-off:before,
+.icons8-menu-2:before,
+.icons8-menu-2-2:before,
+.icons8-menu-2-filled:before,
+.icons8-message:before,
+.icons8-move:before,
+.icons8-multiply:before,
+.icons8-near-me:before,
+.icons8-new-company:before,
+.icons8-new-copy:before,
+.icons8-new-file:before,
+.icons8-new-message:before,
+.icons8-notification:before,
+.icons8-notification-filled:before,
+.icons8-ok:before,
+.icons8-open-file-under-cursor:before,
+.icons8-open-file-under-cursor-filled:before,
+.icons8-page-overview-3:before,
+.icons8-page-overview-4:before,
+.icons8-pen:before,
+.icons8-pin:before,
+.icons8-pin-3:before,
+.icons8-plus:before,
+.icons8-plus-math:before,
+.icons8-powerpoint:before,
+.icons8-ppt:before,
+.icons8-remove-tag:before,
+.icons8-remove-user-male:before,
+.icons8-reuse:before,
+.icons8-rotate:before,
+.icons8-screenshot:before,
+.icons8-search:before,
+.icons8-search-filled:before,
+.icons8-send:before,
+.icons8-services:before,
+.icons8-services-2:before,
+.icons8-settings:before,
+.icons8-share-2:before,
+.icons8-sidebar-menu:before,
+.icons8-sort:before,
+.icons8-sort-down:before,
+.icons8-sort-down-filled:before,
+.icons8-sort-filled:before,
+.icons8-sort-up:before,
+.icons8-sort-up-filled:before,
+.icons8-sorting-options:before,
+.icons8-speech-bubble:before,
+.icons8-summary-list:before,
+.icons8-synchronize:before,
+.icons8-template:before,
+.icons8-tiles:before,
+.icons8-transaction-list:before,
+.icons8-trash:before,
+.icons8-trash-can:before,
+.icons8-user:before,
+.icons8-user-filled:before,
+.icons8-versions:before,
+.icons8-view:before,
+.icons8-view-column:before,
+.icons8-view-module-filled:before,
+.icons8-visit:before,
+.icons8-whatsapp:before,
+.icons8-xlarge-icons:before,
+.icons8-xlarge-icons-filled:before,
+.icons8-xls:before,
+.icons8-zoom-in:before,
+{ @include icons8-font; }
+
+[data-icons8]:before { content: attr(data-icons8); }
+
+.icons8-activity-history-2:before { content: $icons8-var-activity-history-2; }
+.icons8-add:before { content: $icons8-var-add; }
+.icons8-add-column:before { content: $icons8-var-add-column; }
+.icons8-add-file:before { content: $icons8-var-add-file; }
+.icons8-add-list:before { content: $icons8-var-add-list; }
+.icons8-add-new:before { content: $icons8-var-add-new; }
+.icons8-add-node:before { content: $icons8-var-add-node; }
+.icons8-add-row:before { content: $icons8-var-add-row; }
+.icons8-add-shopping-cart:before { content: $icons8-var-add-shopping-cart; }
+.icons8-add-tag:before { content: $icons8-var-add-tag; }
+.icons8-add-user-male:before { content: $icons8-var-add-user-male; }
+.icons8-alarm:before { content: $icons8-var-alarm; }
+.icons8-align-justify:before { content: $icons8-var-align-justify; }
+.icons8-align-text-bottom:before { content: $icons8-var-align-text-bottom; }
+.icons8-align-text-left:before { content: $icons8-var-align-text-left; }
+.icons8-analyze:before { content: $icons8-var-analyze; }
+.icons8-approval:before { content: $icons8-var-approval; }
+.icons8-ascending-sorting:before { content: $icons8-var-ascending-sorting; }
+.icons8-automation:before { content: $icons8-var-automation; }
+.icons8-automation-2:before { content: $icons8-var-automation-2; }
+.icons8-bookmark-ribbon:before { content: $icons8-var-bookmark-ribbon; }
+.icons8-bookmark-ribbon-filled:before { content: $icons8-var-bookmark-ribbon-filled; }
+.icons8-business-building:before { content: $icons8-var-business-building; }
+.icons8-businessman:before { content: $icons8-var-businessman; }
+.icons8-cancel:before { content: $icons8-var-cancel; }
+.icons8-change:before { content: $icons8-var-change; }
+.icons8-checklist:before { content: $icons8-var-checklist; }
+.icons8-circled-female-user:before { content: $icons8-var-circled-female-user; }
+.icons8-clear-search:before { content: $icons8-var-clear-search; }
+.icons8-client-management:before { content: $icons8-var-client-management; }
+.icons8-close-program:before { content: $icons8-var-close-program; }
+.icons8-columns:before { content: $icons8-var-columns; }
+.icons8-content:before { content: $icons8-var-content; }
+.icons8-course:before { content: $icons8-var-course; }
+.icons8-customer-support:before { content: $icons8-var-customer-support; }
+.icons8-data-encryption:before { content: $icons8-var-data-encryption; }
+.icons8-database-import:before { content: $icons8-var-database-import; }
+.icons8-delete:before { content: $icons8-var-delete; }
+.icons8-delete-archive:before { content: $icons8-var-delete-archive; }
+.icons8-delete-column:before { content: $icons8-var-delete-column; }
+.icons8-delete-database:before { content: $icons8-var-delete-database; }
+.icons8-delete-database-2:before { content: $icons8-var-delete-database-2; }
+.icons8-delete-document:before { content: $icons8-var-delete-document; }
+.icons8-delete-file:before { content: $icons8-var-delete-file; }
+.icons8-delete-forever:before { content: $icons8-var-delete-forever; }
+.icons8-delete-row:before { content: $icons8-var-delete-row; }
+.icons8-delete-subnode:before { content: $icons8-var-delete-subnode; }
+.icons8-deleted-message:before { content: $icons8-var-deleted-message; }
+.icons8-depot:before { content: $icons8-var-depot; }
+.icons8-descending-sorting:before { content: $icons8-var-descending-sorting; }
+.icons8-details:before { content: $icons8-var-details; }
+.icons8-diff-files:before { content: $icons8-var-diff-files; }
+.icons8-document-header:before { content: $icons8-var-document-header; }
+.icons8-downloads-folder:before { content: $icons8-var-downloads-folder; }
+.icons8-easel:before { content: $icons8-var-easel; }
+.icons8-edit:before { content: $icons8-var-edit; }
+.icons8-edit-file:before { content: $icons8-var-edit-file; }
+.icons8-edit-filled:before { content: $icons8-var-edit-filled; }
+.icons8-edit-node:before { content: $icons8-var-edit-node; }
+.icons8-entering-geo-fence:before { content: $icons8-var-entering-geo-fence; }
+.icons8-expand-arrow:before { content: $icons8-var-expand-arrow; }
+.icons8-export-pdf:before { content: $icons8-var-export-pdf; }
+.icons8-eye:before { content: $icons8-var-eye; }
+.icons8-eye-filled:before { content: $icons8-var-eye-filled; }
+.icons8-facebook-messenger:before { content: $icons8-var-facebook-messenger; }
+.icons8-file:before { content: $icons8-var-file; }
+.icons8-forward-message:before { content: $icons8-var-forward-message; }
+.icons8-gps:before { content: $icons8-var-gps; }
+.icons8-grid:before { content: $icons8-var-grid; }
+.icons8-group-of-projects:before { content: $icons8-var-group-of-projects; }
+.icons8-header-1:before { content: $icons8-var-header-1; }
+.icons8-header-2:before { content: $icons8-var-header-2; }
+.icons8-header-3:before { content: $icons8-var-header-3; }
+.icons8-here:before { content: $icons8-var-here; }
+.icons8-id-card:before { content: $icons8-var-id-card; }
+.icons8-import-csv:before { content: $icons8-var-import-csv; }
+.icons8-incoming-data:before { content: $icons8-var-incoming-data; }
+.icons8-insert-table:before { content: $icons8-var-insert-table; }
+.icons8-many-to-many:before { content: $icons8-var-many-to-many; }
+.icons8-map-editing:before { content: $icons8-var-map-editing; }
+.icons8-marker-off:before { content: $icons8-var-marker-off; }
+.icons8-menu-2:before { content: $icons8-var-menu-2; }
+.icons8-menu-2-2:before { content: $icons8-var-menu-2-2; }
+.icons8-menu-2-filled:before { content: $icons8-var-menu-2-filled; }
+.icons8-message:before { content: $icons8-var-message; }
+.icons8-move:before { content: $icons8-var-move; }
+.icons8-multiply:before { content: $icons8-var-multiply; }
+.icons8-near-me:before { content: $icons8-var-near-me; }
+.icons8-new-company:before { content: $icons8-var-new-company; }
+.icons8-new-copy:before { content: $icons8-var-new-copy; }
+.icons8-new-file:before { content: $icons8-var-new-file; }
+.icons8-new-message:before { content: $icons8-var-new-message; }
+.icons8-notification:before { content: $icons8-var-notification; }
+.icons8-notification-filled:before { content: $icons8-var-notification-filled; }
+.icons8-ok:before { content: $icons8-var-ok; }
+.icons8-open-file-under-cursor:before { content: $icons8-var-open-file-under-cursor; }
+.icons8-open-file-under-cursor-filled:before { content: $icons8-var-open-file-under-cursor-filled; }
+.icons8-page-overview-3:before { content: $icons8-var-page-overview-3; }
+.icons8-page-overview-4:before { content: $icons8-var-page-overview-4; }
+.icons8-pen:before { content: $icons8-var-pen; }
+.icons8-pin:before { content: $icons8-var-pin; }
+.icons8-pin-3:before { content: $icons8-var-pin-3; }
+.icons8-plus:before { content: $icons8-var-plus; }
+.icons8-plus-math:before { content: $icons8-var-plus-math; }
+.icons8-powerpoint:before { content: $icons8-var-powerpoint; }
+.icons8-ppt:before { content: $icons8-var-ppt; }
+.icons8-remove-tag:before { content: $icons8-var-remove-tag; }
+.icons8-remove-user-male:before { content: $icons8-var-remove-user-male; }
+.icons8-reuse:before { content: $icons8-var-reuse; }
+.icons8-rotate:before { content: $icons8-var-rotate; }
+.icons8-screenshot:before { content: $icons8-var-screenshot; }
+.icons8-search:before { content: $icons8-var-search; }
+.icons8-search-filled:before { content: $icons8-var-search-filled; }
+.icons8-send:before { content: $icons8-var-send; }
+.icons8-services:before { content: $icons8-var-services; }
+.icons8-services-2:before { content: $icons8-var-services-2; }
+.icons8-settings:before { content: $icons8-var-settings; }
+.icons8-share-2:before { content: $icons8-var-share-2; }
+.icons8-sidebar-menu:before { content: $icons8-var-sidebar-menu; }
+.icons8-sort:before { content: $icons8-var-sort; }
+.icons8-sort-down:before { content: $icons8-var-sort-down; }
+.icons8-sort-down-filled:before { content: $icons8-var-sort-down-filled; }
+.icons8-sort-filled:before { content: $icons8-var-sort-filled; }
+.icons8-sort-up:before { content: $icons8-var-sort-up; }
+.icons8-sort-up-filled:before { content: $icons8-var-sort-up-filled; }
+.icons8-sorting-options:before { content: $icons8-var-sorting-options; }
+.icons8-speech-bubble:before { content: $icons8-var-speech-bubble; }
+.icons8-summary-list:before { content: $icons8-var-summary-list; }
+.icons8-synchronize:before { content: $icons8-var-synchronize; }
+.icons8-template:before { content: $icons8-var-template; }
+.icons8-tiles:before { content: $icons8-var-tiles; }
+.icons8-transaction-list:before { content: $icons8-var-transaction-list; }
+.icons8-trash:before { content: $icons8-var-trash; }
+.icons8-trash-can:before { content: $icons8-var-trash-can; }
+.icons8-user:before { content: $icons8-var-user; }
+.icons8-user-filled:before { content: $icons8-var-user-filled; }
+.icons8-versions:before { content: $icons8-var-versions; }
+.icons8-view:before { content: $icons8-var-view; }
+.icons8-view-column:before { content: $icons8-var-view-column; }
+.icons8-view-module-filled:before { content: $icons8-var-view-module-filled; }
+.icons8-visit:before { content: $icons8-var-visit; }
+.icons8-whatsapp:before { content: $icons8-var-whatsapp; }
+.icons8-xlarge-icons:before { content: $icons8-var-xlarge-icons; }
+.icons8-xlarge-icons-filled:before { content: $icons8-var-xlarge-icons-filled; }
+.icons8-xls:before { content: $icons8-var-xls; }
+.icons8-zoom-in:before { content: $icons8-var-zoom-in; }
+

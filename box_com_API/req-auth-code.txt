@@ -1,0 +1,12 @@
+const grantType = 'authorization_code';
+const code = '<MY_AUTH_CODE>';
+const clientId = '<MY_CLIENT_ID>';
+const clientSecret = '<MY_CLIENT_SECRET>';
+
+fetch('https://api.box.com/oauth2/token', {
+  method: 'POST',
+  body: `grant_type=${grantType}&code=${code}&client_id=${clientId}&client_secret=${clientSecret}`,
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+  }
+})

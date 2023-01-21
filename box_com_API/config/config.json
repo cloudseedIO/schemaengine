@@ -1,0 +1,13 @@
+[
+    {
+		"clientID": "asdf",
+		"clientSecret": "asdf",
+		"appAuth": {
+			"publicKeyID": "asdf",
+			"keyID": "asdf",
+			"privateKey": "dfgfd",
+			"passphrase": "asdf"
+		},
+      "businessId":"32490063"
+	}
+]
