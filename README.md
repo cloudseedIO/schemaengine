@@ -41,7 +41,7 @@ Step by step guide to use the project
 Please see the wiki section
 
 ## Support
-Email support@schemaengine.io
+Email support@cloudseed.io
 
 ## Roadmap
 1. Replatform to Redux for application state management
